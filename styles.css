@@ -11,111 +11,32 @@
   --primary-soft:#eef5ff;
   --shadow:0 10px 30px rgba(39,73,124,.08);
 }
+
 html,body{margin:0;padding:0}
+
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   color:var(--text);
   background:linear-gradient(180deg,var(--bg2),var(--bg));
 }
+
 a{text-decoration:none;color:inherit}
+
 .page-shell{
   max-width:1180px;
   margin:0 auto;
   padding:24px 20px 60px;
 }
+
 .card{
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:28px;
   box-shadow:var(--shadow);
 }
-.hero{
-  padding:34px 36px 28px;
-  margin-bottom:24px;
-}
-.badge{
-  display:inline-flex;
-  padding:8px 14px;
-  border-radius:999px;
-  background:var(--primary-soft);
-  color:var(--primary-dark);
-  font-weight:700;
-  font-size:14px;
-  margin-bottom:14px;
-}
-.hero h1{
-  margin:0 0 14px;
-  font-size:64px;
-  line-height:1.05;
-}
-.hero p{
-  margin:0;
-  color:var(--muted);
-  font-size:20px;
-  line-height:1.7;
-}
-.hero .encourage{
-  margin-top:10px;
-  color:#345a94;
-  font-weight:700;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:20px;
-}
-.module-card{
-  display:block;
-  padding:28px;
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-}
-.module-card:hover{
-  transform:translateY(-2px);
-  box-shadow:0 16px 34px rgba(39,73,124,.11);
-  border-color:#d5e3f6;
-}
-.icon{
-  width:58px;
-  height:58px;
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--primary-soft);
-  font-size:27px;
-  margin-bottom:16px;
-}
-.card h2,.page-title h1{
-  margin:0 0 10px;
-  font-size:34px;
-  line-height:1.2;
-}
-.desc,.page-subtitle,.helper{
-  color:var(--muted);
-  line-height:1.7;
-  margin:0;
-}
-.tag-list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:16px;
-}
-.tag{
-  display:inline-flex;
-  align-items:center;
-  padding:9px 12px;
-  border-radius:999px;
-  background:#f8fbff;
-  border:1px solid var(--line);
-  font-size:15px;
-}
-.tag.active{
-  background:var(--primary-soft);
-  color:var(--primary-dark);
-  border-color:#cfe1fb;
-  font-weight:700;
-}
+
+/* ===== 顶部 ===== */
+
 .top-link{
   display:inline-flex;
   align-items:center;
@@ -124,7 +45,20 @@ a{text-decoration:none;color:inherit}
   font-weight:700;
   margin-bottom:16px;
 }
+
 .page-title{margin-bottom:18px}
+
+.page-title h1{
+  font-size:34px;
+  margin:0 0 10px;
+}
+
+.page-subtitle{
+  color:var(--muted);
+}
+
+/* ===== 工具栏 ===== */
+
 .toolbar{
   padding:18px 20px;
   display:flex;
@@ -133,157 +67,160 @@ a{text-decoration:none;color:inherit}
   align-items:flex-end;
   margin-bottom:18px;
 }
+
 .select{
   padding:10px 12px;
-  min-width:170px;
   border-radius:14px;
   border:1px solid var(--line);
-  background:#fff;
-  color:var(--text);
-  font-size:15px;
 }
+
 .notice{
   padding:12px 14px;
   border-radius:14px;
   background:#fff8e9;
   border:1px solid #f1dfae;
   color:#725b20;
-  line-height:1.6;
 }
+
+/* ===== 场景 ===== */
+
 .set-header{
   margin:18px 0 14px;
 }
-.set-header h2{
-  margin:0 0 4px;
-  font-size:30px;
-}
+
 .scene-card{
   overflow:hidden;
   margin-bottom:14px;
 }
+
 .scene-header{
   width:100%;
   border:0;
-  background:linear-gradient(180deg,#fcfdff,#f7faff);
   padding:18px 20px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
   cursor:pointer;
-  color:var(--text);
-  font:inherit;
+  background:#f7faff;
 }
+
 .scene-name{
   font-size:24px;
   font-weight:800;
 }
-.scene-arrow{
-  color:var(--primary-dark);
-  font-size:20px;
-}
+
 .scene-content{
   display:none;
   border-top:1px solid var(--line);
-  padding:18px 20px 20px;
+  padding:18px 20px;
 }
+
 .scene-content.open{display:block}
+
+/* ===== 句子 ===== */
+
 .line-list{
   display:flex;
   flex-direction:column;
   gap:12px;
-  margin-bottom:18px;
 }
+
 .line-item{
   display:flex;
   gap:12px;
-  align-items:flex-start;
   padding:14px;
   border:1px solid var(--line);
   border-radius:18px;
   background:#fbfdff;
 }
+
 .sentence-controls{
   display:flex;
   flex-direction:column;
   gap:8px;
-  min-width:132px;
+  min-width:130px;
 }
+
 .play-btn,.record-btn,.mine-btn,.text-toggle-btn{
   border:1px solid var(--line);
   border-radius:12px;
+  padding:10px;
   background:#fff;
-  color:var(--text);
-  padding:10px 12px;
-  font-size:14px;
   cursor:pointer;
 }
+
 .play-btn{
   background:var(--primary-soft);
   color:var(--primary-dark);
-  border-color:#cfe1fb;
 }
-.play-btn:hover,.record-btn:hover,.mine-btn:hover,.text-toggle-btn:hover{
-  background:var(--primary-soft);
-  border-color:#cfe1fb;
-}
+
 .mine-btn:disabled{
-  opacity:.45;
-  cursor:not-allowed;
+  opacity:.4;
 }
+
 .sentence-wrap{
   flex:1;
-  min-width:0;
 }
+
 .line-label{
-  font-size:15px;
   font-weight:700;
-  color:var(--primary-dark);
   margin-bottom:6px;
 }
+
 .line-text{
   font-size:18px;
-  line-height:1.75;
+  line-height:1.7;
 }
+
+/* ✅ 关键修复：隐藏逻辑 */
+
 .hidden-text{
   display:none;
 }
+
 .hidden-text.show{
   display:block;
 }
-.record-status{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
+
+/* ✅ Vocabulary 专门控制（重点） */
+
+.vocab-grid{
+  display:none;
 }
+
+.vocab-grid.show{
+  display:grid;
+}
+
+/* ===== Vocabulary ===== */
+
 .block-title{
   margin:18px 0 10px;
   font-size:18px;
 }
-.vocab-toggle-btn{
-  margin-bottom:10px;
-}
+
 .vocab-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(2,1fr);
   gap:10px;
 }
+
 .vocab-item{
-  padding:12px 14px;
+  padding:12px;
   border-radius:16px;
   border:1px solid var(--line);
   background:#f8fbff;
-  line-height:1.65;
 }
+
+/* ===== 移动端 ===== */
+
 @media (max-width: 840px){
-  .grid,.vocab-grid{grid-template-columns:1fr}
-  .hero{padding:26px 22px 22px}
-  .hero h1{font-size:48px}
-  .hero p{font-size:18px}
-  .module-card{padding:22px}
-  .scene-header,.scene-content{padding:16px}
-  .scene-name{font-size:21px}
-  .line-item{flex-direction:column}
-  .sentence-controls{flex-direction:row;flex-wrap:wrap;min-width:0;width:100%}
-  .line-text{font-size:17px}
+  .line-item{
+    flex-direction:column;
+  }
+  .sentence-controls{
+    flex-direction:row;
+    flex-wrap:wrap;
+  }
+  .vocab-grid{
+    grid-template-columns:1fr;
+  }
 }
