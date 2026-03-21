@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOEFL Complete the Words</title>
+  <meta name="description" content="托福 Complete the Words 专项训练网站，含 10 道练习题、计时、成绩记录与答案回顾。" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">TOEFL Reading Practice</p>
+        <h1>Complete the Words 专项训练</h1>
+        <p class="subtitle">严格保留整词判分逻辑，贴近真实考试体验。</p>
+      </div>
+      <div class="header-actions">
+        <button id="reset-progress-btn" class="btn btn-ghost" type="button">清空成绩记录</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="home-page">
+        <div class="intro-card">
+          <div>
+            <h2>开始练习</h2>
+            <p>每道题含 10 个空，提交后统一核对。系统会自动记录每题最高分。</p>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-label">题目数量</span>
+              <strong id="stat-total">10</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">已完成</span>
+              <strong id="stat-done">0</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">平均最高分</span>
+              <strong id="stat-average">--</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h2>练习目录</h2>
+          <p>点击任意卡片开始作答</p>
+        </div>
+
+        <div id="practice-grid" class="practice-grid"></div>
+      </section>
+
+      <section id="quiz-page" class="hidden">
+        <div class="quiz-topbar">
+          <button id="back-btn" class="btn btn-ghost" type="button">← 返回目录</button>
+          <div id="timer" class="timer">⏱ 00:00</div>
+        </div>
+
+        <article class="quiz-card">
+          <div class="quiz-card-head">
+            <div>
+              <p id="quiz-kicker" class="quiz-kicker"></p>
+              <h2 id="quiz-title"></h2>
+            </div>
+            <div class="quiz-meta">
+              <span class="meta-chip">10 个空</span>
+              <span class="meta-chip">整词判分</span>
+            </div>
+          </div>
+
+          <div class="instructions">
+            Fill in the missing letters in the paragraph. 完成后点击“提交核对”。
+          </div>
+
+          <div id="quiz-content" class="passage-card"></div>
+
+          <div class="action-row">
+            <div id="score-result" class="score-result"></div>
+            <div class="button-group">
+              <button id="retry-btn" class="btn btn-ghost hidden" type="button">再做一次</button>
+              <button id="submit-btn" class="btn btn-primary" type="button">提交核对</button>
+              <button id="next-btn" class="btn btn-success hidden" type="button">下一题 →</button>
+            </div>
+          </div>
+        </article>
+
+        <section id="answer-review" class="review-card hidden">
+          <div class="review-head">
+            <div>
+              <h3>答案回顾</h3>
+              <p id="feedback-text"></p>
+            </div>
+            <div id="time-spent" class="time-spent"></div>
+          </div>
+          <div id="answer-grid" class="answer-grid"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="./js/questions.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
