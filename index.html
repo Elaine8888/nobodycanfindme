@@ -1,295 +1,54 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Complete the Words</title>
-  <style>
-:root{
-  --primary:#4a90e2;
-  --primary-soft:#eef5ff;
-  --success:#28a745;
-  --error:#dc3545;
-  --bg:#f4f7f9;
-  --text:#333;
-  --muted:#6b7280;
-  --card:#fff;
-  --border:#e5e7eb;
-}
-*{box-sizing:border-box}
-body{
-  font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  background:var(--bg);
-  margin:0;
-  color:var(--text);
-}
-.page{
-  max-width:980px;
-  margin:0 auto;
-  padding:24px 16px 40px;
-}
-.hero{
-  background:linear-gradient(180deg,#ffffff 0%, #f8fbff 100%);
-  border:1px solid #dbeafe;
-  border-radius:20px;
-  padding:28px 24px;
-  box-shadow:0 8px 30px rgba(74,144,226,.08);
-  margin-bottom:22px;
-}
-.hero h1{
-  margin:0 0 10px;
-  color:var(--primary);
-  font-size:30px;
-}
-.hero p{
-  margin:0;
-  color:var(--muted);
-  line-height:1.7;
-}
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:18px;
-}
-.back-link{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  color:var(--primary);
-  text-decoration:none;
-  font-weight:600;
-}
-.timer{
-  font-weight:700;
-  color:var(--primary);
-  background:var(--primary-soft);
-  padding:8px 14px;
-  border-radius:999px;
-  border:1px solid #d0e3ff;
-  font-variant-numeric: tabular-nums;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:14px;
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px 18px 16px;
-  box-shadow:0 4px 16px rgba(0,0,0,.04);
-  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  text-decoration:none;
-  color:inherit;
-}
-.card:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(0,0,0,.06);
-  border-color:#cfe1ff;
-}
-.card .meta{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin-bottom:12px;
-}
-.badge{
-  display:inline-flex;
-  align-items:center;
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:700;
-}
-.badge-none{background:#f3f4f6;color:#6b7280}
-.badge-done{background:#eafaf1;color:#166534}
-.card h3{
-  margin:0 0 8px;
-  font-size:18px;
-  line-height:1.4;
-}
-.card .date{
-  color:var(--muted);
-  font-size:13px;
-  white-space:pre-line;
-}
-.panel{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:0 4px 16px rgba(0,0,0,.04);
-}
-.panel-head{
-  padding:20px 22px 0;
-}
-.panel-head h2{
-  margin:0 0 8px;
-  color:var(--primary);
-}
-.panel-head .sub{
-  color:var(--muted);
-  font-size:14px;
-  white-space:pre-line;
-}
-.passage{
-  padding:22px;
-  line-height:2;
-  font-size:18px;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-.word-group{
-  display:inline-flex;
-  align-items:flex-end;
-  gap:0;
-  padding:1px 2px;
-  border-radius:8px;
-}
-.word-group.active{
-  background:var(--primary-soft);
-}
-.prefix,.suffix{
-  font-weight:700;
-  color:#2c3e50;
-}
-.char-input{
-  width:1.15em;
-  text-align:center;
-  font-size:18px;
-  border:none;
-  border-bottom:2px solid #94a3b8;
-  margin:0 1px;
-  padding:0 0 2px;
-  background:transparent;
-  outline:none;
-  border-radius:0;
-}
-.char-input:focus{
-  border-bottom-color:var(--primary);
-}
-.char-input.correct{
-  border-bottom-color:var(--success);
-  background:#effcf3;
-}
-.char-input.wrong{
-  border-bottom-color:var(--error);
-  background:#fff1f2;
-}
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  padding:0 22px 22px;
-}
-button,.button-link{
-  appearance:none;
-  border:none;
-  border-radius:12px;
-  padding:11px 18px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-}
-button.primary,.button-link.primary{
-  background:var(--primary);
-  color:#fff;
-}
-button.secondary,.button-link.secondary{
-  background:#fff;
-  color:#374151;
-  border:1px solid #d1d5db;
-}
-button[disabled]{
-  opacity:.55;
-  cursor:not-allowed;
-}
-.result{
-  margin:0 22px 18px;
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:16px;
-}
-.score{
-  font-size:22px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-.feedback{
-  color:#4b5563;
-  margin-bottom:8px;
-}
-.review-list{
-  display:grid;
-  gap:8px;
-}
-.review-item{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  padding:10px 12px;
-  border-radius:12px;
-  font-size:14px;
-}
-.review-item.correct{background:#eafaf1}
-.review-item.wrong{background:#fdecec}
-.review-item .idx{font-weight:800; min-width:22px}
-.review-item .full{font-weight:700}
-.hidden{display:none !important}
-.footer-note{
-  margin-top:18px;
-  color:var(--muted);
-  font-size:13px;
-}
-@media (max-width:640px){
-  .hero h1{font-size:24px}
-  .passage{font-size:17px; line-height:1.9}
-  .char-input{font-size:17px}
-}
+<meta charset="UTF-8">
+<title>TOEFL Complete the Words</title>
+<style>
+body {font-family: Arial; background:#f5f7fb; margin:0; padding:20px;}
+.container {max-width:900px; margin:auto;}
+.card {display:block; padding:15px; margin:10px 0; background:white; border-radius:10px; text-decoration:none; color:#333;}
+.badge {font-size:12px; padding:3px 6px; border-radius:6px;}
+.badge-none {background:#eee;}
+.badge-done {background:#4caf50; color:white;}
 </style>
 </head>
 <body>
-  <div class="page">
-    <section class="hero">
-      <h1>TOEFL Complete the Words</h1>
-      <p>按题号进入练习。本站保留整词判分逻辑，答题完成后可查看标准答案与最高分记录。</p>
-    </section>
+<div class="container">
+<h1>TOEFL Complete the Words</h1>
+<div id="question-grid"></div>
+</div>
 
-    <div class="grid" id="question-grid"></div>
-    <div class="footer-note">最高分记录保存在当前浏览器的本地存储中。</div>
-  </div>
+<script src="data/questions.js"></script>
+<script>
+const STORAGE_KEY = 'ctw_scores_v1';
+const scores = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+const grid = document.getElementById('question-grid');
+const questionList = window.questions || [];
 
-  <script src="data/questions.js"></script>
-  <script>
-    const STORAGE_KEY = 'ctw_scores_v1';
-    const scores = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    const grid = document.getElementById('question-grid');
+if (!questionList.length) {
+  grid.innerHTML = '<div style="color:#dc3545;">题库加载失败，请检查 data/questions.js</div>';
+}
 
-    questions.forEach(q => {
-      const score = scores[q.id];
-      const total = q.items.length;
-      const done = score !== undefined;
-      const card = document.createElement('a');
-      card.className = 'card';
-      card.href = `practice.html?id=${q.id}`;
-      card.innerHTML = `
-        <div class="meta">
-          <span class="badge ${done ? 'badge-done' : 'badge-none'}">${done ? `最高分 ${score} / ${total}` : `未开始`}</span>
-          <span>#${q.id}</span>
-        </div>
-        <h3>${q.title || `Practice ${q.id}`}</h3>
-        <div class="date">${q.date || ''}</div>
-      `;
-      grid.appendChild(card);
-    });
-  </script>
+questionList.forEach(q => {
+  const score = scores[q.id];
+  const total = q.items ? q.items.length : 10;
+  const done = score !== undefined;
+
+  const card = document.createElement('a');
+  card.className = 'card';
+  card.href = `practice.html?id=${q.id}`;
+
+  card.innerHTML = `
+    <div>
+      <span class="badge ${done ? 'badge-done' : 'badge-none'}">
+        ${done ? `最高分 ${score} / ${total}` : '未开始'}
+      </span>
+    </div>
+    <h3>${q.title || `Practice ${q.id}`}</h3>
+  `;
+
+  grid.appendChild(card);
+});
+</script>
 </body>
 </html>
