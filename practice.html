@@ -10,8 +10,9 @@
     body { font-family:'Segoe UI', system-ui, sans-serif; background:var(--bg); margin:0; padding:20px; color:#333; }
     .container { max-width:900px; margin:0 auto; background:white; padding:30px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.08); position:relative; }
     #timer { position:absolute; top:20px; right:30px; font-weight:bold; color:var(--primary); background:#eef5ff; padding:5px 12px; border-radius:15px; font-variant-numeric:tabular-nums; border:1px solid #d0e3ff; }
-    h1 { margin-top:0; color:var(--primary); }
-    .sub { color:#6b7280; margin-bottom:16px; }
+    h1 { margin-top:0; color:var(--primary); padding-right:120px; }
+    .sub { color:#6b7280; margin-bottom:10px; }
+    .mini-title { color:#4a90e2; font-weight:700; margin-bottom:14px; }
     .passage { font-size:1.12rem; line-height:2.7; text-align:justify; margin:25px 0; }
     .word-group { display:inline-flex; align-items:baseline; margin:0 2px; }
     .char-input { width:16px; height:22px; border:none; border-bottom:2px solid #bbb; margin:0 1px; text-align:center; font-size:1.1rem; outline:none; color:#4a90e2; background:transparent; padding:0; font-weight:500; }
@@ -33,6 +34,7 @@
   <div id="timer">⏱ 00:00</div>
   <a class="btn-back" href="index.html">← 返回目录</a>
   <h1 id="quiz-title"></h1>
+  <div id="quiz-subtitle" class="mini-title"></div>
   <div id="quiz-date" class="sub"></div>
   <div class="passage" id="quiz-content"></div>
 
@@ -65,6 +67,7 @@
   let startTime = Date.now();
 
   const titleEl = document.getElementById('quiz-title');
+  const subtitleEl = document.getElementById('quiz-subtitle');
   const dateEl = document.getElementById('quiz-date');
   const contentEl = document.getElementById('quiz-content');
   const scoreEl = document.getElementById('score-result');
@@ -82,6 +85,7 @@
     retryBtn.disabled = true;
   } else {
     titleEl.textContent = `练习 ${d.id}: ${d.title || ''}`;
+    subtitleEl.textContent = d.subtitle || '';
     dateEl.textContent = d.date || '';
     let html = d.template;
     (d.items || []).forEach((item, i) => {
@@ -96,7 +100,6 @@
     setupInputs();
     startTime = Date.now();
     timer = setInterval(updateTimer, 1000);
-
     if (currentIdx >= 0 && currentIdx < questionList.length - 1) {
       nextBtn.onclick = () => {
         const nextId = questionList[currentIdx + 1].id;
