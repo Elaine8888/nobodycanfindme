@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Writing - Academic Discussion</title>
+  <link rel="stylesheet" href="./styles.css?v=20260321writing1"/>
+</head>
+<body>
+  <div class="page-shell">
+    <a class="top-link" href="index.html">← Back to home</a>
+
+    <header class="page-title">
+      <h1>Writing · Academic Discussion</h1>
+      <p class="page-subtitle">
+        Read the question and respond with your own ideas. No hints provided.
+      </p>
+    </header>
+
+    <div id="writing-root"></div>
+  </div>
+
+  <script src="./site-data.js?v=20260321writing1"></script>
+  <script>
+    const root = document.getElementById("writing-root");
+
+    const writingType = siteData.writing.types.find(t => t.id === "ad");
+
+    writingType.sets.forEach((set) => {
+      const card = document.createElement("section");
+      card.className = "card scene-card";
+
+      const header = document.createElement("button");
+      header.className = "scene-header";
+      header.type = "button";
+      header.innerHTML = `
+        <span class="scene-name">${set.title}</span>
+        <span class="scene-arrow">▶</span>
+      `;
+
+      const content = document.createElement("div");
+      content.className = "scene-content";
+
+      const text = document.createElement("div");
+      text.className = "line-text";
+      text.style.whiteSpace = "pre-line";
+      text.textContent = set.prompt;
+
+      content.appendChild(text);
+
+      header.addEventListener("click", () => {
+        const isOpen = content.classList.contains("open");
+
+        document.querySelectorAll(".scene-content").forEach(el => el.classList.remove("open"));
+        document.querySelectorAll(".scene-arrow").forEach(el => el.textContent = "▶");
+
+        if (!isOpen) {
+          content.classList.add("open");
+          header.querySelector(".scene-arrow").textContent = "▼";
+        }
+      });
+
+      card.appendChild(header);
+      card.appendChild(content);
+      root.appendChild(card);
+    });
+  </script>
+</body>
+</html>
