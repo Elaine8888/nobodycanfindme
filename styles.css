@@ -208,7 +208,7 @@ a{text-decoration:none;color:inherit}
   gap:8px;
   min-width:132px;
 }
-.play-btn,.record-btn,.mine-btn{
+.play-btn,.record-btn,.mine-btn,.text-toggle-btn{
   border:1px solid var(--line);
   border-radius:12px;
   background:#fff;
@@ -222,7 +222,7 @@ a{text-decoration:none;color:inherit}
   color:var(--primary-dark);
   border-color:#cfe1fb;
 }
-.play-btn:hover,.record-btn:hover,.mine-btn:hover{
+.play-btn:hover,.record-btn:hover,.mine-btn:hover,.text-toggle-btn:hover{
   background:var(--primary-soft);
   border-color:#cfe1fb;
 }
@@ -234,9 +234,21 @@ a{text-decoration:none;color:inherit}
   flex:1;
   min-width:0;
 }
+.line-label{
+  font-size:15px;
+  font-weight:700;
+  color:var(--primary-dark);
+  margin-bottom:6px;
+}
 .line-text{
   font-size:18px;
   line-height:1.75;
+}
+.hidden-text{
+  display:none;
+}
+.hidden-text.show{
+  display:block;
 }
 .record-status{
   margin-top:8px;
@@ -247,6 +259,9 @@ a{text-decoration:none;color:inherit}
 .block-title{
   margin:18px 0 10px;
   font-size:18px;
+}
+.vocab-toggle-btn{
+  margin-bottom:10px;
 }
 .vocab-grid{
   display:grid;

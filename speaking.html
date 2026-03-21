@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Speaking Practice</title>
-  <link rel="stylesheet" href="./styles.css?v=20260321audio1" />
+  <link rel="stylesheet" href="./styles.css?v=20260321hidden1" />
 </head>
 <body>
   <div class="page-shell">
@@ -13,7 +13,7 @@
     <header class="page-title">
       <h1>Speaking · Listen and Repeat</h1>
       <p class="page-subtitle">
-        Open a scene, tap <strong>Play</strong> to hear one sentence, then record your own repetition.
+        Open a scene, listen first, then reveal the sentence only when needed.
       </p>
     </header>
 
@@ -27,7 +27,7 @@
         </select>
       </label>
       <div class="notice">
-        Tap one sentence at a time. 0.5× is useful for shadowing practice.
+        Students hear first. Text and vocabulary stay hidden until they choose to reveal them.
       </div>
     </section>
 
@@ -35,7 +35,7 @@
     <audio id="shared-audio" preload="auto"></audio>
   </div>
 
-  <script src="./site-data.js?v=20260321audio1"></script>
+  <script src="./site-data.js?v=20260321hidden1"></script>
   <script>
     const root = document.getElementById("speaking-root");
     const sharedAudio = document.getElementById("shared-audio");
@@ -213,7 +213,7 @@
     setHeader.className = "set-header";
     setHeader.innerHTML = `
       <h2>${set.title}</h2>
-      <p class="helper">Tap a scene to open it. Each sentence has listening and recording controls.</p>
+      <p class="helper">Tap a scene to open it. Text stays hidden until students choose to reveal it.</p>
     `;
     root.appendChild(setHeader);
 
@@ -275,17 +275,47 @@
           playMine(sentenceId);
         });
 
+        const textBtn = document.createElement("button");
+        textBtn.className = "text-toggle-btn";
+        textBtn.type = "button";
+        textBtn.textContent = "Show text";
+
         controls.appendChild(playBtn);
         controls.appendChild(recordBtn);
         controls.appendChild(mineBtn);
+        controls.appendChild(textBtn);
 
         const textWrap = document.createElement("div");
         textWrap.className = "sentence-wrap";
-        textWrap.innerHTML = `
-          <div class="line-text">${line}</div>
-          <div class="record-status" id="record-status-${sentenceId}">Tap Record to practice this sentence.</div>
-          <audio id="my-audio-${sentenceId}" preload="metadata"></audio>
-        `;
+
+        const label = document.createElement("div");
+        label.className = "line-label";
+        label.textContent = `Sentence ${i + 1}`;
+
+        const lineText = document.createElement("div");
+        lineText.className = "line-text hidden-text";
+        lineText.textContent = line;
+
+        textBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const shown = lineText.classList.contains("show");
+          lineText.classList.toggle("show");
+          textBtn.textContent = shown ? "Show text" : "Hide text";
+        });
+
+        const status = document.createElement("div");
+        status.className = "record-status";
+        status.id = `record-status-${sentenceId}`;
+        status.textContent = "Tap Record to practice this sentence.";
+
+        const mineAudio = document.createElement("audio");
+        mineAudio.id = `my-audio-${sentenceId}`;
+        mineAudio.preload = "metadata";
+
+        textWrap.appendChild(label);
+        textWrap.appendChild(lineText);
+        textWrap.appendChild(status);
+        textWrap.appendChild(mineAudio);
 
         item.appendChild(controls);
         item.appendChild(textWrap);
@@ -294,10 +324,22 @@
 
       const vocabTitle = document.createElement("h3");
       vocabTitle.className = "block-title";
-      vocabTitle.textContent = "Vocabulary";
+      vocabTitle.textContent = "Vocabulary support";
+
+      const vocabToggle = document.createElement("button");
+      vocabToggle.className = "text-toggle-btn vocab-toggle-btn";
+      vocabToggle.type = "button";
+      vocabToggle.textContent = "Show vocabulary";
 
       const vocabGrid = document.createElement("div");
-      vocabGrid.className = "vocab-grid";
+      vocabGrid.className = "vocab-grid hidden-text";
+
+      vocabToggle.addEventListener("click", () => {
+        const shown = vocabGrid.classList.contains("show");
+        vocabGrid.classList.toggle("show");
+        vocabToggle.textContent = shown ? "Show vocabulary" : "Hide vocabulary";
+      });
+
       scene.vocab.forEach((v) => {
         const vocabItem = document.createElement("div");
         vocabItem.className = "vocab-item";
@@ -307,6 +349,7 @@
 
       content.appendChild(lineList);
       content.appendChild(vocabTitle);
+      content.appendChild(vocabToggle);
       content.appendChild(vocabGrid);
 
       card.appendChild(header);
