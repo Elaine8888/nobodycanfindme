@@ -13,15 +13,7 @@ const siteData = {
                 id: 1,
                 title: "Gym",
                 audio: "gym.m4a",
-                timestamps: [
-                  [0, 3],
-                  [3, 7],
-                  [7, 11.5],
-                  [11.5, 16.5],
-                  [16.5, 21.5],
-                  [21.5, 26.5],
-                  [26.5, 32]
-                ],
+                timestamps: [[0,3],[3,7],[7,11.5],[11.5,16.5],[16.5,21.5],[21.5,26.5],[26.5,32]],
                 lines: [
                   "Cardio machines and bikes are over here.",
                   "The weight room provides dumbbells and benches.",
@@ -53,15 +45,7 @@ const siteData = {
                 id: 2,
                 title: "Wood Shop",
                 audio: "wood-shop.m4a",
-                timestamps: [
-                  [0, 2],
-                  [2, 6],
-                  [6, 10],
-                  [10, 15],
-                  [15, 20],
-                  [20, 25],
-                  [25, 30]
-                ],
+                timestamps: [[0,2],[2,6],[6,10],[10,15],[15,20],[20,25],[25,30]],
                 lines: [
                   "Welcome to the wood shop.",
                   "This tool box contains everything you should need.",
@@ -86,15 +70,7 @@ const siteData = {
                 id: 3,
                 title: "Library",
                 audio: "library.m4a",
-                timestamps: [
-                  [0, 3],
-                  [3, 7],
-                  [7, 11.5],
-                  [11.5, 16],
-                  [16, 21],
-                  [21, 27.5],
-                  [27.5, 32]
-                ],
+                timestamps: [[0,3],[3,7],[7,11.5],[11.5,16],[16,21],[21,27.5],[27.5,32]],
                 lines: [
                   "The computer lab has free Wi-Fi access.",
                   "The reading room is a quiet space for patrons.",
@@ -123,15 +99,7 @@ const siteData = {
                 id: 4,
                 title: "Campus Tour",
                 audio: "campus-tour.m4a",
-                timestamps: [
-                  [0, 2],
-                  [2, 5],
-                  [5, 8],
-                  [8, 12],
-                  [12, 16],
-                  [16, 21.5],
-                  [21.5, 26]
-                ],
+                timestamps: [[0,2],[2,5],[5,8],[8,12],[12,16],[16,21.5],[21.5,26]],
                 lines: [
                   "Welcome to our campus tour.",
                   "The enrollment office is straight ahead.",
@@ -157,15 +125,7 @@ const siteData = {
                 id: 5,
                 title: "Course System",
                 audio: "course-system.m4a",
-                timestamps: [
-                  [0, 3],
-                  [3, 7],
-                  [7, 12],
-                  [12, 17],
-                  [17, 22],
-                  [22, 27.5],
-                  [27.5, 32]
-                ],
+                timestamps: [[0,3],[3,7],[7,12],[12,17],[17,22],[22,27.5],[27.5,32]],
                 lines: [
                   "Enter your name and student ID number.",
                   "Browse the course catalog to choose your classes.",

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Speaking Practice</title>
-  <link rel="stylesheet" href="./styles.css?v=20260321ui" />
+  <link rel="stylesheet" href="./styles.css?v=20260321audio1" />
 </head>
 <body>
   <div class="page-shell">
@@ -13,61 +13,306 @@
     <header class="page-title">
       <h1>Speaking · Listen and Repeat</h1>
       <p class="page-subtitle">
-        Open a scene and preview the sentences. Audio controls stay for the next update.
+        Open a scene, tap <strong>Play</strong> to hear one sentence, then record your own repetition.
       </p>
     </header>
 
     <section class="card toolbar">
       <label>
         <span class="helper">Playback speed</span><br>
-        <select class="select">
-          <option>1.0×</option>
-          <option>0.75×</option>
-          <option>0.5×</option>
+        <select id="speedSelect" class="select">
+          <option value="1">1.0×</option>
+          <option value="0.75">0.75×</option>
+          <option value="0.5">0.5×</option>
         </select>
       </label>
       <div class="notice">
-        Interface first: this version focuses on layout cleanup. Audio behavior can be fixed next without changing the look.
+        Tap one sentence at a time. 0.5× is useful for shadowing practice.
       </div>
     </section>
 
-    <div class="set-header">
-      <h2>20260321 Set 1</h2>
-      <p class="helper">Tap a scene to open it.</p>
-    </div>
-
-    <section class="card scene-card">
-      <button class="scene-header" type="button" onclick="toggleScene(this)">
-        <span class="scene-name">Gym</span>
-        <span class="scene-arrow">▶</span>
-      </button>
-      <div class="scene-content">
-        <div class="line-list">
-          <div class="line-item"><div class="sentence-controls"><button class="play-btn">🔊 Play</button><button class="record-btn">⏺ Record</button><button class="mine-btn" disabled>▶ Play mine</button></div><div class="sentence-wrap"><div class="line-text">Cardio machines and bikes are over here.</div></div></div>
-          <div class="line-item"><div class="sentence-controls"><button class="play-btn">🔊 Play</button><button class="record-btn">⏺ Record</button><button class="mine-btn" disabled>▶ Play mine</button></div><div class="sentence-wrap"><div class="line-text">The weight room provides dumbbells and benches.</div></div></div>
-          <div class="line-item"><div class="sentence-controls"><button class="play-btn">🔊 Play</button><button class="record-btn">⏺ Record</button><button class="mine-btn" disabled>▶ Play mine</button></div><div class="sentence-wrap"><div class="line-text">Our yoga studio offers classes for all fitness levels.</div></div></div>
-        </div>
-        <h3 class="block-title">Vocabulary</h3>
-        <div class="vocab-grid">
-          <div class="vocab-item">cardio machines — 有氧健身器械</div>
-          <div class="vocab-item">weight room — 力量训练区</div>
-        </div>
-      </div>
-    </section>
+    <div id="speaking-root"></div>
+    <audio id="shared-audio" preload="auto"></audio>
   </div>
 
+  <script src="./site-data.js?v=20260321audio1"></script>
   <script>
-    function toggleScene(btn){
-      const content = btn.nextElementSibling;
-      const arrow = btn.querySelector('.scene-arrow');
-      const open = content.classList.contains('open');
-      document.querySelectorAll('.scene-content').forEach(el => el.classList.remove('open'));
-      document.querySelectorAll('.scene-arrow').forEach(el => el.textContent = '▶');
-      if(!open){
-        content.classList.add('open');
-        arrow.textContent = '▼';
+    const root = document.getElementById("speaking-root");
+    const sharedAudio = document.getElementById("shared-audio");
+
+    let stopTimer = null;
+    let currentSource = "";
+    let currentObjectUrls = {};
+    let mediaRecorder = null;
+    let currentStream = null;
+    let chunks = [];
+    let activeSentenceId = null;
+
+    function clearStopTimer() {
+      if (stopTimer) {
+        clearInterval(stopTimer);
+        stopTimer = null;
       }
     }
+
+    function stopSharedAudio() {
+      clearStopTimer();
+      sharedAudio.pause();
+    }
+
+    function waitForMetadata(audio) {
+      return new Promise((resolve, reject) => {
+        if (audio.readyState >= 1 && !Number.isNaN(audio.duration)) {
+          resolve();
+          return;
+        }
+
+        const onLoaded = () => {
+          cleanup();
+          resolve();
+        };
+
+        const onError = () => {
+          cleanup();
+          reject(new Error("Audio metadata failed to load."));
+        };
+
+        function cleanup() {
+          audio.removeEventListener("loadedmetadata", onLoaded);
+          audio.removeEventListener("error", onError);
+        }
+
+        audio.addEventListener("loadedmetadata", onLoaded, { once: true });
+        audio.addEventListener("error", onError, { once: true });
+      });
+    }
+
+    async function playSegment(scene, index) {
+      const speed = parseFloat(document.getElementById("speedSelect").value || "1");
+      const sourcePath = `./audio/speaking/${scene.audio}`;
+      const [start, end] = scene.timestamps[index];
+
+      try {
+        stopSharedAudio();
+
+        if (currentSource !== sourcePath) {
+          sharedAudio.src = sourcePath;
+          sharedAudio.load();
+          currentSource = sourcePath;
+        }
+
+        await waitForMetadata(sharedAudio);
+
+        sharedAudio.playbackRate = speed;
+        sharedAudio.currentTime = start;
+
+        await sharedAudio.play();
+
+        clearStopTimer();
+        stopTimer = setInterval(() => {
+          if (sharedAudio.currentTime >= end) {
+            stopSharedAudio();
+          }
+        }, 40);
+      } catch (error) {
+        console.error(error);
+        alert("Audio could not be played. Please check that the .m4a file exists in /audio/speaking/ and the filename matches site-data.js exactly.");
+      }
+    }
+
+    function cleanupRecorder() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+      mediaRecorder = null;
+      chunks = [];
+      activeSentenceId = null;
+    }
+
+    async function toggleRecord(sentenceId) {
+      const recordBtn = document.getElementById(`record-btn-${sentenceId}`);
+      const mineBtn = document.getElementById(`play-mine-btn-${sentenceId}`);
+      const status = document.getElementById(`record-status-${sentenceId}`);
+      const mineAudio = document.getElementById(`my-audio-${sentenceId}`);
+
+      if (mediaRecorder && mediaRecorder.state === "recording" && activeSentenceId === sentenceId) {
+        mediaRecorder.stop();
+        return;
+      }
+
+      if (mediaRecorder && mediaRecorder.state === "recording" && activeSentenceId !== sentenceId) {
+        mediaRecorder.stop();
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        currentStream = stream;
+        activeSentenceId = sentenceId;
+        chunks = [];
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            chunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type: mediaRecorder.mimeType || "audio/webm" });
+          const objectUrl = URL.createObjectURL(blob);
+
+          if (currentObjectUrls[sentenceId]) {
+            URL.revokeObjectURL(currentObjectUrls[sentenceId]);
+          }
+          currentObjectUrls[sentenceId] = objectUrl;
+
+          mineAudio.src = objectUrl;
+          mineBtn.disabled = false;
+          recordBtn.textContent = "⏺ Record";
+          status.textContent = "Recorded. Tap Play mine to listen.";
+          cleanupRecorder();
+        };
+
+        mediaRecorder.start();
+        recordBtn.textContent = "⏹ Stop";
+        status.textContent = "Recording...";
+      } catch (error) {
+        console.error(error);
+        status.textContent = "Microphone access was blocked or is not available in this browser.";
+      }
+    }
+
+    function playMine(sentenceId) {
+      const mineAudio = document.getElementById(`my-audio-${sentenceId}`);
+      if (mineAudio && mineAudio.src) {
+        mineAudio.currentTime = 0;
+        mineAudio.play().catch(error => console.error(error));
+      }
+    }
+
+    function toggleScene(button) {
+      const content = button.nextElementSibling;
+      const arrow = button.querySelector(".scene-arrow");
+      const isOpen = content.classList.contains("open");
+
+      document.querySelectorAll(".scene-content").forEach(el => el.classList.remove("open"));
+      document.querySelectorAll(".scene-arrow").forEach(el => el.textContent = "▶");
+
+      if (!isOpen) {
+        content.classList.add("open");
+        arrow.textContent = "▼";
+      }
+    }
+
+    const speakingType = siteData.speaking.types.find(t => t.id === "lr");
+    const set = speakingType.sets[0];
+
+    const setHeader = document.createElement("div");
+    setHeader.className = "set-header";
+    setHeader.innerHTML = `
+      <h2>${set.title}</h2>
+      <p class="helper">Tap a scene to open it. Each sentence has listening and recording controls.</p>
+    `;
+    root.appendChild(setHeader);
+
+    set.scenes.forEach((scene) => {
+      const card = document.createElement("section");
+      card.className = "card scene-card";
+
+      const header = document.createElement("button");
+      header.className = "scene-header";
+      header.type = "button";
+      header.innerHTML = `
+        <span class="scene-name">${scene.title}</span>
+        <span class="scene-arrow">▶</span>
+      `;
+      header.addEventListener("click", () => toggleScene(header));
+
+      const content = document.createElement("div");
+      content.className = "scene-content";
+
+      const lineList = document.createElement("div");
+      lineList.className = "line-list";
+
+      scene.lines.forEach((line, i) => {
+        const sentenceId = `${scene.title.toLowerCase().replace(/\s+/g, "-")}-${i + 1}`;
+
+        const item = document.createElement("div");
+        item.className = "line-item";
+
+        const controls = document.createElement("div");
+        controls.className = "sentence-controls";
+
+        const playBtn = document.createElement("button");
+        playBtn.className = "play-btn";
+        playBtn.type = "button";
+        playBtn.textContent = "🔊 Play";
+        playBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          playSegment(scene, i);
+        });
+
+        const recordBtn = document.createElement("button");
+        recordBtn.className = "record-btn";
+        recordBtn.type = "button";
+        recordBtn.id = `record-btn-${sentenceId}`;
+        recordBtn.textContent = "⏺ Record";
+        recordBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          await toggleRecord(sentenceId);
+        });
+
+        const mineBtn = document.createElement("button");
+        mineBtn.className = "mine-btn";
+        mineBtn.type = "button";
+        mineBtn.id = `play-mine-btn-${sentenceId}`;
+        mineBtn.textContent = "▶ Play mine";
+        mineBtn.disabled = true;
+        mineBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          playMine(sentenceId);
+        });
+
+        controls.appendChild(playBtn);
+        controls.appendChild(recordBtn);
+        controls.appendChild(mineBtn);
+
+        const textWrap = document.createElement("div");
+        textWrap.className = "sentence-wrap";
+        textWrap.innerHTML = `
+          <div class="line-text">${line}</div>
+          <div class="record-status" id="record-status-${sentenceId}">Tap Record to practice this sentence.</div>
+          <audio id="my-audio-${sentenceId}" preload="metadata"></audio>
+        `;
+
+        item.appendChild(controls);
+        item.appendChild(textWrap);
+        lineList.appendChild(item);
+      });
+
+      const vocabTitle = document.createElement("h3");
+      vocabTitle.className = "block-title";
+      vocabTitle.textContent = "Vocabulary";
+
+      const vocabGrid = document.createElement("div");
+      vocabGrid.className = "vocab-grid";
+      scene.vocab.forEach((v) => {
+        const vocabItem = document.createElement("div");
+        vocabItem.className = "vocab-item";
+        vocabItem.textContent = v;
+        vocabGrid.appendChild(vocabItem);
+      });
+
+      content.appendChild(lineList);
+      content.appendChild(vocabTitle);
+      content.appendChild(vocabGrid);
+
+      card.appendChild(header);
+      card.appendChild(content);
+      root.appendChild(card);
+    });
   </script>
 </body>
 </html>
