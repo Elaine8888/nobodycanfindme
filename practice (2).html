@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complete the Words</title>
+  <style>
+    :root { --primary:#4a90e2; --success:#28a745; --error:#dc3545; --bg:#f4f7f9; }
+    * { box-sizing:border-box; }
+    body { font-family:'Segoe UI', system-ui, sans-serif; background:var(--bg); margin:0; padding:20px; color:#333; }
+    .container { max-width:900px; margin:0 auto; background:white; padding:30px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.08); position:relative; }
+    #timer { position:absolute; top:20px; right:30px; font-weight:bold; color:var(--primary); background:#eef5ff; padding:5px 12px; border-radius:15px; font-variant-numeric:tabular-nums; border:1px solid #d0e3ff; }
+    h1 { margin-top:0; color:var(--primary); padding-right:120px; }
+    .sub { color:#6b7280; margin-bottom:10px; }
+    .mini-title { color:#4a90e2; font-weight:700; margin-bottom:14px; }
+    .passage { font-size:1.12rem; line-height:2.7; text-align:justify; margin:25px 0; }
+    .word-group { display:inline-flex; align-items:baseline; margin:0 2px; }
+    .char-input {
+      width:16px;
+      height:22px;
+      border:none;
+      border-bottom:2px solid #bbb;
+      margin:0 1px;
+      text-align:center;
+      font-size:1.1rem;
+      outline:none;
+      color:#4a90e2;
+      background:transparent;
+      padding:0;
+      font-weight:500;
+      border-radius:0;
+    }
+    .char-input.correct { border-bottom-color:var(--success); color:var(--success); }
+    .char-input.wrong { border-bottom-color:var(--error); color:var(--error); }
+    .answer-area { margin-top:30px; padding:20px; background:#f8f9fa; border-radius:8px; border-left:5px solid var(--primary); }
+    .answer-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:10px; margin-top:10px; }
+    .ans-item { font-size:1rem; color:#555; border-bottom:1px dashed #ddd; padding-bottom:5px; }
+    .nav-tools { margin-top:30px; padding-top:20px; border-top:1px solid #eee; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    button, .btn-back { border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold; transition:opacity 0.2s; text-decoration:none; display:inline-block; }
+    .btn-main { background:var(--primary); color:white; }
+    .btn-next { background:var(--success); color:white; }
+    .btn-back, .btn-retry { background:#6c757d; color:white; }
+    .hidden { display:none; }
+
+    @media (max-width: 640px) {
+      body { padding:14px; }
+      .container { padding:20px 16px; }
+      #timer { position:static; display:inline-block; margin-bottom:12px; }
+      h1 { padding-right:0; font-size:1.5rem; }
+      .passage { font-size:1.05rem; line-height:2.45; }
+      .char-input {
+        width:20px;
+        height:28px;
+        font-size:1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="timer">⏱ 00:00</div>
+  <a class="btn-back" href="index.html">← 返回目录</a>
+  <h1 id="quiz-title"></h1>
+  <div id="quiz-subtitle" class="mini-title"></div>
+  <div id="quiz-date" class="sub"></div>
+  <div class="passage" id="quiz-content"></div>
+
+  <div class="nav-tools">
+    <div id="score-result" style="font-size:1.4rem; font-weight:bold; color:var(--primary);"></div>
+    <div>
+      <button id="retry-btn" class="btn-retry">再做一次</button>
+      <button id="submit-btn" class="btn-main">提交核对</button>
+      <button id="next-btn" class="btn-next hidden">下一题 →</button>
+    </div>
+  </div>
+
+  <div id="answer-review" class="answer-area hidden">
+    <strong>正确答案回顾：</strong>
+    <div class="answer-grid" id="answer-grid"></div>
+  </div>
+</div>
+
+<script src="data/questions.js"></script>
+<script>
+  const STORAGE_KEY = 'ctw_scores_v1';
+  const questionList = window.questions || [];
+  const scores = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  const params = new URLSearchParams(location.search);
+  const currentId = Number(params.get('id') || 1);
+  const currentIdx = questionList.findIndex(q => q.id === currentId);
+  const d = questionList[currentIdx];
+
+  let timer = null;
+  let startTime = Date.now();
+
+  const titleEl = document.getElementById('quiz-title');
+  const subtitleEl = document.getElementById('quiz-subtitle');
+  const dateEl = document.getElementById('quiz-date');
+  const contentEl = document.getElementById('quiz-content');
+  const scoreEl = document.getElementById('score-result');
+  const reviewEl = document.getElementById('answer-review');
+  const gridEl = document.getElementById('answer-grid');
+  const submitBtn = document.getElementById('submit-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const retryBtn = document.getElementById('retry-btn');
+
+  if (!d) {
+    titleEl.textContent = '题目未找到';
+    contentEl.textContent = '请返回首页重新选择题目。';
+    submitBtn.disabled = true;
+    nextBtn.classList.add('hidden');
+    retryBtn.disabled = true;
+  } else {
+    titleEl.textContent = `练习 ${d.id}: ${d.title || ''}`;
+    subtitleEl.textContent = d.subtitle || '';
+    dateEl.textContent = d.date || '';
+    let html = d.template;
+    (d.items || []).forEach((item, i) => {
+      let inputs = `<span class="word-group"><span style="font-weight:bold; color:#2c3e50;">${item.p}</span>`;
+      for (let c = 0; c < item.g; c++) {
+        inputs += `<input
+          type="text"
+          maxlength="1"
+          class="char-input"
+          data-ans-idx="${i}"
+          autocapitalize="off"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="text"
+          enterkeyhint="next"
+        >`;
+      }
+      inputs += `</span>`;
+      html = html.replace(`${item.p}{${i}}`, inputs);
+    });
+    contentEl.innerHTML = html;
+    setupInputs();
+    startTime = Date.now();
+    timer = setInterval(updateTimer, 1000);
+    if (currentIdx >= 0 && currentIdx < questionList.length - 1) {
+      nextBtn.onclick = () => {
+        const nextId = questionList[currentIdx + 1].id;
+        location.href = `practice.html?id=${nextId}`;
+      };
+    } else {
+      nextBtn.classList.add('hidden');
+    }
+  }
+
+  function setupInputs() {
+    const ins = Array.from(document.querySelectorAll('.char-input'));
+    ins.forEach((el, i) => {
+      el.addEventListener('input', () => {
+        el.value = (el.value || '').toLowerCase().replace(/[^a-z]/g, '').slice(0, 1);
+        if (el.value && i < ins.length - 1) ins[i + 1].focus();
+      });
+
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !el.value && i > 0) ins[i - 1].focus();
+      });
+
+      el.addEventListener('focus', () => {
+        requestAnimationFrame(() => {
+          el.setSelectionRange(0, el.value.length);
+        });
+      });
+    });
+  }
+
+  function updateTimer() {
+    const s = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById('timer').innerText = `⏱ ${String(Math.floor(s / 60)).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
+  }
+
+  function checkScore() {
+    if (!d) return;
+    clearInterval(timer);
+    let correct = 0;
+    gridEl.innerHTML = '';
+    (d.items || []).forEach((item, i) => {
+      const inputs = document.querySelectorAll(`.char-input[data-ans-idx="${i}"]`);
+      const user = Array.from(inputs).map(inp => inp.value).join('').toLowerCase();
+      const ok = user === String(item.a || '').toLowerCase();
+      if (ok) correct++;
+      inputs.forEach(el => {
+        el.classList.add(ok ? 'correct' : 'wrong');
+        el.disabled = true;
+      });
+      gridEl.innerHTML += `<div class="ans-item">${i + 1}. <strong>${item.p}${item.a}</strong></div>`;
+    });
+    scoreEl.innerText = `得分: ${correct} / ${(d.items || []).length}`;
+    reviewEl.classList.remove('hidden');
+    submitBtn.classList.add('hidden');
+    if (currentIdx >= 0 && currentIdx < questionList.length - 1) nextBtn.classList.remove('hidden');
+    if (!scores[d.id] || correct > scores[d.id]) {
+      scores[d.id] = correct;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+    }
+  }
+
+  function retry() {
+    const inputs = document.querySelectorAll('.char-input');
+    inputs.forEach(inp => {
+      inp.value = '';
+      inp.disabled = false;
+      inp.classList.remove('correct', 'wrong');
+    });
+    reviewEl.classList.add('hidden');
+    scoreEl.innerText = '';
+    submitBtn.classList.remove('hidden');
+    nextBtn.classList.add('hidden');
+    clearInterval(timer);
+    startTime = Date.now();
+    document.getElementById('timer').innerText = '⏱ 00:00';
+    timer = setInterval(updateTimer, 1000);
+    if (inputs.length) inputs[0].focus();
+  }
+
+  submitBtn.addEventListener('click', checkScore);
+  retryBtn.addEventListener('click', retry);
+</script>
+</body>
+</html>
