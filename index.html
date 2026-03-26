@@ -20,17 +20,26 @@
     </header>
 
     <main class="grid">
-      <a class="card module-card" href="complete-the-words.html">
+
+      <!-- ✅ Reading（现在可选两个入口） -->
+      <section class="card module-card">
         <div class="icon">📖</div>
         <h2>Reading</h2>
         <p class="desc">Build reading speed, structure awareness, and question skills.</p>
-        <div class="tag-list">
-          <span class="tag active">Complete the Words</span>
-          <span class="tag">Read in Daily Life</span>
-          <span class="tag">Read an Academic Passage</span>
-        </div>
-      </a>
 
+        <div class="tag-list">
+          <!-- 保留原有 -->
+          <a href="complete-the-words.html" class="tag active">Complete the Words</a>
+
+          <!-- 新增 Academic -->
+          <a href="academic.html" class="tag active">Read an Academic Passage</a>
+
+          <!-- 未来扩展 -->
+          <span class="tag">Read in Daily Life</span>
+        </div>
+      </section>
+
+      <!-- Listening（暂未接） -->
       <section class="card module-card">
         <div class="icon">🎧</div>
         <h2>Listening</h2>
@@ -43,6 +52,7 @@
         </div>
       </section>
 
+      <!-- Speaking（保持原样） -->
       <a class="card module-card" href="speaking.html">
         <div class="icon">🗣️</div>
         <h2>Speaking</h2>
@@ -53,6 +63,7 @@
         </div>
       </a>
 
+      <!-- Writing -->
       <section class="card module-card">
         <div class="icon">✍️</div>
         <h2>Writing</h2>
@@ -63,6 +74,7 @@
           <a href="writing.html" class="tag active">Academic Discussion</a>
         </div>
       </section>
+
     </main>
   </div>
 </body>
