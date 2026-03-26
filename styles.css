@@ -271,15 +271,18 @@ a{text-decoration:none;color:inherit}
     flex-wrap:wrap;
   }
 
-  /* ===== Navbar（顶部导航） ===== */
+/* ===== Navbar（顶部导航） ===== */
 
 .navbar{
   position:fixed;
   top:0;
+  left:0;
   width:100%;
-  background:var(--panel);
-  border-bottom:1px solid var(--line);
   z-index:1000;
+  backdrop-filter:saturate(180%) blur(10px);
+  background:rgba(255,255,255,.82);
+  border-bottom:1px solid rgba(226,234,245,.9);
+  box-shadow:0 6px 20px rgba(39,73,124,.06);
 }
 
 .nav-inner{
@@ -289,28 +292,78 @@ a{text-decoration:none;color:inherit}
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:20px;
 }
 
 .logo{
+  display:inline-flex;
+  align-items:center;
   font-weight:800;
-  font-size:18px;
+  font-size:28px;
+  letter-spacing:-0.02em;
   color:var(--text);
+  white-space:nowrap;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 .nav-links a{
-  margin-left:20px;
-  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:15px;
   color:var(--muted);
   transition:.2s;
 }
 
 .nav-links a:hover{
-  color:var(--primary);
+  background:var(--primary-soft);
+  color:var(--primary-dark);
 }
 
-/* ⭐ 给页面腾空间（防遮挡） */
+.nav-links a.active{
+  background:var(--primary-soft);
+  color:var(--primary-dark);
+}
+
 .page-shell{
-  padding-top:80px;
+  max-width:1180px;
+  margin:0 auto;
+  padding:96px 20px 60px;
+}
+
+@media (max-width:700px){
+  .nav-inner{
+    flex-direction:column;
+    align-items:flex-start;
+    padding:12px 16px;
+  }
+
+  .logo{
+    font-size:24px;
+  }
+
+  .nav-links{
+    width:100%;
+    gap:8px;
+  }
+
+  .nav-links a{
+    padding:8px 12px;
+    font-size:14px;
+  }
+
+  .page-shell{
+    padding-top:120px;
+  }
 }
   .vocab-grid{
     grid-template-columns:1fr;
