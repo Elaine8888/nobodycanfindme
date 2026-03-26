@@ -304,6 +304,25 @@
     }
 
 
+
+    .insert-sentence-box {
+      margin: 18px 0 20px;
+      padding: 16px 18px;
+      border: 1.5px solid #dbe2ea;
+      border-radius: 14px;
+      background: #fff;
+      color: #334155;
+      line-height: 1.7;
+      font-size: 1.04rem;
+    }
+
+    .insert-sentence-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #0f172a;
+      font-size: 0.98rem;
+    }
+
     @media (max-width: 900px) {
       .layout {
         flex-direction: column;
@@ -828,6 +847,12 @@
       questionTextEl.textContent = q.question;
 
       if (isInsertionQuestion(q)) {
+        optionsEl.innerHTML = `
+          <div class="insert-sentence-box">
+            <strong>Sentence to insert</strong>
+            ${q.insertSentence}
+          </div>
+        `;
         renderInsertionChoices(userAnswers[currentIndex]);
         hintText.textContent = "Click one of the four squares in the passage to place the sentence.";
       } else {
