@@ -6,135 +6,460 @@
   <title>Read an Academic Passage</title>
   <link rel="stylesheet" href="./styles.css" />
   <style>
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .topbar {
       display: flex;
-      gap: 40px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .passage {
-      flex: 1;
-      line-height: 1.7;
+    .back-link {
+      display: inline-block;
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
     }
 
-    .questions {
-      flex: 1;
+    .back-link:hover {
+      text-decoration: underline;
     }
 
-    .question {
-      margin-bottom: 20px;
+    .title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      text-align: center;
+      margin: 10px 0 26px;
+    }
+
+    .layout {
+      display: flex;
+      gap: 36px;
+      align-items: flex-start;
+    }
+
+    .passage-card,
+    .question-card,
+    .result-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      padding: 28px;
+    }
+
+    .passage-card {
+      flex: 1.05;
+      min-width: 0;
+    }
+
+    .question-card,
+    .result-card {
+      flex: 0.95;
+      min-width: 320px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .passage-text {
+      font-size: 1.06rem;
+      line-height: 1.8;
+      white-space: pre-line;
     }
 
     .highlight-word {
-      background: #14b8a6;
-      color: white;
-      padding: 2px 4px;
+      background: #0f766e;
+      color: #fff;
+      padding: 2px 6px;
       border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .progress {
+      font-size: 0.96rem;
+      color: #475569;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      line-height: 1.5;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .options {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .option {
+      display: block;
+      border: 1.5px solid #dbe2ea;
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    .option:hover {
+      border-color: #93c5fd;
+      background: #f8fbff;
+    }
+
+    .option input {
+      margin-right: 10px;
+      transform: translateY(1px);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     button {
-      margin-top: 20px;
-      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .primary-btn {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .primary-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-btn {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .secondary-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .muted {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    .score {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .accuracy {
+      font-size: 1.1rem;
+      color: #334155;
+      margin-bottom: 22px;
+      font-weight: 600;
+    }
+
+    .review-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .review-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px;
+      background: #fcfdff;
+    }
+
+    .review-item.correct {
+      border-left: 6px solid #16a34a;
+    }
+
+    .review-item.wrong {
+      border-left: 6px solid #dc2626;
+    }
+
+    .review-q {
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .review-line {
+      margin: 4px 0;
+      line-height: 1.5;
+    }
+
+    .review-line strong {
+      color: #0f172a;
+    }
+
+    .explanation {
+      margin-top: 10px;
+      line-height: 1.7;
+      color: #334155;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .question-card,
+      .result-card {
+        position: static;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .title {
+        font-size: 1.8rem;
+      }
+
+      .question-text {
+        font-size: 1.15rem;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="page">
+    <div class="topbar">
+      <a class="back-link" href="index.html">← Back to Home</a>
+    </div>
 
-<div class="container">
-  <div class="passage" id="passage"></div>
-  <div class="questions" id="questions"></div>
-</div>
+    <div class="title">The Dynamics of Hollywood’s Golden Age</div>
 
-<button onclick="check()">Submit</button>
+    <div class="layout">
+      <section class="passage-card">
+        <div class="passage-text" id="passage"></div>
+      </section>
 
-<script>
-const data = {
-  passage: `Hollywood's Golden Age, from the 1920s to the 1960s, was a transformative period in cinema history. Under the studio system, major companies like RKO controlled film production, creating an efficient assembly-line process that produced stars such as Humphrey Bogart and Katharine Hepburn. While this system ensured a steady output of films, it often limited creative freedom for directors and actors tied to restrictive contracts. Yet this very constraint led to unexpected innovation as filmmakers sought new ways to tell <span class="highlight-word">compelling</span> stories within set boundaries.
+      <section class="question-card" id="questionCard">
+        <div class="progress" id="progress"></div>
+        <div class="question-text" id="questionText"></div>
+        <div class="options" id="options"></div>
+        <div class="actions">
+          <button class="primary-btn" id="nextBtn">Next</button>
+          <button class="secondary-btn" id="restartBtn">Restart</button>
+        </div>
+        <div class="muted" id="hintText">Choose one answer before moving on.</div>
+      </section>
+
+      <section class="result-card hidden" id="resultCard">
+        <div class="score" id="scoreText"></div>
+        <div class="accuracy" id="accuracyText"></div>
+        <div class="actions" style="margin-bottom: 16px;">
+          <button class="primary-btn" id="retryBtn">Try Again</button>
+        </div>
+        <div class="review-list" id="reviewList"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const quizData = {
+      passage: `Hollywood's Golden Age, from the 1920s to the 1960s, was a transformative period in cinema history. Under the studio system, major companies like RKO controlled film production, creating an efficient assembly-line process that produced stars such as Humphrey Bogart and Katharine Hepburn. While this system ensured a steady output of films, it often limited creative freedom for directors and actors tied to restrictive contracts. Yet this very constraint led to unexpected innovation as filmmakers sought new ways to tell <span class="highlight-word">compelling</span> stories within set boundaries.
 
 A pivotal change during this era was the introduction of sound, forever altering cinematic storytelling. Silent film stars had to adapt or risk obsolescence, while new genres like musicals capitalized on sound technology's possibilities. This shift pushed directors to experiment with narrative structures, often blurring the lines between genres to captivate audiences.
 
 The decline of the studio system began with a 1948 Supreme Court ruling that dismantled studios' monopolies over theaters. This ruling opened the door for independent filmmakers, whose diverse and unconventional stories began gaining traction in theaters. However, the legacy of the studio system's efficiency and star-making machinery still influences Hollywood's operations today.`,
 
-  questions: [
-    {
-      q: "Which aspect of the studio system encouraged filmmakers to innovate?",
-      options: [
-        "The demand for more silent films",
-        "The freedom to create experimental films",
-        "The inefficiency of film production",
-        "The boundaries imposed by restrictive contracts"
-      ],
-      answer: 3
-    },
-    {
-      q: "The word 'compelling' is closest in meaning to",
-      options: ["modern","astonishing","fascinating","complex"],
-      answer: 2
-    },
-    {
-      q: "Why does the author mention the introduction of sound?",
-      options: [
-        "To highlight a development that led to new, creative narrative techniques",
-        "To emphasize silent films",
-        "To discuss renewed careers",
-        "To show decline start"
-      ],
-      answer: 0
-    },
-    {
-      q: "What inference about the 1948 ruling?",
-      options: [
-        "Increase profits",
-        "Help independent films",
-        "More musicals",
-        "No effect"
-      ],
-      answer: 1
-    },
-    {
-      q: "What about today’s Hollywood?",
-      options: [
-        "No influence remains",
-        "Only storytelling influence",
-        "Independents replaced studios",
-        "Assembly-line still influences"
-      ],
-      answer: 3
+      questions: [
+        {
+          question: "1. Which aspect of the studio system encouraged filmmakers to innovate?",
+          options: [
+            "The demand for more silent films",
+            "The freedom to create experimental films",
+            "The inefficiency of film production",
+            "The boundaries imposed by restrictive contracts"
+          ],
+          answer: 3,
+          explanation: "定位第一段后半部分：the system “limited creative freedom” and actors/directors were tied to “restrictive contracts.” 紧接着作者说，正是这种 constraint led to unexpected innovation。也就是说，促使创新的不是自由，而是限制本身。所以答案是 D。A、B、C 都和原文逻辑不符。"
+        },
+        {
+          question: "2. The word “compelling” in the passage is closest in meaning to",
+          options: [
+            "modern",
+            "astonishing",
+            "fascinating",
+            "complex"
+          ],
+          answer: 2,
+          explanation: "在文中，filmmakers sought new ways to tell compelling stories，意思是“讲出吸引人的、引人入胜的故事”。这里 compelling 最接近 fascinating。modern 是“现代的”，astonishing 更偏“令人震惊的”，complex 是“复杂的”，都不如 fascinating 贴切。"
+        },
+        {
+          question: "3. Why does the author mention the introduction of sound in films?",
+          options: [
+            "To highlight a development that led to new, creative narrative techniques",
+            "To emphasize the former popularity of silent films",
+            "To discuss how sound renewed the careers of silent film stars",
+            "To identify the event that started the decline of the studio system"
+          ],
+          answer: 0,
+          explanation: "第二段先说 sound was a pivotal change，再说 this shift pushed directors to experiment with narrative structures。说明作者提到声音进入电影，是为了突出一种技术发展如何推动了新的叙事方式和创作尝试，所以选 A。B 不是重点，C 与原文相反，因为 silent film stars had to adapt or risk obsolescence，D 则对应的是第三段的 Supreme Court ruling。"
+        },
+        {
+          question: "4. What inference can be made about the 1948 Supreme Court ruling?",
+          options: [
+            "It led to a temporary increase in studio profits.",
+            "It allowed independent films to be seen and become popular.",
+            "It caused studios to develop more large-scale musical productions.",
+            "It had no effect on Hollywood's operations."
+          ],
+          answer: 1,
+          explanation: "原文说这项 ruling opened the door for independent filmmakers，且他们的 stories began gaining traction in theaters。由此可推断，这项裁决让独立电影有机会进入影院并获得关注，所以选 B。A、C 原文都没说，D 更明显错误，因为这项裁决带来了重要变化。"
+        },
+        {
+          question: "5. What does the passage imply about the Hollywood film industry today?",
+          options: [
+            "Modern studios have completely abandoned all practices from the Golden Age period.",
+            "Contemporary films commonly use the storytelling techniques developed during the 1920s–1960s.",
+            "Independent filmmakers have entirely replaced the studio system’s influence on cinema.",
+            "The assembly-line process of the studio system still impacts current Hollywood operations."
+          ],
+          answer: 3,
+          explanation: "最后一句非常关键：the legacy of the studio system's efficiency and star-making machinery still influences Hollywood's operations today。说明黄金时代工作方式的某些特征，到今天仍然在影响好莱坞运作，因此选 D。A 和 C 都过于绝对，B 只抓住 storytelling，范围太窄，没有 D 概括得完整。"
+        }
+      ]
+    };
+
+    const passageEl = document.getElementById("passage");
+    const progressEl = document.getElementById("progress");
+    const questionTextEl = document.getElementById("questionText");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const retryBtn = document.getElementById("retryBtn");
+    const questionCard = document.getElementById("questionCard");
+    const resultCard = document.getElementById("resultCard");
+    const scoreText = document.getElementById("scoreText");
+    const accuracyText = document.getElementById("accuracyText");
+    const reviewList = document.getElementById("reviewList");
+
+    let currentIndex = 0;
+    let userAnswers = new Array(quizData.questions.length).fill(null);
+
+    passageEl.innerHTML = quizData.passage;
+
+    function renderQuestion() {
+      const q = quizData.questions[currentIndex];
+      progressEl.textContent = `Question ${currentIndex + 1} of ${quizData.questions.length}`;
+      questionTextEl.textContent = q.question;
+
+      optionsEl.innerHTML = "";
+      q.options.forEach((option, idx) => {
+        const optionId = `q${currentIndex}_opt${idx}`;
+        const checked = userAnswers[currentIndex] === idx ? "checked" : "";
+        optionsEl.innerHTML += `
+          <label class="option" for="${optionId}">
+            <input type="radio" id="${optionId}" name="question" value="${idx}" ${checked}>
+            ${option}
+          </label>
+        `;
+      });
+
+      nextBtn.textContent = currentIndex === quizData.questions.length - 1 ? "Finish" : "Next";
     }
-  ]
-};
 
-document.getElementById("passage").innerHTML = data.passage;
-
-const qDiv = document.getElementById("questions");
-
-data.questions.forEach((q, i) => {
-  let html = `<div class="question"><p>${i+1}. ${q.q}</p>`;
-  q.options.forEach((opt, j) => {
-    html += `
-      <label>
-        <input type="radio" name="q${i}" value="${j}">
-        ${opt}
-      </label><br>
-    `;
-  });
-  html += `</div>`;
-  qDiv.innerHTML += html;
-});
-
-function check(){
-  let score = 0;
-  data.questions.forEach((q,i)=>{
-    const selected = document.querySelector(`input[name=q${i}]:checked`);
-    if(selected && Number(selected.value) === q.answer){
-      score++;
+    function getSelectedAnswer() {
+      const selected = document.querySelector('input[name="question"]:checked');
+      return selected ? Number(selected.value) : null;
     }
-  });
-  alert("Score: " + score + "/" + data.questions.length);
-}
-</script>
 
+    function showResults() {
+      let correctCount = 0;
+      reviewList.innerHTML = "";
+
+      quizData.questions.forEach((q, idx) => {
+        const isCorrect = userAnswers[idx] === q.answer;
+        if (isCorrect) correctCount++;
+
+        const userAnswerText =
+          userAnswers[idx] !== null ? q.options[userAnswers[idx]] : "No answer";
+        const correctAnswerText = q.options[q.answer];
+
+        const reviewItem = document.createElement("div");
+        reviewItem.className = `review-item ${isCorrect ? "correct" : "wrong"}`;
+
+        reviewItem.innerHTML = `
+          <div class="review-q">${q.question}</div>
+          <div class="review-line"><strong>Your answer:</strong> ${userAnswerText}</div>
+          <div class="review-line"><strong>Correct answer:</strong> ${correctAnswerText}</div>
+          <div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>
+        `;
+
+        reviewList.appendChild(reviewItem);
+      });
+
+      const total = quizData.questions.length;
+      const accuracy = Math.round((correctCount / total) * 100);
+
+      scoreText.textContent = `Score: ${correctCount} / ${total}`;
+      accuracyText.textContent = `Accuracy: ${accuracy}%`;
+
+      questionCard.classList.add("hidden");
+      resultCard.classList.remove("hidden");
+    }
+
+    function restartQuiz() {
+      currentIndex = 0;
+      userAnswers = new Array(quizData.questions.length).fill(null);
+      resultCard.classList.add("hidden");
+      questionCard.classList.remove("hidden");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      const selected = getSelectedAnswer();
+      if (selected === null) {
+        alert("Please choose an answer before continuing.");
+        return;
+      }
+
+      userAnswers[currentIndex] = selected;
+
+      if (currentIndex < quizData.questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    restartBtn.addEventListener("click", restartQuiz);
+    retryBtn.addEventListener("click", restartQuiz);
+
+    renderQuestion();
+  </script>
 </body>
 </html>
