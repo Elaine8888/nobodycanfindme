@@ -1,69 +1,69 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TOEFL Read an Academic Passage</title>
-  <style>
-    :root { --primary:#4a90e2; --success:#28a745; --muted:#6b7280; --bg:#f4f7f9; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:'Segoe UI', system-ui, sans-serif; background:var(--bg); color:#333; }
-    .wrap { max-width:1200px; margin:0 auto; padding:28px 20px 40px; }
-    .hero { background:#fff; border:1px solid #dbe8fb; border-radius:28px; padding:34px 34px 28px; margin-bottom:24px; }
-    .hero h1 { margin:0 0 10px; color:var(--primary); font-size:2.2rem; }
-    .hero p { margin:0; color:#667085; font-size:1.05rem; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
-    .card { background:#fff; border-radius:18px; padding:18px; text-decoration:none; color:inherit; border:1px solid #e8eef7; box-shadow:0 4px 16px rgba(24,39,75,.05); transition:.15s ease; }
-    .card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(24,39,75,.08); }
-    .meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:#6b7280; font-size:.9rem; gap:10px; }
-    .badge { display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.82rem; }
-    .badge-none { background:#eef2f7; color:#677489; }
-    .badge-done { background:#eaf7ee; color:#1c7c3c; }
-    .card h3 { margin:0 0 8px; font-size:1.06rem; line-height:1.35; color:#222; }
-    .subtitle { color:#4a90e2; font-size:.9rem; margin:0 0 6px; min-height:1.15em; font-weight:600; }
-    .date { color:#8b94a7; font-size:.88rem; min-height:1.1em; }
-    .tip { margin-top:18px; color:#6b7280; font-size:.95rem; }
-  </style>
+  <title>Hang in There</title>
+  <link rel="stylesheet" href="./styles.css?v=20260321homefix1" />
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <h1>TOEFL Read an Academic Passage</h1>
-      <p>按题号进入练习。完成作答后可查看正确答案、得分与最高分记录。</p>
-    </div>
-    <div id="question-grid" class="grid"></div>
-    <div class="tip">最高分记录保存在当前浏览器的本地存储中。</div>
-  </div>
+  <div class="page-shell">
+    <header class="hero card">
+      <div class="badge">Practice Hub</div>
+      <h1>Hang in There</h1>
+      <p>
+        Find your practice by section.<br>
+        All exercises are organized into <strong>Reading, Listening, Speaking, and Writing</strong>.<br>
+        Select a question type and start practicing.
+      </p>
+      <p class="encourage">Keep going — every bit of practice helps you grow stronger.</p>
+    </header>
 
-  <script src="data/questions.js"></script>
-  <script>
-    const STORAGE_KEY = 'rap_scores_v1';
-    const scores = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    const grid = document.getElementById('question-grid');
-    const questionList = window.questions || [];
-
-    if (!questionList.length) {
-      grid.innerHTML = '<div style="color:#dc3545;">题库加载失败，请检查 data/questions.js</div>';
-    }
-
-    questionList.forEach(q => {
-      const score = scores[q.id];
-      const total = (q.questions || []).length || 5;
-      const done = score !== undefined;
-      const card = document.createElement('a');
-      card.className = 'card';
-      card.href = `practice.html?id=${q.id}`;
-      card.innerHTML = `
-        <div class="meta">
-          <span class="badge ${done ? 'badge-done' : 'badge-none'}">${done ? `最高分 ${score} / ${total}` : '未开始'}</span>
-          <span>#${q.id}</span>
+    <main class="grid">
+      <a class="card module-card" href="complete-the-words.html">
+        <div class="icon">📖</div>
+        <h2>Reading</h2>
+        <p class="desc">Build reading speed, structure awareness, and question skills.</p>
+        <div class="tag-list">
+          <span class="tag active">Complete the Words</span>
+          <span class="tag">Read in Daily Life</span>
+          <span class="tag">Read an Academic Passage</span>
         </div>
-        <h3>${q.title || `Practice ${q.id}`}</h3>
-        <div class="subtitle">${q.subtitle || ''}</div>
-        <div class="date">${q.date || ''}</div>
-      `;
-      grid.appendChild(card);
-    });
-  </script>
+      </a>
+
+      <section class="card module-card">
+        <div class="icon">🎧</div>
+        <h2>Listening</h2>
+        <p class="desc">Train response recognition, conversations, announcements, and talks.</p>
+        <div class="tag-list">
+          <span class="tag">Listen and Choose a Response</span>
+          <span class="tag">Listen to a Conversation</span>
+          <span class="tag">Listen to an Announcement</span>
+          <span class="tag">Listen to an Academic Talk</span>
+        </div>
+      </section>
+
+      <a class="card module-card" href="speaking.html">
+        <div class="icon">🗣️</div>
+        <h2>Speaking</h2>
+        <p class="desc">Practice repeating clearly and get familiar with common campus scenes.</p>
+        <div class="tag-list">
+          <span class="tag active">Listen and Repeat</span>
+          <span class="tag">Take an Interview</span>
+        </div>
+      </a>
+
+      <section class="card module-card">
+        <div class="icon">✍️</div>
+        <h2>Writing</h2>
+        <p class="desc">Develop sentence building, email writing, and academic discussion skills.</p>
+        <div class="tag-list">
+          <span class="tag">Build a Sentence</span>
+          <span class="tag">Write an Email</span>
+          <a href="writing.html" class="tag active">Academic Discussion</a>
+        </div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
