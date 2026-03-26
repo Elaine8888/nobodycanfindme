@@ -171,6 +171,11 @@
       background: #cbd5e1;
     }
 
+    .secondary-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .muted {
       color: #64748b;
       font-size: 0.95rem;
@@ -295,7 +300,7 @@
 
         <div class="question-text" id="questionText"></div>
         <div class="options" id="options"></div>
-        <div class="muted">Choose one answer before moving on.</div>
+        <div class="muted">You can move on even if you leave a question unanswered.</div>
       </section>
 
       <section class="result-card hidden" id="resultCard">
@@ -333,7 +338,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
               "The boundaries imposed by restrictive contracts"
             ],
             answer: 3,
-            explanation: "定位第一段后半部分：the system “limited creative freedom” and actors/directors were tied to “restrictive contracts.” 紧接着作者说，正是这种 constraint led to unexpected innovation。也就是说，促使创新的不是自由，而是限制本身。所以答案是 D。A、B、C 都和原文逻辑不符。"
+            explanation: "定位第一段后半部分：the system limited creative freedom，后面紧接着说 this very constraint led to unexpected innovation。也就是说，推动创新的恰恰是限制本身，而不是自由本身，所以答案是 D。"
           },
           {
             question: "2. The word “compelling” in the passage is closest in meaning to",
@@ -344,7 +349,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
               "complex"
             ],
             answer: 2,
-            explanation: "在文中，filmmakers sought new ways to tell compelling stories，意思是“讲出吸引人的、引人入胜的故事”。这里 compelling 最接近 fascinating。modern 是“现代的”，astonishing 更偏“令人震惊的”，complex 是“复杂的”，都不如 fascinating 贴切。"
+            explanation: "这里 compelling 用来形容 stories，意思是“吸引人的、引人入胜的”。四个选项里最接近的是 fascinating。"
           },
           {
             question: "3. Why does the author mention the introduction of sound in films?",
@@ -355,7 +360,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
               "To identify the event that started the decline of the studio system"
             ],
             answer: 0,
-            explanation: "第二段先说 sound was a pivotal change，再说 this shift pushed directors to experiment with narrative structures。说明作者提到声音进入电影，是为了突出一种技术发展如何推动了新的叙事方式和创作尝试，所以选 A。B 不是重点，C 与原文相反，因为 silent film stars had to adapt or risk obsolescence，D 则对应的是第三段的 Supreme Court ruling。"
+            explanation: "第二段核心句是 this shift pushed directors to experiment with narrative structures，所以作者提到 sound，是为了说明它如何推动新的叙事尝试和创作变化，因此选 A。"
           },
           {
             question: "4. What inference can be made about the 1948 Supreme Court ruling?",
@@ -366,7 +371,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
               "It had no effect on Hollywood's operations."
             ],
             answer: 1,
-            explanation: "原文说这项 ruling opened the door for independent filmmakers，且他们的 stories began gaining traction in theaters。由此可推断，这项裁决让独立电影有机会进入影院并获得关注，所以选 B。A、C 原文都没说，D 更明显错误，因为这项裁决带来了重要变化。"
+            explanation: "原文说这项裁决 opened the door for independent filmmakers，且他们的作品 began gaining traction in theaters，所以可以推出独立电影更容易进入影院并获得关注，答案是 B。"
           },
           {
             question: "5. What does the passage imply about the Hollywood film industry today?",
@@ -377,7 +382,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
               "The assembly-line process of the studio system still impacts current Hollywood operations."
             ],
             answer: 3,
-            explanation: "最后一句非常关键：the legacy of the studio system's efficiency and star-making machinery still influences Hollywood's operations today。说明黄金时代工作方式的某些特征，到今天仍然在影响好莱坞运作，因此选 D。A 和 C 都过于绝对，B 只抓住 storytelling，范围太窄，没有 D 概括得完整。"
+            explanation: "最后一句直接说 the legacy of the studio system's efficiency and star-making machinery still influences Hollywood's operations today，所以最准确的是 D。"
           }
         ]
       }
@@ -441,6 +446,10 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
       return selected ? Number(selected.value) : null;
     }
 
+    function saveCurrentAnswer() {
+      userAnswers[currentIndex] = getSelectedAnswer();
+    }
+
     function showResults() {
       let correctCount = 0;
       reviewList.innerHTML = "";
@@ -479,13 +488,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
     }
 
     nextBtn.addEventListener("click", () => {
-      const selected = getSelectedAnswer();
-      if (selected === null) {
-        alert("Please choose an answer before continuing.");
-        return;
-      }
-
-      userAnswers[currentIndex] = selected;
+      saveCurrentAnswer();
 
       if (currentIndex < currentPassage.questions.length - 1) {
         currentIndex++;
@@ -496,10 +499,7 @@ The decline of the studio system began with a 1948 Supreme Court ruling that dis
     });
 
     backBtn.addEventListener("click", () => {
-      const selected = getSelectedAnswer();
-      if (selected !== null) {
-        userAnswers[currentIndex] = selected;
-      }
+      saveCurrentAnswer();
 
       if (currentIndex > 0) {
         currentIndex--;
