@@ -942,7 +942,7 @@ window.questions = [
     "id": 17,
     "title": "Logic and Reasoning",
     "subtitle": "",
-    "date": "",
+    "date": "20260201",
     "template": "Logic and reasoning are essential components of academic methodology. These ski{0} involve evalu{1} arguments, ident{2} fallacies, a{3} constructing cohe{4} conclusions ba{5} on evid{6}. Mastering log{7} principles enha{8} critical thin{9} and problem-solving abilities. In various disciplines, from science to philosophy, these principles are used to analyze complex issues and develop informed perspectives, contributing to intellectual growth and effective decision-making. Formal logic systems include propositional and predicate logic, while informal logic addresses everyday reasoning, helping individuals recognize cognitive biases and construct more persuasive and sound arguments.",
     "items": [
       {
@@ -1001,7 +1001,7 @@ window.questions = [
     "id": 18,
     "title": "Museums",
     "subtitle": "",
-    "date": "",
+    "date": "20260201",
     "template": "Museums play a crucial role in preserving and showcasing art, history, and culture. They pro{0} a sp{1} where peo{2} can eng{3} with mult{4} forms o{5} artistic expre{6} and histo{7} artifacts. Ma{8} museums al{9} offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape.",
     "items": [
       {
@@ -1060,7 +1060,7 @@ window.questions = [
     "id": 19,
     "title": "Climate Change",
     "subtitle": "",
-    "date": "",
+    "date": "20260201",
     "template": "Global temperatures and weather patterns are experiencing notable shifts, which scientific research strongly associates with human-related factors. Activities su{0} as t{1} use o{2} fossil fu{3}, changes i{4} land u{5}, and industrial produ{6} contribute t{7} the accumu{8} of green{9} gases in the atmosphere. These gases retain heat, gradually increasing the Earth's average temperature. If emissions continue at current levels, potential outcomes may include more frequent extreme weather events, rising sea levels, and disruptions to ecosystems. Experts emphasize that timely and coordinated efforts are essential to reduce risks and promote long-term environmental stability.",
     "items": [
       {
@@ -1237,7 +1237,7 @@ window.questions = [
     "id": 22,
     "title": "James Cook",
     "subtitle": "",
-    "date": "",
+    "date": "20260321",
     "template": "James Cook was a British naval officer, explorer, and cartographer born in 1728. He i{0} best kn{1} for h{2} three voy{3} across t{4} Pacific Oc{5}, during wh{6} he meticu{7} mapped coast{8} and coll{9} data on astronomy, natural history, and oceanography. Cook is the first European to circumnavigate New Zealand and make contact with the Hawaiian Islands. He is also notable for implementing health measures aboard his ships, such as dietary changes to prevent the disease scurvy.",
     "items": [
       {
@@ -1591,7 +1591,7 @@ window.questions = [
     "id": 28,
     "title": "Conservation Ecology",
     "subtitle": "",
-    "date": "",
+    "date": "20260321",
     "template": "Conservation ecology focuses on preserving biodiversity and protecting ecosystems from degradation. This disci{0} involves stud{1} the intera{2} between spe{3} and th{4} environments t{5} develop strat{6} for maint{7} ecological bal{8}. Efforts inc{9} habitat restoration, sustainable resource management, and the establishment of protected areas. Conservation ecologists work to mitigate the impacts of human activities such as deforestation, pollution, and climate change. Public awareness campaigns and policy advocacy are crucial components of conservation initiatives. By safeguarding natural habitats, conservation ecology aims to ensure the survival of diverse species and the health of the planet.",
     "items": [
       {
@@ -1953,7 +1953,7 @@ window.questions = [
     "id": 35,
     "title": "Bicycle",
     "subtitle": "",
-    "date": "20260308",
+    "date": "20260308 / 20260321",
     "template": "The earliest ancestor of the modern bicycle is probably a machine used in England in the early 1800s called a hobbyhorse. It h{0} two whe{1} and a pl{2} to s{3} but n{4} pedals; rid{5} would pu{6} it al{7} with th{8} feet. La{9}, an inventor added pedals directly to the front wheel, like a modern child’s tricycle. This version, with a huge front wheel, was faster, but it was unsafe. Riders were high off the ground, and the two wheels were close together, making both balance and stopping difficult.",
     "items": [
       {
@@ -2182,6 +2182,124 @@ window.questions = [
         "p": "wi",
         "a": "th",
         "g": 2
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "title": "Space Exploration",
+    "subtitle": "",
+    "date": "20260127",
+    "template": "Space exploration has advanced significantly with the development of rockets that can be reused. Traditional rockets were discarded after a single use, but new designs allow them to return to Earth and be refurbished for multiple missions. This innov{0} reduces t{1} cost assoc{2} with sp{3} travel a{4} increases freq{5} of miss{6}. Companies li{7} SpaceX ha{8} pioneered reus{9} rocket technology, successfully launching and landing rockets. These advancements pave the way for more ambitious projects, including potential manned missions to Mars and beyond.",
+    "items": [
+      {
+        "p": "innov",
+        "a": "ation",
+        "g": 5
+      },
+      {
+        "p": "t",
+        "a": "he",
+        "g": 2
+      },
+      {
+        "p": "assoc",
+        "a": "iated",
+        "g": 5
+      },
+      {
+        "p": "sp",
+        "a": "ace",
+        "g": 3
+      },
+      {
+        "p": "a",
+        "a": "nd",
+        "g": 2
+      },
+      {
+        "p": "freq",
+        "a": "uency",
+        "g": 5
+      },
+      {
+        "p": "miss",
+        "a": "ions",
+        "g": 4
+      },
+      {
+        "p": "li",
+        "a": "ke",
+        "g": 2
+      },
+      {
+        "p": "ha",
+        "a": "ve",
+        "g": 2
+      },
+      {
+        "p": "reus",
+        "a": "able",
+        "g": 4
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "title": "Excavation of Artifacts",
+    "subtitle": "",
+    "date": "20260128",
+    "template": "Archaeologists typically study human history and prehistory through the excavation of artifacts buried underground. Sometimes, how{0}, they disc{1} artifacts subm{2} underwater. A stone wall w{3} found ben{4} the Baltic Sea i{5} 2012 th{6} dates t{7} over 10,000 ye{8} ago. Resea{9} believe it was used by hunter-gatherer societies to guide and trap reindeer. The wall consists of approximately 1,670 stones and is considered one of the oldest documented hunting structures made by humans.",
+    "items": [
+      {
+        "p": "how",
+        "a": "ever",
+        "g": 4
+      },
+      {
+        "p": "disc",
+        "a": "over",
+        "g": 4
+      },
+      {
+        "p": "subm",
+        "a": "erged",
+        "g": 4
+      },
+      {
+        "p": "w",
+        "a": "as",
+        "g": 2
+      },
+      {
+        "p": "ben",
+        "a": "eath",
+        "g": 4
+      },
+      {
+        "p": "i",
+        "a": "n",
+        "g": 1
+      },
+      {
+        "p": "th",
+        "a": "at",
+        "g": 2
+      },
+      {
+        "p": "t",
+        "a": "o",
+        "g": 1
+      },
+      {
+        "p": "ye",
+        "a": "ars",
+        "g": 3
+      },
+      {
+        "p": "Resea",
+        "a": "rchers",
+        "g": 6
       }
     ]
   }
