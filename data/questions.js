@@ -2302,5 +2302,236 @@ window.questions = [
         "g": 6
       }
     ]
+  },
+  {
+    "id": 41,
+    "title": "Excavation of Artifacts",
+    "subtitle": "",
+    "date": "20260128",
+    "template": "Archaeologists typically study human history and prehistory through the excavation of artifacts buried underground. Sometimes, how{0}, they disc{1} artifacts subm{2} underwater. A stone wall w{3} found ben{4} the Baltic Sea i{5} 2012 th{6} dates t{7} over 10,000 ye{8} ago. Resea{9} believe it was used by hunter-gatherer societies to guide and trap reindeer. The wall consists of approximately 1,670 stones and is considered one of the oldest documented hunting structures made by humans.",
+    "items": [
+      {
+        "p": "how",
+        "a": "ever",
+        "g": 4
+      },
+      {
+        "p": "disc",
+        "a": "over",
+        "g": 4
+      },
+      {
+        "p": "subm",
+        "a": "erged",
+        "g": 4
+      },
+      {
+        "p": "w",
+        "a": "as",
+        "g": 2
+      },
+      {
+        "p": "ben",
+        "a": "eath",
+        "g": 4
+      },
+      {
+        "p": "i",
+        "a": "n",
+        "g": 1
+      },
+      {
+        "p": "th",
+        "a": "at",
+        "g": 2
+      },
+      {
+        "p": "t",
+        "a": "o",
+        "g": 1
+      },
+      {
+        "p": "ye",
+        "a": "ars",
+        "g": 3
+      },
+      {
+        "p": "Resea",
+        "a": "rchers",
+        "g": 6
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "title": "Mental State Understanding",
+    "subtitle": "",
+    "date": "20260208",
+    "template": "One of the topics psychologists investigate is our capacity to understand the mental states of others. This abi{0} is funda{1} for soc{2} interaction bec{3} it ena{4} us t{5} predict a{6} explain t{7} behavior o{8} others. Is this skill innate or shaped by experience? Is understanding others’ mental states a matter of simulation (imagining ourselves in their place) or theory (applying a set of rules or concepts)? These inquiries contribute to broader discussions about human cognition.",
+    "items": [
+      {
+        "p": "abi",
+        "a": "lity",
+        "g": 4
+      },
+      {
+        "p": "funda",
+        "a": "mental",
+        "g": 6
+      },
+      {
+        "p": "soc",
+        "a": "ial",
+        "g": 3
+      },
+      {
+        "p": "bec",
+        "a": "ause",
+        "g": 4
+      },
+      {
+        "p": "ena",
+        "a": "bles",
+        "g": 4
+      },
+      {
+        "p": "t",
+        "a": "o",
+        "g": 1
+      },
+      {
+        "p": "a",
+        "a": "nd",
+        "g": 2
+      },
+      {
+        "p": "t",
+        "a": "he",
+        "g": 2
+      },
+      {
+        "p": "o",
+        "a": "f",
+        "g": 1
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "title": "Human Cognition",
+    "subtitle": "",
+    "date": "20260208",
+    "template": "Human cognition refers to the mental processes involved in acquiring, processing, storing, and using knowledge. These inc{0} the wa{1} that peo{2} interpret sensory sig{3} (perception), h{4} we st{5} and retr{6} information (mem{7}), how lang{8} is prod{9} (speech), and how humans analyze and solve problems. Researchers study cognitive functions to uncover how the brain processes information and how these processes influence behavior. Insights from cognitive science can improve educational methods and help develop interventions for cognitive disorders.",
+    "items": [
+      {
+        "p": "inc",
+        "a": "lude",
+        "g": 4
+      },
+      {
+        "p": "wa",
+        "a": "ys",
+        "g": 2
+      },
+      {
+        "p": "peo",
+        "a": "ple",
+        "g": 3
+      },
+      {
+        "p": "sig",
+        "a": "nals",
+        "g": 4
+      },
+      {
+        "p": "h",
+        "a": "ow",
+        "g": 2
+      },
+      {
+        "p": "st",
+        "a": "ore",
+        "g": 3
+      },
+      {
+        "p": "retr",
+        "a": "ieve",
+        "g": 4
+      },
+      {
+        "p": "mem",
+        "a": "ory",
+        "g": 3
+      },
+      {
+        "p": "lang",
+        "a": "uage",
+        "g": 4
+      },
+      {
+        "p": "prod",
+        "a": "uced",
+        "g": 4
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "title": "Medieval European History",
+    "subtitle": "",
+    "date": "20260308",
+    "template": "Medieval European history, lasting approximately from 500 C.E. to 1500 C.E., is marked by significant cultural, political, and economic changes. Feudalism domi{0} the soc{1} structure, wi{2} lords gove{3} lands a{4} vassals prov{5} military ser{6}. The church exe{7} substantial infl{8} over da{9} life and governance. Trade routes expanded, facilitating the exchange of goods and ideas. Art and architecture flourished, exemplified by Gothic cathedrals and illuminated manuscripts. Studying this era involves analyzing historical documents, artifacts, and architectural remains to understand the complexities of medieval society.",
+    "items": [
+      {
+        "p": "domi",
+        "a": "nated",
+        "g": 6
+      },
+      {
+        "p": "soc",
+        "a": "ial",
+        "g": 3
+      },
+      {
+        "p": "wi",
+        "a": "th",
+        "g": 2
+      },
+      {
+        "p": "gove",
+        "a": "rning",
+        "g": 5
+      },
+      {
+        "p": "a",
+        "a": "nd",
+        "g": 2
+      },
+      {
+        "p": "prov",
+        "a": "iding",
+        "g": 5
+      },
+      {
+        "p": "ser",
+        "a": "vice",
+        "g": 4
+      },
+      {
+        "p": "exe",
+        "a": "rted",
+        "g": 4
+      },
+      {
+        "p": "infl",
+        "a": "uence",
+        "g": 5
+      },
+      {
+        "p": "da",
+        "a": "ily",
+        "g": 3
+      }
+    ]
   }
-];
+  ];
