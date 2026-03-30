@@ -4,120 +4,68 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hang in There</title>
-
-  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1" />
-
-  <style>
-    .hero-with-qr{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:40px;
-    }
-
-    .hero-main{
-      flex:1;
-    }
-
-    .hero-main h1{
-      font-size:48px;
-      margin:0;
-      letter-spacing:1px;
-    }
-
-    .hero-qr{
-      width:180px;
-      text-align:center;
-      flex-shrink:0;
-    }
-
-    .hero-qr img{
-      width:180px;
-      height:180px;
-      border-radius:18px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.1);
-      border:1px solid #eee;
-      background:#fff;
-    }
-
-    .qr-text{
-      margin-top:12px;
-      font-size:14px;
-      color:#666;
-      line-height:1.6;
-    }
-
-    @media (max-width: 900px){
-      .hero-with-qr{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-
-      .hero-qr{
-        width:100%;
-        text-align:left;
-      }
-
-      .hero-qr img{
-        width:150px;
-        height:150px;
-      }
-
-      .hero-main h1{
-        font-size:36px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css?v=20260331home-upgrade1" />
 </head>
 
 <body>
-
-  <!-- ✅ Navbar -->
   <div id="navbar"></div>
 
   <main class="page-shell">
 
-    <!-- ✅ Hero -->
-    <header class="hero card hero-with-qr">
-      <div class="hero-main">
-        <h1>Hang in There</h1>
+    <header class="hero card">
+      <div class="badge">Practice Hub</div>
+      <h1>Hang in There</h1>
+      <p>
+        Find your practice by section.<br>
+        All exercises are organized into <strong>Reading, Listening, Speaking, and Writing</strong>.<br>
+        Select a question type and start practicing.
+      </p>
+      <p class="encourage">
+        Keep going — every bit of practice helps you grow stronger.
+      </p>
+    </header>
 
-        <p class="encourage">
+    <section class="home-grid">
+      <a href="/reading.html" class="card module-card home-card">
+        <div class="icon">📖</div>
+        <h2>Reading</h2>
+        <p class="desc">Complete the Words, Daily Reading, Academic Passage</p>
+      </a>
+
+      <a href="/listening.html" class="card module-card home-card">
+        <div class="icon">🎧</div>
+        <h2>Listening</h2>
+        <p class="desc">Response, Conversation, Announcement, Lecture</p>
+      </a>
+
+      <a href="/speaking.html" class="card module-card home-card">
+        <div class="icon">🗣️</div>
+        <h2>Speaking</h2>
+        <p class="desc">Listen &amp; Repeat, Interview</p>
+      </a>
+
+      <a href="/writing.html" class="card module-card home-card">
+        <div class="icon">✍️</div>
+        <h2>Writing</h2>
+        <p class="desc">Sentence, Email, Academic Discussion</p>
+      </a>
+    </section>
+
+    <section class="footer-follow card">
+      <div class="footer-follow-main">
+        <div class="footer-follow-title">Follow us on WeChat</div>
+        <p class="footer-follow-text">
           For more information, follow us on WeChat: <strong>Hang in There</strong>
         </p>
       </div>
 
-      <div class="hero-qr">
+      <div class="footer-follow-qr">
         <img src="/images/wechat-qr.jpg" alt="WeChat QR Code">
       </div>
-    </header>
-
-    <!-- ✅ 下面保留入口（可选，但强烈建议保留） -->
-    <section class="card-grid">
-      <a href="/reading.html" class="card">
-        <h3>Reading</h3>
-        <p>Complete the Words, Daily Reading, Academic Passage</p>
-      </a>
-
-      <a href="/listening.html" class="card">
-        <h3>Listening</h3>
-        <p>Response, Conversation, Announcement, Lecture</p>
-      </a>
-
-      <a href="/speaking.html" class="card">
-        <h3>Speaking</h3>
-        <p>Listen & Repeat, Interview</p>
-      </a>
-
-      <a href="/writing.html" class="card">
-        <h3>Writing</h3>
-        <p>Sentence, Email, Academic Discussion</p>
-      </a>
     </section>
 
   </main>
 
-  <!-- ✅ Navbar加载 -->
   <script>
     fetch('/navbar.html')
       .then(res => res.text())
@@ -125,11 +73,9 @@
         document.getElementById('navbar').innerHTML = html;
 
         document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
-
         const homeLink = document.querySelector('.nav-links a[href="/index.html"]');
         if (homeLink) homeLink.classList.add('active');
       });
   </script>
-
 </body>
 </html>
