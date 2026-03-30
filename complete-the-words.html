@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOEFL Complete the Words</title>
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1" />
   <style>
     :root { --primary:#4a90e2; --success:#28a745; --muted:#6b7280; --bg:#f4f7f9; }
     * { box-sizing:border-box; }
     body { margin:0; font-family:'Segoe UI', system-ui, sans-serif; background:var(--bg); color:#333; }
-    .wrap { max-width:1200px; margin:0 auto; padding:28px 20px 40px; }
+    .wrap { max-width:1200px; margin:0 auto; padding:100px 20px 40px; }
     .hero { background:#fff; border:1px solid #dbe8fb; border-radius:28px; padding:34px 34px 28px; margin-bottom:24px; }
     .hero h1 { margin:0 0 10px; color:var(--primary); font-size:2.2rem; }
     .hero p { margin:0; color:#667085; font-size:1.05rem; }
@@ -23,33 +24,65 @@
     .subtitle { color:#4a90e2; font-size:.9rem; margin:0 0 6px; min-height:1.15em; font-weight:600; }
     .date { color:#8b94a7; font-size:.88rem; min-height:1.1em; }
     .tip { margin-top:18px; color:#6b7280; font-size:.95rem; }
+
+    @media (max-width:700px){
+      .wrap { padding-top:128px; }
+    }
   </style>
 </head>
 <body>
+  <div id="navbar"></div>
+
   <div class="wrap">
     <div class="hero">
       <h1>TOEFL Complete the Words</h1>
       <p>按题号进入练习。本站保留整词判分逻辑，答题完成后可查看标准答案与最高分记录。</p>
     </div>
+
     <div id="question-grid" class="grid"></div>
+
     <div class="tip">最高分记录保存在当前浏览器的本地存储中。</div>
   </div>
-  <script src="data/questions.js"></script>
+
+  <script src="/data/questions.js"></script>
   <script>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+
+        const path = window.location.pathname;
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          const href = link.getAttribute('href');
+          if (href && path.includes(href)) {
+            link.classList.add('active');
+          }
+        });
+
+        const readingLink = document.querySelector('.nav-links a[data-page="reading"]');
+        if (readingLink) {
+          document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+          readingLink.classList.add('active');
+        }
+      });
+
     const STORAGE_KEY = 'ctw_scores_v1';
     const scores = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     const grid = document.getElementById('question-grid');
     const questionList = window.questions || [];
+
     if (!questionList.length) {
       grid.innerHTML = '<div style="color:#dc3545;">题库加载失败，请检查 data/questions.js</div>';
     }
+
     questionList.forEach(q => {
       const score = scores[q.id];
       const total = (q.items || []).length || 10;
       const done = score !== undefined;
+
       const card = document.createElement('a');
       card.className = 'card';
-      card.href = `practice.html?id=${q.id}`;
+      card.href = `/practice.html?id=${q.id}`;
       card.innerHTML = `
         <div class="meta">
           <span class="badge ${done ? 'badge-done' : 'badge-none'}">${done ? `最高分 ${score} / ${total}` : '未开始'}</span>
