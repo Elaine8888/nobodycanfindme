@@ -4,24 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reading Practice</title>
-  <link rel="stylesheet" href="styles.css?v=20260330nav1">
+
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1">
 </head>
 
 <body>
 
-  <div class="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="logo">Hang in There</a>
-
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="reading.html" class="active">Reading</a>
-        <a href="listening.html">Listening</a>
-        <a href="speaking.html">Speaking</a>
-        <a href="writing.html">Writing</a>
-      </div>
-    </div>
-  </div>
+  <!-- ✅ Navbar组件 -->
+  <div id="navbar"></div>
 
   <div class="page-shell">
     <header class="hero card">
@@ -30,22 +20,45 @@
     </header>
 
     <section class="card-grid">
-      <a href="complete-the-words.html" class="card">
+      <a href="/complete-the-words.html" class="card">
         <h3>Complete the Words</h3>
-        <p>Train your grammar + collocation + context prediction.</p>
+        <p>Train grammar, collocation, and context prediction.</p>
       </a>
 
-      <a href="read-in-daily-life.html" class="card">
+      <a href="/read-in-daily-life.html" class="card">
         <h3>Read in Daily Life</h3>
         <p>Practice scanning and real-life reading skills.</p>
       </a>
 
-      <a href="read-an-academic-passage.html" class="card">
+      <a href="/read-an-academic-passage.html" class="card">
         <h3>Read an Academic Passage</h3>
         <p>Improve academic reading and comprehension.</p>
       </a>
     </section>
   </div>
+
+  <!-- ✅ Navbar加载 + 高亮 -->
+  <script>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+
+        const path = window.location.pathname;
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          const href = link.getAttribute('href');
+          if (href && path.includes(href)) {
+            link.classList.add('active');
+          }
+        });
+
+        // 强制高亮 Reading
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+        const readingLink = document.querySelector('.nav-links a[href="reading.html"]');
+        if (readingLink) readingLink.classList.add('active');
+      });
+  </script>
 
 </body>
 </html>
