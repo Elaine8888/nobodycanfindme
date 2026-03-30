@@ -25,80 +25,79 @@ a{
   color:inherit;
 }
 
-/* ===== Navbar ===== */
+/* ===== Navbar — Notion Style Upgrade ===== */
 
 .navbar{
   position:fixed;
-  top:0;
+  top:14px;
   left:0;
   width:100%;
   z-index:1000;
-  backdrop-filter:saturate(180%) blur(10px);
-  background:rgba(255,255,255,.82);
-  border-bottom:1px solid rgba(226,234,245,.9);
-  box-shadow:0 6px 20px rgba(39,73,124,.06);
+  display:flex;
+  justify-content:center;
+  pointer-events:none;
 }
 
 .nav-inner{
-  max-width:1180px;
-  margin:0 auto;
-  padding:8px 20px;
+  width:calc(100% - 40px);
+  max-width:1100px;
+  padding:10px 18px;
+  border-radius:16px;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:16px;
+
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+  pointer-events:auto;
 }
 
+/* Logo 更克制 */
+
 .logo{
-  display:inline-flex;
-  align-items:center;
-  font-weight:800;
-  font-size:28px;
-  letter-spacing:-0.02em;
-  color:var(--text);
-  white-space:nowrap;
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:0.08em;
+  color:#1f2a44;
+  opacity:0.85;
+  text-transform:uppercase;
 }
+
+/* 导航按钮更“空气感” */
 
 .nav-links{
   display:flex;
   align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
+  gap:6px;
 }
 
 .nav-links a{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:8px 14px;
-  border-radius:999px;
-  font-weight:700;
-  font-size:14px;
-  color:var(--muted);
-  transition:.2s;
+  padding:6px 12px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+  color:#6b7a90;
+  transition:all .2s ease;
 }
+
+/* hover 更轻 */
 
 .nav-links a:hover{
-  background:var(--primary-soft);
-  color:var(--primary-dark);
+  background:rgba(74,144,226,0.08);
+  color:#2f6fba;
 }
+
+/* 当前页 */
 
 .nav-links a.active{
-  background:var(--primary-soft);
-  color:var(--primary-dark);
-}
-
-.page-shell{
-  max-width:1180px;
-  margin:0 auto;
-  padding:78px 20px 60px;
-}
-
-.card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:28px;
-  box-shadow:var(--shadow);
+  background:rgba(74,144,226,0.12);
+  color:#2f6fba;
 }
 
 /* ===== Home ===== */
