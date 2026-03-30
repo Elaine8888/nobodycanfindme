@@ -109,3 +109,93 @@ body {
 .section-item:hover {
   border-color: #4a90e2;
 }
+
+/* ===== Additional shared layouts ===== */
+
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.card-grid .card{
+  display:block;
+  padding:24px;
+  transition:.2s;
+}
+
+.card-grid .card:hover{
+  transform:translateY(-2px);
+}
+
+.card-grid h3{
+  margin:0 0 10px;
+  font-size:20px;
+}
+
+.card-grid p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.toolbar{
+  padding:20px;
+  margin:18px 0 22px;
+}
+
+.helper{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.select{
+  margin-top:8px;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  font-size:14px;
+}
+
+.notice{
+  margin-top:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.set-header{
+  margin:18px 0;
+}
+
+.set-header h2{
+  margin:0 0 8px;
+  font-size:26px;
+}
+
+.block-title{
+  margin:18px 0 10px;
+  font-size:18px;
+}
+
+.line-label{
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.record-status{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+
+.sentence-wrap{
+  flex:1;
+}
+
+@media (max-width:900px){
+  .card-grid{
+    grid-template-columns:1fr;
+  }
+}
