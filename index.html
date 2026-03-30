@@ -11,7 +11,7 @@
     gtag('js', new Date());
     gtag('config', 'G-VKHYMHFGMF');
   </script>
-  <link rel="stylesheet" href="./styles.css?v=20260330home-tabs1" />
+  <link rel="stylesheet" href="./styles.css?v=20260330home-tabs2" />
 </head>
 <body>
   <div class="navbar">
@@ -29,9 +29,9 @@
   </div>
 
   <div class="page-shell">
-    <header class="hero card" id="heroBlock">
+    <header class="hero card">
       <div class="badge">Practice Hub</div>
-      <h1>Hang in There</h1>
+      <h1 id="heroTitle">Hang in There</h1>
       <p id="heroText">
         Find your practice by section.<br>
         All exercises are organized into <strong>Reading, Listening, Speaking, and Writing</strong>.<br>
@@ -89,8 +89,8 @@
             title: "Writing",
             desc: "Develop sentence building, email writing, and academic discussion skills.",
             tags: [
-              { text: "Build a Sentence", href: "writing.html", active: true },
-              { text: "Write an Email", href: "writing.html", active: true },
+              { text: "Build a Sentence", href: "writing.html", active: false },
+              { text: "Write an Email", href: "writing.html", active: false },
               { text: "Academic Discussion", href: "writing.html", active: true }
             ]
           }
@@ -106,25 +106,19 @@
             icon: "📝",
             title: "Complete the Words",
             desc: "Train grammar, collocation, and context prediction under time pressure.",
-            tags: [
-              { text: "Start Practice", href: "complete-the-words.html", active: true }
-            ]
+            tags: [{ text: "Start Practice", href: "complete-the-words.html", active: true }]
           },
           {
             icon: "📄",
             title: "Read in Daily Life",
             desc: "Practice scanning and real-life reading with everyday materials.",
-            tags: [
-              { text: "Start Practice", href: "read-in-daily-life.html", active: true }
-            ]
+            tags: [{ text: "Start Practice", href: "read-in-daily-life.html", active: true }]
           },
           {
             icon: "🎓",
             title: "Read an Academic Passage",
             desc: "Improve academic reading, insertion, and comprehension skills.",
-            tags: [
-              { text: "Start Practice", href: "read-an-academic-passage.html", active: true }
-            ]
+            tags: [{ text: "Start Practice", href: "read-an-academic-passage.html", active: true }]
           }
         ]
       },
@@ -138,33 +132,25 @@
             icon: "💬",
             title: "Listen and Choose a Response",
             desc: "Recognize the most appropriate response in context.",
-            tags: [
-              { text: "Coming Soon", href: "listening.html", active: false }
-            ]
+            tags: [{ text: "Coming Soon", href: "#", active: false }]
           },
           {
             icon: "👥",
             title: "Listen to a Conversation",
             desc: "Practice campus-style dialogues and follow the main ideas.",
-            tags: [
-              { text: "Coming Soon", href: "listening.html", active: false }
-            ]
+            tags: [{ text: "Coming Soon", href: "#", active: false }]
           },
           {
             icon: "📢",
             title: "Listen to an Announcement",
             desc: "Understand public messages and important details.",
-            tags: [
-              { text: "Coming Soon", href: "listening.html", active: false }
-            ]
+            tags: [{ text: "Coming Soon", href: "#", active: false }]
           },
           {
             icon: "🏫",
             title: "Listen to an Academic Talk",
             desc: "Train your ability to follow lectures and academic explanations.",
-            tags: [
-              { text: "Coming Soon", href: "listening.html", active: false }
-            ]
+            tags: [{ text: "Coming Soon", href: "#", active: false }]
           }
         ]
       },
@@ -178,17 +164,13 @@
             icon: "🔊",
             title: "Listen and Repeat",
             desc: "Hear first, then repeat clearly. Text stays hidden until needed.",
-            tags: [
-              { text: "Start Practice", href: "speaking.html", active: true }
-            ]
+            tags: [{ text: "Start Practice", href: "speaking.html", active: true }]
           },
           {
             icon: "🎤",
             title: "Take an Interview",
             desc: "Practice topic-based interview questions with four prompts.",
-            tags: [
-              { text: "Start Practice", href: "speaking-interview.html", active: true }
-            ]
+            tags: [{ text: "Start Practice", href: "speaking-interview.html", active: true }]
           }
         ]
       },
@@ -202,32 +184,26 @@
             icon: "🧩",
             title: "Build a Sentence",
             desc: "Practice sentence formation and control of structure.",
-            tags: [
-              { text: "Coming Soon", href: "writing.html", active: false }
-            ]
+            tags: [{ text: "Coming Soon", href: "#", active: false }]
           },
           {
             icon: "📧",
             title: "Write an Email",
             desc: "Learn to respond clearly and appropriately in email tasks.",
-            tags: [
-              { text: "Coming Soon", href: "writing.html", active: false }
-            ]
+            tags: [{ text: "Coming Soon", href: "#", active: false }]
           },
           {
             icon: "✏️",
             title: "Academic Discussion",
             desc: "Respond to discussion prompts with your own ideas.",
-            tags: [
-              { text: "Start Practice", href: "writing.html", active: true }
-            ]
+            tags: [{ text: "Start Practice", href: "writing.html", active: true }]
           }
         ]
       }
     };
 
     const navLinks = document.querySelectorAll(".nav-links a");
-    const heroTitle = document.querySelector(".hero h1");
+    const heroTitle = document.getElementById("heroTitle");
     const heroText = document.getElementById("heroText");
     const heroEncourage = document.getElementById("heroEncourage");
     const contentGrid = document.getElementById("contentGrid");
@@ -248,7 +224,7 @@
           <h2>${card.title}</h2>
           <p class="desc">${card.desc}</p>
           <div class="tag-list">
-            ${card.tags.map(tag => 
+            ${card.tags.map(tag =>
               tag.active
                 ? `<a href="${tag.href}" class="tag active">${tag.text}</a>`
                 : `<span class="tag">${tag.text}</span>`
