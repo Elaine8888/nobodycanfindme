@@ -2,90 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hang in There</title>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VKHYMHFGMF"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-VKHYMHFGMF');
-  </script>
-  <link rel="stylesheet" href="./styles.css?v=20260321homefix1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Practice Hub</title>
+  <link rel="stylesheet" href="./styles.css"/>
 </head>
+
 <body>
-  <div class="navbar">
-    <div class="nav-inner">
-      <div class="nav-left"></div>
 
-      <div class="nav-links">
-        <a href="index.html" class="active">Home</a>
-        <a href="reading.html">Reading</a>
-        <a href="listening.html">Listening</a>
-        <a href="speaking.html">Speaking</a>
-        <a href="writing.html">Writing</a>
-      </div>
-    </div>
+<!-- ✅ NAVBAR -->
+<div class="navbar">
+  <div class="nav-left">Practice Hub</div>
+  <div class="nav-right">
+    <a href="reading.html">Reading</a>
+    <a href="listening.html">Listening</a>
+    <a href="speaking.html">Speaking</a>
+    <a href="writing.html">Writing</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Practice by Section</h1>
+    <p>Select a section and start practicing.</p>
   </div>
 
-  <div class="page-shell">
-    <header class="hero card">
-      <div class="badge">Practice Hub</div>
-      <h1>Hang in There</h1>
-      <p>
-        Find your practice by section.<br>
-        All exercises are organized into <strong>Reading, Listening, Speaking, and Writing</strong>.<br>
-        Select a question type and start practicing.
-      </p>
-      <p class="encourage">Keep going — every bit of practice helps you grow stronger.</p>
-    </header>
+  <!-- Grid -->
+  <div class="grid">
 
-    <main class="grid">
-      <section class="card module-card">
-        <div class="icon">📖</div>
-        <h2>Reading</h2>
-        <p class="desc">Build reading speed, structure awareness, and question skills.</p>
-        <div class="tag-list">
-          <a href="complete-the-words.html" class="tag active">Complete the Words</a>
-          <span class="tag">Read in Daily Life</span>
-          <a href="read-an-academic-passage.html" class="tag active">Read an Academic Passage</a>
-        </div>
-      </section>
+    <a href="reading.html" class="card">
+      <div class="card-title">Reading</div>
+      <div class="card-desc">Complete the Words, Daily Life, Academic</div>
+    </a>
 
-      <section class="card module-card">
-        <div class="icon">🎧</div>
-        <h2>Listening</h2>
-        <p class="desc">Train response recognition, conversations, announcements, and talks.</p>
-        <div class="tag-list">
-          <span class="tag">Listen and Choose a Response</span>
-          <span class="tag">Listen to a Conversation</span>
-          <span class="tag">Listen to an Announcement</span>
-          <span class="tag">Listen to an Academic Talk</span>
-        </div>
-      </section>
+    <a href="listening.html" class="card">
+      <div class="card-title">Listening</div>
+      <div class="card-desc">Coming soon</div>
+    </a>
 
-      <section class="card module-card">
-        <div class="icon">🗣️</div>
-        <h2>Speaking</h2>
-        <p class="desc">Practice speaking tasks and simulate test scenarios.</p>
-        <div class="tag-list">
-          <a href="speaking.html" class="tag active">Listen and Repeat</a>
-          <a href="speaking-interview.html" class="tag active">Take an Interview</a>
-        </div>
-      </section>
+    <a href="speaking.html" class="card">
+      <div class="card-title">Speaking</div>
+      <div class="card-desc">Listen & Repeat, Interview</div>
+    </a>
 
-      <section class="card module-card">
-        <div class="icon">✍️</div>
-        <h2>Writing</h2>
-        <p class="desc">Develop sentence building, email writing, and academic discussion skills.</p>
-        <div class="tag-list">
-          <span class="tag">Build a Sentence</span>
-          <span class="tag">Write an Email</span>
-          <a href="writing.html" class="tag active">Academic Discussion</a>
-        </div>
-      </section>
-    </main>
+    <a href="writing.html" class="card">
+      <div class="card-title">Writing</div>
+      <div class="card-desc">Sentence, Email, Discussion</div>
+    </a>
+
   </div>
+
+</div>
+
 </body>
 </html>
