@@ -1,97 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Academic Passage</title>
-  <link rel="stylesheet" href="./styles.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Read an Academic Passage</title>
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1" />
   <style>
     .container {
       max-width: 900px;
-      margin: 60px auto;
-      padding: 0 20px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
+    .hero-local {
+      margin-bottom: 24px;
     }
 
-    .card {
+    .hero-local h1 {
+      margin: 0 0 10px;
+      font-size: 38px;
+      color: var(--text);
+    }
+
+    .hero-local p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .passage-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .passage-card {
       background: white;
       padding: 22px;
-      margin-bottom: 16px;
-      border-radius: 14px;
+      border-radius: 18px;
       cursor: pointer;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
       transition: 0.2s;
+      border: 1px solid var(--line);
     }
 
-    .card:hover {
+    .passage-card:hover {
       transform: translateY(-3px);
     }
 
-    .title {
+    .passage-title {
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 6px;
+      color: var(--text);
     }
 
-    .meta {
+    .passage-meta {
       color: #64748b;
       font-size: 14px;
     }
   </style>
 </head>
-
 <body>
+  <div id="navbar"></div>
 
-<div class="container">
-  <h1>Read an Academic Passage</h1>
+  <div class="page-shell">
+    <div class="container">
+      <a class="top-link" href="/reading.html">← Back to Reading</a>
 
-  <!-- Passage 1 -->
-  <div class="card" onclick="start(1)">
-    <div class="title">#1 The Dynamics of Hollywood’s Golden Age</div>
-    <div class="meta">Exam Date: 2026-03-08</div>
+      <header class="hero-local">
+        <h1>Read an Academic Passage</h1>
+        <p>Select a passage to begin your practice.</p>
+      </header>
+
+      <section class="passage-list">
+        <div class="passage-card" onclick="start(1)">
+          <div class="passage-title">#1 The Dynamics of Hollywood’s Golden Age</div>
+          <div class="passage-meta">Exam Date: 2026-03-08</div>
+        </div>
+
+        <div class="passage-card" onclick="start(2)">
+          <div class="passage-title">#2 Augmented Reality for Training</div>
+          <div class="passage-meta">Exam Date: 2026-01-21</div>
+        </div>
+
+        <div class="passage-card" onclick="start(3)">
+          <div class="passage-title">#3 Formation of Sedimentary Rocks</div>
+          <div class="passage-meta">Exam Date: 2026-01-21</div>
+        </div>
+
+        <div class="passage-card" onclick="start(4)">
+          <div class="passage-title">#4 Thinking Outside the Box</div>
+          <div class="passage-meta">Exam Date: 2026-01-21</div>
+        </div>
+
+        <div class="passage-card" onclick="start(5)">
+          <div class="passage-title">#5 Plant Communication</div>
+          <div class="passage-meta">Exam Date: 2026-01-21</div>
+        </div>
+
+        <div class="passage-card" onclick="start(6)">
+          <div class="passage-title">#6 Green Roof Benefits</div>
+          <div class="passage-meta">Exam Date: 2026-01-21</div>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <!-- Passage 2 -->
-  <div class="card" onclick="start(2)">
-    <div class="title">#2 Augmented Reality for Training</div>
-    <div class="meta">Exam Date: 2026-01-21</div>
-  </div>
+  <script>
+    function start(id) {
+      window.location.href = "/read-an-academic-passage-practice.html?id=" + id;
+    }
 
-  <!-- Passage 3 -->
-  <div class="card" onclick="start(3)">
-    <div class="title">#3 Formation of Sedimentary Rocks</div>
-    <div class="meta">Exam Date: 2026-01-21</div>
-  </div>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
 
-  <!-- Passage 4 -->
-  <div class="card" onclick="start(4)">
-    <div class="title">#4 Thinking Outside the Box</div>
-    <div class="meta">Exam Date: 2026-01-21</div>
-  </div>
-
-  <!-- Passage 5 -->
-  <div class="card" onclick="start(5)">
-    <div class="title">#5 Plant Communication</div>
-    <div class="meta">Exam Date: 2026-01-21</div>
-  </div>
-
-  <!-- Passage 6 -->
-  <div class="card" onclick="start(6)">
-    <div class="title">#6 Green Roof Benefits</div>
-    <div class="meta">Exam Date: 2026-01-21</div>
-  </div>
-
-</div>
-
-<script>
-function start(id){
-  window.location.href = "read-an-academic-passage-practice.html?id=" + id;
-}
-</script>
-
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+        const readingLink = document.querySelector('.nav-links a[href="/reading.html"]');
+        if (readingLink) readingLink.classList.add('active');
+      });
+  </script>
 </body>
 </html>
