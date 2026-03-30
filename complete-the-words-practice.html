@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CTW Practice</title>
+
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1" />
+
+  <style>
+    :root { --primary:#4a90e2; --success:#28a745; --error:#dc3545; --bg:#f4f7f9; }
+    * { box-sizing:border-box; }
+
+    body {
+      font-family:'Segoe UI', system-ui, sans-serif;
+      background:var(--bg);
+      margin:0;
+      color:#333;
+    }
+
+    .container {
+      max-width:900px;
+      margin:100px auto 40px;
+      background:white;
+      padding:30px;
+      border-radius:15px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.08);
+      position:relative;
+    }
+
+    #timer {
+      position:absolute;
+      top:20px;
+      right:30px;
+      font-weight:bold;
+      color:var(--primary);
+      background:#eef5ff;
+      padding:5px 12px;
+      border-radius:15px;
+    }
+
+    h1 { margin-top:0; color:var(--primary); }
+
+    .sub { color:#6b7280; margin-bottom:10px; }
+    .mini-title { color:#4a90e2; font-weight:700; margin-bottom:14px; }
+
+    .passage {
+      font-size:1.12rem;
+      line-height:2.7;
+      text-align:justify;
+      margin:25px 0;
+    }
+
+    .word-group {
+      display:inline-flex;
+      align-items:baseline;
+      margin:0 2px;
+    }
+
+    .char-input {
+      width:16px;
+      height:22px;
+      border:none;
+      border-bottom:2px solid #bbb;
+      margin:0 1px;
+      text-align:center;
+      font-size:1.1rem;
+      outline:none;
+      color:#4a90e2;
+      background:transparent;
+    }
+
+    .char-input.correct { border-bottom-color:var(--success); color:var(--success); }
+    .char-input.wrong { border-bottom-color:var(--error); color:var(--error); }
+
+    .answer-area {
+      margin-top:30px;
+      padding:20px;
+      background:#f8f9fa;
+      border-left:5px solid var(--primary);
+      border-radius:8px;
+    }
+
+    .nav-tools {
+      margin-top:30px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    button {
+      padding:10px 18px;
+      border:none;
+      border-radius:6px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .btn-main { background:var(--primary); color:white; }
+    .btn-next { background:var(--success); color:white; }
+    .btn-retry { background:#6c757d; color:white; }
+
+    .hidden { display:none; }
+
+    @media (max-width:640px){
+      .container { margin-top:120px; padding:20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ✅ Navbar -->
+  <div id="navbar"></div>
+
+  <div class="container">
+
+    <div id="timer">⏱ 00:00</div>
+
+    <h1 id="quiz-title"></h1>
+    <div id="quiz-subtitle" class="mini-title"></div>
+    <div id="quiz-date" class="sub"></div>
+
+    <div class="passage" id="quiz-content"></div>
+
+    <div class="nav-tools">
+      <div id="score-result" style="font-size:1.4rem;font-weight:bold;color:#4a90e2;"></div>
+      <div>
+        <button id="retry-btn" class="btn-retry">Retry</button>
+        <button id="submit-btn" class="btn-main">Check</button>
+        <button id="next-btn" class="btn-next hidden">Next →</button>
+      </div>
+    </div>
+
+    <div id="answer-review" class="answer-area hidden">
+      <strong>Answers:</strong>
+      <div id="answer-grid"></div>
+    </div>
+
+  </div>
+
+  <script src="/data/questions.js"></script>
+
+  <!-- ✅ Navbar加载 -->
+  <script>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+
+        const path = window.location.pathname;
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          if (path.includes(link.getAttribute('href'))) {
+            link.classList.add('active');
+          }
+        });
+
+        // 强制高亮 Reading
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+        const readingLink = document.querySelector('.nav-links a[href="reading.html"]');
+        if (readingLink) readingLink.classList.add('active');
+      });
+  </script>
+
+  <!-- ✅ 原逻辑（基本不动） -->
+  <script>
+    const questionList = window.questions || [];
+    const params = new URLSearchParams(location.search);
+    const currentId = Number(params.get('id') || 1);
+    const currentIdx = questionList.findIndex(q => q.id === currentId);
+    const d = questionList[currentIdx];
+
+    let timer = null;
+    let startTime = Date.now();
+
+    const titleEl = document.getElementById('quiz-title');
+    const subtitleEl = document.getElementById('quiz-subtitle');
+    const dateEl = document.getElementById('quiz-date');
+    const contentEl = document.getElementById('quiz-content');
+
+    const submitBtn = document.getElementById('submit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const retryBtn = document.getElementById('retry-btn');
+
+    if (!d) {
+      titleEl.textContent = 'Question not found';
+    } else {
+      titleEl.textContent = `Practice ${d.id}`;
+      subtitleEl.textContent = d.subtitle || '';
+      dateEl.textContent = d.date || '';
+
+      let html = d.template;
+
+      (d.items || []).forEach((item, i) => {
+        let inputs = `<span class="word-group"><strong>${item.p}</strong>`;
+        for (let c = 0; c < item.g; c++) {
+          inputs += `<input class="char-input" maxlength="1" data-idx="${i}">`;
+        }
+        inputs += `</span>`;
+        html = html.replace(`${item.p}{${i}}`, inputs);
+      });
+
+      contentEl.innerHTML = html;
+    }
+
+    submitBtn.onclick = () => {
+      alert("Check logic here (保留你原逻辑也可以)");
+    };
+
+    retryBtn.onclick = () => location.reload();
+
+    nextBtn.onclick = () => {
+      const next = questionList[currentIdx + 1];
+      if (next) location.href = `complete-the-words-practice.html?id=${next.id}`;
+    };
+  </script>
+
+</body>
+</html>
