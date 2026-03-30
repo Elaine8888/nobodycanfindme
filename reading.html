@@ -1,64 +1,56 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reading Practice</title>
-
-  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reading</title>
+  <link rel="stylesheet" href="/styles.css?v=reading-clean1"/>
 </head>
 
 <body>
 
-  <!-- ✅ Navbar组件 -->
-  <div id="navbar"></div>
+<div id="navbar"></div>
 
-  <div class="page-shell">
-    <header class="hero card">
-      <h1>Reading Practice</h1>
-      <p>Select a question type to begin your practice.</p>
-    </header>
+<div class="page-simple">
 
-    <section class="card-grid">
-      <a href="/complete-the-words.html" class="card">
-        <h3>Complete the Words</h3>
-        <p>Train grammar, collocation, and context prediction.</p>
-      </a>
+  <h1>Reading</h1>
 
-      <a href="/read-in-daily-life.html" class="card">
-        <h3>Read in Daily Life</h3>
-        <p>Practice scanning and real-life reading skills.</p>
-      </a>
+  <p class="page-desc">
+    Select a question type to begin your practice.
+  </p>
 
-      <a href="/read-an-academic-passage.html" class="card">
-        <h3>Read an Academic Passage</h3>
-        <p>Improve academic reading and comprehension.</p>
-      </a>
-    </section>
+  <div class="section-list">
+
+    <a href="complete-the-words.html" class="section-item">
+      <span class="section-title">Complete the Words</span>
+      <span class="section-sub">Train grammar, collocation, and context prediction.</span>
+    </a>
+
+    <a href="reading.html#daily" class="section-item">
+      <span class="section-title">Read in Daily Life</span>
+      <span class="section-sub">Practice scanning and real-life reading skills.</span>
+    </a>
+
+    <a href="read-an-academic-passage.html" class="section-item">
+      <span class="section-title">Read an Academic Passage</span>
+      <span class="section-sub">Improve academic reading and comprehension.</span>
+    </a>
+
   </div>
 
-  <!-- ✅ Navbar加载 + 高亮 -->
-  <script>
-    fetch('/navbar.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('navbar').innerHTML = html;
+</div>
 
-        const path = window.location.pathname;
+<script>
+  fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('navbar').innerHTML = html;
 
-        document.querySelectorAll('.nav-links a').forEach(link => {
-          const href = link.getAttribute('href');
-          if (href && path.includes(href)) {
-            link.classList.add('active');
-          }
-        });
-
-        // 强制高亮 Reading
-        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
-        const readingLink = document.querySelector('.nav-links a[href="reading.html"]');
-        if (readingLink) readingLink.classList.add('active');
-      });
-  </script>
+      document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+      const link = document.querySelector('[data-page="reading"]');
+      if(link) link.classList.add('active');
+    });
+</script>
 
 </body>
 </html>
