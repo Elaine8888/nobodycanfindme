@@ -4,19 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Read an Academic Passage Practice</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1" />
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fb;
-      color: #222;
-    }
-
     .page {
       max-width: 1200px;
-      margin: 32px auto;
-      padding: 0 20px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
     }
 
     .topbar {
@@ -59,6 +52,7 @@
       border-radius: 18px;
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
       padding: 28px;
+      border: 1px solid var(--line);
     }
 
     .passage-card {
@@ -71,7 +65,7 @@
       flex: 0.95;
       min-width: 320px;
       position: sticky;
-      top: 20px;
+      top: 96px;
     }
 
     .passage-text {
@@ -252,7 +246,6 @@
       display: none;
     }
 
-    /* ===== 通用句子插入题插件样式 ===== */
     .insert-slot {
       display: inline-block;
       width: 12px;
@@ -302,8 +295,6 @@
       background: #eefcfb;
       color: #0a6f78;
     }
-
-
 
     .insert-sentence-box {
       margin: 18px 0 20px;
@@ -355,44 +346,59 @@
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="topbar">
-      <a class="back-link" href="read-an-academic-passage.html">← Back to Passage List</a>
-    </div>
+  <div id="navbar"></div>
 
-    <div class="title" id="passageTitle"></div>
+  <div class="page-shell">
+    <div class="page">
+      <div class="topbar">
+        <a class="back-link" href="/read-an-academic-passage.html">← Back to Passage List</a>
+      </div>
 
-    <div class="layout">
-      <section class="passage-card">
-        <div class="passage-meta" id="passageMeta"></div>
-        <div class="passage-text" id="passage"></div>
-      </section>
+      <div class="title" id="passageTitle"></div>
 
-      <section class="question-card" id="questionCard">
-        <div class="question-top">
-          <div class="progress" id="progress"></div>
-          <div class="nav-buttons">
-            <button class="secondary-btn" id="backBtn">Back</button>
-            <button class="primary-btn" id="nextBtn">Next</button>
+      <div class="layout">
+        <section class="passage-card">
+          <div class="passage-meta" id="passageMeta"></div>
+          <div class="passage-text" id="passage"></div>
+        </section>
+
+        <section class="question-card" id="questionCard">
+          <div class="question-top">
+            <div class="progress" id="progress"></div>
+            <div class="nav-buttons">
+              <button class="secondary-btn" id="backBtn">Back</button>
+              <button class="primary-btn" id="nextBtn">Next</button>
+            </div>
           </div>
-        </div>
 
-        <div class="question-text" id="questionText"></div>
-        <div id="insertSentenceBox" class="insert-sentence-box" style="display:none;"></div>
-        <div class="options" id="options"></div>
-        <div class="muted" id="hintText">You can move on even if you leave a question unanswered.</div>
-      </section>
+          <div class="question-text" id="questionText"></div>
+          <div id="insertSentenceBox" class="insert-sentence-box" style="display:none;"></div>
+          <div class="options" id="options"></div>
+          <div class="muted" id="hintText">You can move on even if you leave a question unanswered.</div>
+        </section>
 
-      <section class="result-card hidden" id="resultCard">
-        <div class="score" id="scoreText"></div>
-        <div class="accuracy" id="accuracyText"></div>
-        <div class="result-actions">
-          <a class="back-link" href="read-an-academic-passage.html">← Back to Passage List</a>
-        </div>
-        <div class="review-list" id="reviewList"></div>
-      </section>
+        <section class="result-card hidden" id="resultCard">
+          <div class="score" id="scoreText"></div>
+          <div class="accuracy" id="accuracyText"></div>
+          <div class="result-actions">
+            <a class="back-link" href="/read-an-academic-passage.html">← Back to Passage List</a>
+          </div>
+          <div class="review-list" id="reviewList"></div>
+        </section>
+      </div>
     </div>
   </div>
+
+  <script>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+        const readingLink = document.querySelector('.nav-links a[href="/reading.html"]');
+        if (readingLink) readingLink.classList.add('active');
+      });
+  </script>
 
   <script>
     const passages = {
