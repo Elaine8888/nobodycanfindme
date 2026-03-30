@@ -1,42 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <title>Take an Interview</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- ✅ 统一样式 -->
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1">
+
   <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f4f7f9;
-      margin: 0;
-      padding: 20px;
+    .page-shell {
+      max-width: 900px;
+      margin: 100px auto 40px;
+      padding: 0 16px;
     }
 
-    h1 {
+    .hero {
       text-align: center;
       margin-bottom: 30px;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    .card-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 20px;
     }
 
     button {
@@ -46,7 +39,6 @@
       padding: 10px 18px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
     }
 
     button:hover {
@@ -57,19 +49,41 @@
 
 <body>
 
-  <div class="container">
-    <h1>Take an Interview</h1>
-    <div id="topic-list"></div>
+  <!-- ✅ Navbar -->
+  <div id="navbar"></div>
+
+  <div class="page-shell">
+    <header class="hero card">
+      <h1>Take an Interview</h1>
+      <p>Practice topic-based interview questions with structured prompts.</p>
+    </header>
+
+    <div id="topic-list" class="card-list"></div>
   </div>
 
-  <script src="data/interview.js"></script>
+  <script src="/data/interview.js"></script>
 
+  <!-- ✅ Navbar加载 + 高亮 -->
+  <script>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+
+        const speakingLink = document.querySelector('.nav-links a[href="/speaking.html"]');
+        if (speakingLink) speakingLink.classList.add('active');
+      });
+  </script>
+
+  <!-- ✅ 原有逻辑（保留） -->
   <script>
     const container = document.getElementById("topic-list");
 
     interviewData.forEach(item => {
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card card-item";
 
       card.innerHTML = `
         <h3>${item.topic}</h3>
@@ -80,7 +94,7 @@
     });
 
     function openInterview(id) {
-      window.location.href = `interview-detail.html?id=${id}`;
+      window.location.href = `/interview-detail.html?id=${id}`;
     }
   </script>
 
