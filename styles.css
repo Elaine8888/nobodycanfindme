@@ -519,3 +519,56 @@ a{
     grid-template-columns:1fr;
   }
 }
+
+/* ===== Simple Page (子页面统一风格) ===== */
+
+.page-simple{
+  max-width:900px;
+  margin:0 auto;
+  padding:110px 20px 60px;
+}
+
+.page-simple h1{
+  font-size:48px;
+  margin-bottom:12px;
+}
+
+.page-desc{
+  color:var(--muted);
+  margin-bottom:28px;
+  font-size:16px;
+}
+
+/* 列表 */
+
+.section-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.section-item{
+  display:block;
+  padding:18px 20px;
+  border-radius:16px;
+  background:#fff;
+  border:1px solid var(--line);
+  transition:.2s;
+}
+
+.section-item:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.06);
+}
+
+.section-title{
+  display:block;
+  font-weight:700;
+  font-size:18px;
+  margin-bottom:4px;
+}
+
+.section-sub{
+  color:var(--muted);
+  font-size:14px;
+}
