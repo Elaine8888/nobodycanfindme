@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Read in Daily Life</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      text-decoration: none;
+      color: #111;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .set-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .score {
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div class="page">
+  <h1>Read in Daily Life</h1>
+
+  <div class="card-grid" id="cardGrid"></div>
+</div>
+
+<!-- 题库 -->
+<script src="read-in-daily-life-questions.js"></script>
+
+<script>
+  function formatTime(seconds) {
+    const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const sec = String(seconds % 60).padStart(2, "0");
+    return `${min}:${sec}`;
+  }
+
+  const grid = document.getElementById("cardGrid");
+
+  dailyLifePassages.forEach(p => {
+    const saved = localStorage.getItem(`dailyLifeResult_${p.id}`);
+
+    let scoreText = `--/${p.questions.length}`;
+    let timeText = "--:--";
+
+    if (saved) {
+      const data = JSON.parse(saved);
+      scoreText = `${data.score}/${data.total}`;
+      timeText = formatTime(data.duration);
+    }
+
+    // ✅ 日期：没有就不显示
+    let dateHTML = "";
+    if (p.testDate) {
+      dateHTML = `<div class="meta">${p.testDate}</div>`;
+    }
+
+    const card = document.createElement("a");
+    card.className = "card";
+    card.href = `read-in-daily-life-practice.html?id=${p.id}`;
+
+    card.innerHTML = `
+      <div class="set-title">Set ${p.id}</div>
+      ${dateHTML}
+      <div class="meta score">Score: ${scoreText}</div>
+      <div class="meta">Time: ${timeText}</div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  // navbar 高亮
+  fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('navbar').innerHTML = html;
+
+      document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+      const link = document.querySelector('[data-page="reading"]');
+      if (link) link.classList.add('active');
+    });
+</script>
+
+</body>
+</html>
