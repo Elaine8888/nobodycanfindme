@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Read in Daily Life Practice</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+    }
+
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #4b5563;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .nav-links a.active {
+      background: #e8f0ff;
+      color: #2563eb;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    .page-header p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .progress {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafafa;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .card-body {
+      padding: 22px 20px;
+    }
+
+    .passage-box {
+      border: 2px solid #d1d5db;
+      border-radius: 14px;
+      padding: 24px;
+      background: #fcfcfc;
+      min-height: 420px;
+      line-height: 1.85;
+      font-size: 18px;
+      white-space: pre-wrap;
+    }
+
+    .notice-title {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 22px;
+      text-align: center;
+      color: #111827;
+    }
+
+    .notice-text {
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .notice-text .linkish {
+      color: #1d4ed8;
+      word-break: break-word;
+    }
+
+    .question-block {
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .question-block:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-title {
+      margin: 0 0 14px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      background: #fff;
+    }
+
+    .option:hover {
+      border-color: #c7d2fe;
+      background: #f8faff;
+    }
+
+    .option input {
+      margin-top: 3px;
+      transform: scale(1.05);
+    }
+
+    .option.correct {
+      background: #ecfdf5;
+      border-color: #10b981;
+    }
+
+    .option.incorrect {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+
+    .option.disabled {
+      pointer-events: none;
+      opacity: 0.96;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .primary-btn {
+      background: #2563eb;
+      color: white;
+    }
+
+    .primary-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-btn {
+      background: #eef2f7;
+      color: #111827;
+    }
+
+    .secondary-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .result-card {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      display: none;
+    }
+
+    .result-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    .result-line {
+      font-size: 15px;
+      color: #374151;
+      margin: 4px 0;
+      font-weight: 600;
+    }
+
+    .review-block {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+
+    .review-block h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #111827;
+    }
+
+    .review-answer {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #2563eb;
+    }
+
+    .review-explanation {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .passage-box {
+        min-height: auto;
+      }
+
+      .notice-title {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page-header h1 {
+        font-size: 24px;
+      }
+
+      .card-body,
+      .card-header {
+        padding: 16px;
+      }
+
+      .passage-box {
+        padding: 18px;
+        font-size: 16px;
+      }
+
+      .notice-title {
+        font-size: 24px;
+      }
+
+      .notice-text {
+        font-size: 16px;
+      }
+
+      .question-title {
+        font-size: 16px;
+      }
+
+      .nav-inner {
+        padding: 12px 14px;
+      }
+
+      .nav-links {
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-inner">
+      <a href="/index.html" class="logo">Hang in There</a>
+      <div class="nav-links">
+        <a href="/index.html">Home</a>
+        <a href="/reading.html" class="active">Reading</a>
+        <a href="/listening.html">Listening</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/writing.html">Writing</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <div class="page-header">
+      <h1>Read in Daily Life Practice</h1>
+      <p>Read the passage and answer the questions below.</p>
+    </div>
+
+    <div class="topbar">
+      <span class="badge">Reading · Daily Life</span>
+      <span class="progress" id="progress">Passage 1 of 1</span>
+    </div>
+
+    <div class="layout">
+      <section class="card">
+        <div class="card-header">
+          <h2 id="passageTitle">Passage</h2>
+        </div>
+        <div class="card-body">
+          <div id="passageBox" class="passage-box"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h2>Questions</h2>
+        </div>
+        <div class="card-body">
+          <div id="questionsContainer"></div>
+
+          <div class="actions">
+            <button class="primary-btn" id="submitBtn" onclick="checkAnswers()">Check Answers</button>
+            <button class="secondary-btn" onclick="resetAnswers()">Reset</button>
+          </div>
+
+          <div id="resultCard" class="result-card"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="daily-life-questions.js"></script>
+  <script>
+    let currentIndex = 0;
+    const currentPassage = dailyLifePassages[currentIndex];
+
+    function renderPassage(data) {
+      document.getElementById("passageTitle").textContent = data.title;
+
+      const bodyHtml = data.passage.replace(
+        /www\.[^\s]+/g,
+        '<span class="linkish">$&</span>'
+      );
+
+      document.getElementById("passageBox").innerHTML = `
+        <div class="notice-title">${data.heading}</div>
+        <div class="notice-text">${bodyHtml.replace(/\n/g, "<br>")}</div>
+      `;
+    }
+
+    function renderQuestions(data) {
+      const container = document.getElementById("questionsContainer");
+      container.innerHTML = "";
+
+      data.questions.forEach((item, qIndex) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+
+        const optionsHtml = item.options
+          .map((option, optIndex) => {
+            const optionLetter = String.fromCharCode(65 + optIndex);
+            return `
+              <label class="option" id="q${qIndex}_opt${optIndex}">
+                <input type="radio" name="q${qIndex}" value="${optIndex}">
+                <span><strong>${optionLetter}.</strong> ${option}</span>
+              </label>
+            `;
+          })
+          .join("");
+
+        block.innerHTML = `
+          <p class="question-title">Question ${qIndex + 1}. ${item.q}</p>
+          <div>${optionsHtml}</div>
+        `;
+
+        container.appendChild(block);
+      });
+    }
+
+    function checkAnswers() {
+      let score = 0;
+      const total = currentPassage.questions.length;
+      let reviewHtml = "";
+
+      currentPassage.questions.forEach((item, qIndex) => {
+        const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+        const optionLabels = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+
+        optionLabels.forEach(label => {
+          label.classList.remove("correct", "incorrect");
+          label.classList.add("disabled");
+        });
+
+        document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => {
+          input.disabled = true;
+        });
+
+        const correctValue = item.answer;
+        const correctLetter = String.fromCharCode(65 + correctValue);
+
+        let userAnswerText = "No answer";
+        if (selected) {
+          const selectedValue = Number(selected.value);
+          const selectedLetter = String.fromCharCode(65 + selectedValue);
+          userAnswerText = `${selectedLetter}. ${item.options[selectedValue]}`;
+
+          if (selectedValue === correctValue) {
+            score++;
+            document.getElementById(`q${qIndex}_opt${selectedValue}`).classList.add("correct");
+          } else {
+            document.getElementById(`q${qIndex}_opt${selectedValue}`).classList.add("incorrect");
+            document.getElementById(`q${qIndex}_opt${correctValue}`).classList.add("correct");
+          }
+        } else {
+          document.getElementById(`q${qIndex}_opt${correctValue}`).classList.add("correct");
+        }
+
+        reviewHtml += `
+          <div class="review-block">
+            <h4>Question ${qIndex + 1}</h4>
+            <div class="review-answer">Correct Answer: ${correctLetter}. ${item.options[correctValue]}</div>
+            <div class="review-answer" style="color:#6b7280;">Your Answer: ${userAnswerText}</div>
+            <div class="review-explanation">${item.explanation}</div>
+          </div>
+        `;
+      });
+
+      const accuracy = ((score / total) * 100).toFixed(0);
+
+      const resultCard = document.getElementById("resultCard");
+      resultCard.style.display = "block";
+      resultCard.innerHTML = `
+        <div class="result-title">Results</div>
+        <div class="result-line">Score: ${score} / ${total}</div>
+        <div class="result-line">Accuracy: ${accuracy}%</div>
+        ${reviewHtml}
+      `;
+
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("submitBtn").style.opacity = "0.65";
+      document.getElementById("submitBtn").style.cursor = "not-allowed";
+    }
+
+    function resetAnswers() {
+      document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.checked = false;
+        input.disabled = false;
+      });
+
+      document.querySelectorAll(".option").forEach(label => {
+        label.classList.remove("correct", "incorrect", "disabled");
+      });
+
+      const resultCard = document.getElementById("resultCard");
+      resultCard.style.display = "none";
+      resultCard.innerHTML = "";
+
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "1";
+      submitBtn.style.cursor = "pointer";
+    }
+
+    renderPassage(currentPassage);
+    renderQuestions(currentPassage);
+  </script>
+</body>
+</html>
