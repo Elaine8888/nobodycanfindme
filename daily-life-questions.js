@@ -25,7 +25,7 @@ Call 555-0190 for inquiries only.`,
         ],
         answer: 1,
         explanation:
-          "The poster says “Join the Mechanicsburg Clean-Up Day!” and “Volunteers of all ages are welcome,” so its main purpose is to recruit volunteers for a community event."
+          "题干问的是这张海报的主要目的。正文中出现了“Join the Mechanicsburg Clean-Up Day!”以及“Volunteers of all ages are welcome”，说明这是在号召大家参与清洁活动、招募志愿者，而不是通知广场重新开放、宣传园艺课程，或者招聘有偿清洁工。所以正确答案是 B。"
       },
       {
         q: "According to the poster, what will be provided?",
@@ -37,7 +37,7 @@ Call 555-0190 for inquiries only.`,
         ],
         answer: 2,
         explanation:
-          "The poster states “Refreshments will be provided.” The word “refreshments” means light food and drinks."
+          "题干问海报中提到“将提供什么”。原文明确写了“Refreshments will be provided.” 其中 refreshments 指的是茶点、饮料，也就是 food and drinks。所以正确答案是 C。其他几个选项原文都没有明确说明。"
       }
     ]
   }
