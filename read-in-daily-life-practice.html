@@ -115,7 +115,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.08fr 0.92fr;
       gap: 22px;
       align-items: start;
     }
@@ -132,6 +132,11 @@
       padding: 18px 20px;
       border-bottom: 1px solid #e5e7eb;
       background: #fafafa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .card-header h2 {
@@ -173,30 +178,55 @@
       word-break: break-word;
     }
 
-    .question-block {
-      margin-bottom: 28px;
-      padding-bottom: 22px;
-      border-bottom: 1px solid #e5e7eb;
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
     }
 
-    .question-block:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
+    .small-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      background: #eef2f7;
+      color: #111827;
+    }
+
+    .small-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .small-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .question-index {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4338ca;
+      background: #eef2ff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
     }
 
     .question-title {
-      margin: 0 0 14px;
+      margin: 0 0 16px;
       font-size: 17px;
       font-weight: 700;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .option {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       margin-bottom: 10px;
@@ -230,11 +260,11 @@
       opacity: 0.96;
     }
 
-    .actions {
+    .question-actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 24px;
+      margin-top: 22px;
     }
 
     button {
@@ -307,12 +337,13 @@
       font-weight: 700;
       margin-bottom: 6px;
       color: #2563eb;
+      line-height: 1.6;
     }
 
     .review-explanation {
       font-size: 14px;
       color: #4b5563;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
     @media (max-width: 900px) {
@@ -388,7 +419,7 @@
 
     <div class="topbar">
       <span class="badge">Reading · Daily Life</span>
-      <span class="progress" id="progress">Passage 1 of 1</span>
+      <span class="progress" id="progress">Passage 1 · Question 1 of 2</span>
     </div>
 
     <div class="layout">
@@ -403,12 +434,17 @@
 
       <section class="card">
         <div class="card-header">
-          <h2>Questions</h2>
+          <h2>Question</h2>
+          <div class="nav-buttons">
+            <button class="small-btn" id="backBtn" onclick="goBack()">Back</button>
+            <button class="small-btn" id="nextBtn" onclick="goNext()">Next</button>
+          </div>
         </div>
-        <div class="card-body">
-          <div id="questionsContainer"></div>
 
-          <div class="actions">
+        <div class="card-body">
+          <div id="questionContainer"></div>
+
+          <div class="question-actions">
             <button class="primary-btn" id="submitBtn" onclick="checkAnswers()">Check Answers</button>
             <button class="secondary-btn" onclick="resetAnswers()">Reset</button>
           </div>
@@ -421,8 +457,11 @@
 
   <script src="daily-life-questions.js"></script>
   <script>
-    let currentIndex = 0;
-    const currentPassage = dailyLifePassages[currentIndex];
+    let currentPassageIndex = 0;
+    let currentQuestionIndex = 0;
+    const currentPassage = dailyLifePassages[currentPassageIndex];
+    let userAnswers = new Array(currentPassage.questions.length).fill(null);
+    let hasSubmitted = false;
 
     function renderPassage(data) {
       document.getElementById("passageTitle").textContent = data.title;
@@ -438,79 +477,115 @@
       `;
     }
 
-    function renderQuestions(data) {
-      const container = document.getElementById("questionsContainer");
-      container.innerHTML = "";
+    function renderQuestion() {
+      const q = currentPassage.questions[currentQuestionIndex];
+      const container = document.getElementById("questionContainer");
+      const selectedAnswer = userAnswers[currentQuestionIndex];
 
-      data.questions.forEach((item, qIndex) => {
-        const block = document.createElement("div");
-        block.className = "question-block";
-
-        const optionsHtml = item.options
-          .map((option, optIndex) => {
-            const optionLetter = String.fromCharCode(65 + optIndex);
-            return `
-              <label class="option" id="q${qIndex}_opt${optIndex}">
-                <input type="radio" name="q${qIndex}" value="${optIndex}">
-                <span><strong>${optionLetter}.</strong> ${option}</span>
-              </label>
-            `;
-          })
-          .join("");
-
-        block.innerHTML = `
-          <p class="question-title">Question ${qIndex + 1}. ${item.q}</p>
-          <div>${optionsHtml}</div>
+      const optionsHtml = q.options.map((option, optIndex) => {
+        const optionLetter = String.fromCharCode(65 + optIndex);
+        const checked = selectedAnswer === optIndex ? "checked" : "";
+        return `
+          <label class="option" id="q${currentQuestionIndex}_opt${optIndex}">
+            <input type="radio" name="currentQuestion" value="${optIndex}" ${checked} ${hasSubmitted ? "disabled" : ""}>
+            <span><strong>${optionLetter}.</strong> ${option}</span>
+          </label>
         `;
+      }).join("");
 
-        container.appendChild(block);
+      container.innerHTML = `
+        <div class="question-index">Question ${currentQuestionIndex + 1} of ${currentPassage.questions.length}</div>
+        <p class="question-title">${q.q}</p>
+        <div>${optionsHtml}</div>
+      `;
+
+      document.querySelectorAll('input[name="currentQuestion"]').forEach(input => {
+        input.addEventListener("change", (e) => {
+          userAnswers[currentQuestionIndex] = Number(e.target.value);
+        });
       });
+
+      updateProgress();
+      updateNavButtons();
+
+      if (hasSubmitted) {
+        showQuestionReviewState();
+      }
+    }
+
+    function updateProgress() {
+      document.getElementById("progress").textContent =
+        `Passage ${currentPassageIndex + 1} · Question ${currentQuestionIndex + 1} of ${currentPassage.questions.length}`;
+    }
+
+    function updateNavButtons() {
+      document.getElementById("backBtn").disabled = currentQuestionIndex === 0;
+      document.getElementById("nextBtn").disabled = currentQuestionIndex === currentPassage.questions.length - 1;
+    }
+
+    function goBack() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+      }
+    }
+
+    function goNext() {
+      if (currentQuestionIndex < currentPassage.questions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+      }
+    }
+
+    function showQuestionReviewState() {
+      const q = currentPassage.questions[currentQuestionIndex];
+      const userAnswer = userAnswers[currentQuestionIndex];
+      const correctAnswer = q.answer;
+
+      document.querySelectorAll(".option").forEach(opt => {
+        opt.classList.add("disabled");
+      });
+
+      if (userAnswer !== null) {
+        if (userAnswer === correctAnswer) {
+          document.getElementById(`q${currentQuestionIndex}_opt${userAnswer}`).classList.add("correct");
+        } else {
+          document.getElementById(`q${currentQuestionIndex}_opt${userAnswer}`).classList.add("incorrect");
+          document.getElementById(`q${currentQuestionIndex}_opt${correctAnswer}`).classList.add("correct");
+        }
+      } else {
+        document.getElementById(`q${currentQuestionIndex}_opt${correctAnswer}`).classList.add("correct");
+      }
     }
 
     function checkAnswers() {
+      hasSubmitted = true;
+
       let score = 0;
-      const total = currentPassage.questions.length;
       let reviewHtml = "";
+      const total = currentPassage.questions.length;
 
-      currentPassage.questions.forEach((item, qIndex) => {
-        const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
-        const optionLabels = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+      currentPassage.questions.forEach((q, index) => {
+        const userAnswer = userAnswers[index];
+        const correctAnswer = q.answer;
+        const correctLetter = String.fromCharCode(65 + correctAnswer);
 
-        optionLabels.forEach(label => {
-          label.classList.remove("correct", "incorrect");
-          label.classList.add("disabled");
-        });
+        let userAnswerText = "未作答";
+        if (userAnswer !== null) {
+          const userLetter = String.fromCharCode(65 + userAnswer);
+          userAnswerText = `${userLetter}. ${q.options[userAnswer]}`;
+        }
 
-        document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => {
-          input.disabled = true;
-        });
-
-        const correctValue = item.answer;
-        const correctLetter = String.fromCharCode(65 + correctValue);
-
-        let userAnswerText = "No answer";
-        if (selected) {
-          const selectedValue = Number(selected.value);
-          const selectedLetter = String.fromCharCode(65 + selectedValue);
-          userAnswerText = `${selectedLetter}. ${item.options[selectedValue]}`;
-
-          if (selectedValue === correctValue) {
-            score++;
-            document.getElementById(`q${qIndex}_opt${selectedValue}`).classList.add("correct");
-          } else {
-            document.getElementById(`q${qIndex}_opt${selectedValue}`).classList.add("incorrect");
-            document.getElementById(`q${qIndex}_opt${correctValue}`).classList.add("correct");
-          }
-        } else {
-          document.getElementById(`q${qIndex}_opt${correctValue}`).classList.add("correct");
+        if (userAnswer === correctAnswer) {
+          score++;
         }
 
         reviewHtml += `
           <div class="review-block">
-            <h4>Question ${qIndex + 1}</h4>
-            <div class="review-answer">Correct Answer: ${correctLetter}. ${item.options[correctValue]}</div>
-            <div class="review-answer" style="color:#6b7280;">Your Answer: ${userAnswerText}</div>
-            <div class="review-explanation">${item.explanation}</div>
+            <h4>第 ${index + 1} 题</h4>
+            <div class="review-answer">正确答案：${correctLetter}. ${q.options[correctAnswer]}</div>
+            <div class="review-answer" style="color:#6b7280;">你的答案：${userAnswerText}</div>
+            <div class="review-explanation">${q.explanation}</div>
           </div>
         `;
       });
@@ -529,17 +604,14 @@
       document.getElementById("submitBtn").disabled = true;
       document.getElementById("submitBtn").style.opacity = "0.65";
       document.getElementById("submitBtn").style.cursor = "not-allowed";
+
+      renderQuestion();
     }
 
     function resetAnswers() {
-      document.querySelectorAll('input[type="radio"]').forEach(input => {
-        input.checked = false;
-        input.disabled = false;
-      });
-
-      document.querySelectorAll(".option").forEach(label => {
-        label.classList.remove("correct", "incorrect", "disabled");
-      });
+      userAnswers = new Array(currentPassage.questions.length).fill(null);
+      currentQuestionIndex = 0;
+      hasSubmitted = false;
 
       const resultCard = document.getElementById("resultCard");
       resultCard.style.display = "none";
@@ -549,10 +621,12 @@
       submitBtn.disabled = false;
       submitBtn.style.opacity = "1";
       submitBtn.style.cursor = "pointer";
+
+      renderQuestion();
     }
 
     renderPassage(currentPassage);
-    renderQuestions(currentPassage);
+    renderQuestion();
   </script>
 </body>
 </html>
