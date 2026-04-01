@@ -417,7 +417,7 @@ window.questions = [
     "title": "Cosmology",
     "subtitle": "",
     "date": "20260121 / 20260308",
-    "template": "Cosmology is the study of how the universe began, changed over time, and might evolve in the future. Scientists exa{0} stars, pla{1}, and gala{2} using observ{3} and mod{4} to desc{5} cosmic eve{6}. One wid{7} accepted id{8} is the big bang, wh{9} suggests the universe started from a single point and has been expanding ever since. Ongoing research helps improve our understanding of space, time, and the forces shaping the cosmos, revealing new discoveries about the vast universe.",
+    "template": "Cosmology is the study of how the universe began, changed over time, and might evolve in the future. Scientists exa{0} stars, pla{1}, and gala{2}, using observ{3} and mod{4} to desc{5} cosmic eve{6}. One wid{7} accepted id{8} is the big bang, wh{9} suggests the universe started from a single point and has been expanding ever since. Ongoing research helps improve our understanding of space, time, and the forces shaping the cosmos, revealing new discoveries about the vast universe.",
     "items": [
       {
         "p": "exa",
@@ -2264,7 +2264,7 @@ window.questions = [
       {
         "p": "subm",
         "a": "erged",
-        "g": 4
+        "g": 5
       },
       {
         "p": "w",
@@ -2305,65 +2305,6 @@ window.questions = [
   },
   {
     "id": 41,
-    "title": "Excavation of Artifacts",
-    "subtitle": "",
-    "date": "20260128",
-    "template": "Archaeologists typically study human history and prehistory through the excavation of artifacts buried underground. Sometimes, how{0}, they disc{1} artifacts subm{2} underwater. A stone wall w{3} found ben{4} the Baltic Sea i{5} 2012 th{6} dates t{7} over 10,000 ye{8} ago. Resea{9} believe it was used by hunter-gatherer societies to guide and trap reindeer. The wall consists of approximately 1,670 stones and is considered one of the oldest documented hunting structures made by humans.",
-    "items": [
-      {
-        "p": "how",
-        "a": "ever",
-        "g": 4
-      },
-      {
-        "p": "disc",
-        "a": "over",
-        "g": 4
-      },
-      {
-        "p": "subm",
-        "a": "erged",
-        "g": 4
-      },
-      {
-        "p": "w",
-        "a": "as",
-        "g": 2
-      },
-      {
-        "p": "ben",
-        "a": "eath",
-        "g": 4
-      },
-      {
-        "p": "i",
-        "a": "n",
-        "g": 1
-      },
-      {
-        "p": "th",
-        "a": "at",
-        "g": 2
-      },
-      {
-        "p": "t",
-        "a": "o",
-        "g": 1
-      },
-      {
-        "p": "ye",
-        "a": "ars",
-        "g": 3
-      },
-      {
-        "p": "Resea",
-        "a": "rchers",
-        "g": 6
-      }
-    ]
-  },
-  {
-    "id": 42,
     "title": "Mental State Understanding",
     "subtitle": "",
     "date": "20260208",
@@ -2417,7 +2358,7 @@ window.questions = [
     ]
   },
   {
-    "id": 43,
+    "id": 42,
     "title": "Human Cognition",
     "subtitle": "",
     "date": "20260208",
@@ -2476,7 +2417,7 @@ window.questions = [
     ]
   },
   {
-    "id": 44,
+    "id": 43,
     "title": "Medieval European History",
     "subtitle": "",
     "date": "20260308",
@@ -2533,5 +2474,43 @@ window.questions = [
         "g": 3
       }
     ]
-  }
+  },
+  {
+  id: 44,
+  title: "Camels",
+  subtitle: "",
+  date: "20260311",
+  template: "Camels live in the desert where the weather is hot and dry. Sometimes i{0} the des{1}, camels ha{2} to tra{3} for a lo{4} time wit{5} finding a{6} food o{7} water. S{8} when cam{9} do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert.",
+  items: [
+    { p: "i", a: "n", g: 1 },
+    { p: "des", a: "ert", g: 3 },
+    { p: "ha", a: "ve", g: 2 },
+    { p: "tra", a: "vel", g: 3 },
+    { p: "lo", a: "ng", g: 2 },
+    { p: "wit", a: "hout", g: 4 },
+    { p: "a", a: "ny", g: 2 },
+    { p: "o", a: "r", g: 1 },
+    { p: "S", a: "o", g: 1 },
+    { p: "cam", a: "els", g: 3 }
+  ]
+},
+  {
+  id: 45,
+  title: "Coral reefs",
+  subtitle: "",
+  date: "20260329",
+  template: "Coral reefs are vibrant underwater ecosystems found in warm, shallow oceans around the world. Coral reefs are produ{0} by colo{1} of ti{2} animals cal{3} coral polyps, wh{4} secrete calcium carbonate t{5} build th{6} hard skel{7}. These nat{8} formations pro{9} critical habitats for a diverse array of marine species, including fish, crustaceans, and mollusks. They also offer protection to coastal areas by reducing the impact of wave and storms. However, coral reefs are facing threats from climate change, pollution, and overfishing.",
+  items: [
+    { p: "produ", a: "ced", g: 3 },
+    { p: "colo", a: "nies", g: 4 },
+    { p: "ti", a: "ny", g: 2 },
+    { p: "cal", a: "led", g: 3 },
+    { p: "wh", a: "ich", g: 3 },
+    { p: "t", a: "o", g: 1 },
+    { p: "th", a: "eir", g: 3 },
+    { p: "skel", a: "etons", g: 4 },
+    { p: "nat", a: "ural", g: 3 },
+    { p: "pro", a: "vide", g: 3 }
+  ]
+}
   ];
