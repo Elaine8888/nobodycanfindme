@@ -3,42 +3,267 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Practice</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Write an Email Practice</title>
+  <link rel="stylesheet" href="styles.css?v=20260403-email-practice-1" />
 </head>
-
 <body>
+  <div id="navbar"></div>
 
-<div class="container">
-  <h2 id="title"></h2>
+  <div class="page-shell">
+    <div class="email-page">
+      <a class="top-link" href="write-an-email.html">← Back to Email List</a>
 
-  <p id="prompt" style="margin:20px 0;"></p>
+      <div class="email-practice-topbar">
+        <div class="email-practice-progress" id="emailProgress">Question 1 of 2</div>
 
-  <textarea id="answer" rows="10" style="width:100%; padding:10px;"></textarea>
+        <div class="email-practice-actions">
+          <div class="email-timer" id="emailTimer">07:00</div>
+          <button id="emailBackBtn" class="email-nav-btn secondary">Back</button>
+          <button id="emailNextBtn" class="email-nav-btn primary">Next</button>
+        </div>
+      </div>
 
-  <button onclick="showAnswer()" style="margin-top:20px;">查看参考答案</button>
+      <div class="email-practice-layout">
+        <section class="email-prompt-card">
+          <div class="email-prompt-text" id="emailScenario"></div>
 
-  <div id="result" style="margin-top:20px;"></div>
-</div>
+          <div class="email-prompt-title" id="emailPromptTitle"></div>
 
-<script src="write-an-email-questions.js"></script>
+          <ul class="email-task-list" id="emailTaskList"></ul>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+          <div class="email-note" id="emailNote"></div>
+        </section>
 
-const q = questions[id];
+        <section class="email-compose-card">
+          <div class="email-compose-title">Your Response:</div>
 
-document.getElementById("title").innerText = q.title;
-document.getElementById("prompt").innerText = q.prompt;
+          <div class="email-meta-line" id="emailTo"></div>
+          <div class="email-meta-line" id="emailSubject"></div>
 
-function showAnswer() {
-  document.getElementById("result").innerHTML = `
-    <h3>参考答案：</h3>
-    <p>${q.answer}</p>
-  `;
-}
-</script>
+          <div class="email-toolbar">
+            <div class="email-toolbar-buttons">
+              <button id="saveDraftBtn" class="email-tool-btn primary">Save Draft</button>
+              <button id="clearDraftBtn" class="email-tool-btn light">Clear Draft</button>
+            </div>
 
+            <div class="email-word-count" id="emailWordCount">0 words</div>
+          </div>
+
+          <textarea id="emailTextarea" class="email-textarea" spellcheck="true"></textarea>
+
+          <div class="email-bottom-row">
+            <div class="email-save-status" id="emailSaveStatus">Draft not saved yet.</div>
+
+            <div class="email-bottom-actions">
+              <button id="prevQuestionBtn" class="email-nav-btn secondary">Previous</button>
+              <button id="nextQuestionBtn" class="email-nav-btn primary">Next</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="write-an-email-questions.js"></script>
+
+  <script>
+    fetch('navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.classList.remove('active');
+        });
+
+        const writingLink = document.querySelector('[data-page="writing"]')
+          || [...document.querySelectorAll('.nav-links a')].find(a => a.textContent.trim() === 'Writing');
+
+        if (writingLink) writingLink.classList.add('active');
+      });
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedId = Number(params.get('id')) || 1;
+
+    const questions = window.writeEmailQuestions || [];
+    let currentIndex = questions.findIndex(q => q.id === requestedId);
+    if (currentIndex < 0) currentIndex = 0;
+
+    const progressEl = document.getElementById('emailProgress');
+    const timerEl = document.getElementById('emailTimer');
+    const scenarioEl = document.getElementById('emailScenario');
+    const promptTitleEl = document.getElementById('emailPromptTitle');
+    const taskListEl = document.getElementById('emailTaskList');
+    const noteEl = document.getElementById('emailNote');
+    const toEl = document.getElementById('emailTo');
+    const subjectEl = document.getElementById('emailSubject');
+    const textareaEl = document.getElementById('emailTextarea');
+    const wordCountEl = document.getElementById('emailWordCount');
+    const saveStatusEl = document.getElementById('emailSaveStatus');
+
+    const backBtnTop = document.getElementById('emailBackBtn');
+    const nextBtnTop = document.getElementById('emailNextBtn');
+    const prevBtnBottom = document.getElementById('prevQuestionBtn');
+    const nextBtnBottom = document.getElementById('nextQuestionBtn');
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
+    const clearDraftBtn = document.getElementById('clearDraftBtn');
+
+    let timerId = null;
+    let timeLeft = 420;
+
+    function getCurrentQuestion() {
+      return questions[currentIndex];
+    }
+
+    function draftKey(id) {
+      return `writeEmailDraft_${id}`;
+    }
+
+    function savedAtKey(id) {
+      return `writeEmailDraftSavedAt_${id}`;
+    }
+
+    function timerKey(id) {
+      return `writeEmailTimer_${id}`;
+    }
+
+    function setSaveStatus(text) {
+      saveStatusEl.textContent = text;
+    }
+
+    function updateWordCount() {
+      const text = textareaEl.value.trim();
+      const count = text ? text.split(/\s+/).length : 0;
+      wordCountEl.textContent = `${count} words`;
+    }
+
+    function formatTime(seconds) {
+      const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const sec = String(seconds % 60).padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function saveTimer() {
+      const q = getCurrentQuestion();
+      localStorage.setItem(timerKey(q.id), String(timeLeft));
+    }
+
+    function loadTimer() {
+      const q = getCurrentQuestion();
+      const saved = localStorage.getItem(timerKey(q.id));
+
+      if (saved !== null && saved !== '') {
+        const value = Number(saved);
+        timeLeft = Number.isFinite(value) ? value : q.durationSeconds;
+      } else {
+        timeLeft = q.durationSeconds;
+      }
+
+      timerEl.textContent = formatTime(timeLeft);
+    }
+
+    function startTimer() {
+      if (timerId) clearInterval(timerId);
+
+      timerId = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          timerEl.textContent = formatTime(timeLeft);
+          saveTimer();
+        } else {
+          clearInterval(timerId);
+          timerId = null;
+          setSaveStatus('Time is up. Your draft is still saved locally.');
+          textareaEl.blur();
+        }
+      }, 1000);
+    }
+
+    function saveDraft(showMessage = true) {
+      const q = getCurrentQuestion();
+      localStorage.setItem(draftKey(q.id), textareaEl.value);
+
+      const now = new Date().toISOString();
+      localStorage.setItem(savedAtKey(q.id), now);
+
+      if (showMessage) {
+        const display = new Date(now).toLocaleString();
+        setSaveStatus(`Draft saved locally at ${display}.`);
+      }
+    }
+
+    function loadDraft() {
+      const q = getCurrentQuestion();
+      const saved = localStorage.getItem(draftKey(q.id)) || '';
+      const savedAt = localStorage.getItem(savedAtKey(q.id)) || '';
+
+      textareaEl.value = saved;
+      updateWordCount();
+
+      if (savedAt) {
+        const display = new Date(savedAt).toLocaleString();
+        setSaveStatus(`Draft loaded. Last saved at ${display}.`);
+      } else {
+        setSaveStatus('Draft not saved yet.');
+      }
+    }
+
+    function renderQuestion() {
+      const q = getCurrentQuestion();
+
+      progressEl.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+      scenarioEl.textContent = q.scenario;
+      promptTitleEl.textContent = q.promptTitle;
+      taskListEl.innerHTML = q.tasks.map(task => `<li>${task}</li>`).join('');
+      noteEl.textContent = q.note;
+      toEl.textContent = `To: ${q.to}`;
+      subjectEl.textContent = `Subject: ${q.subject}`;
+
+      loadDraft();
+      loadTimer();
+      startTimer();
+
+      backBtnTop.disabled = currentIndex === 0;
+      prevBtnBottom.disabled = currentIndex === 0;
+      nextBtnTop.disabled = currentIndex === questions.length - 1;
+      nextBtnBottom.disabled = currentIndex === questions.length - 1;
+    }
+
+    function goToQuestion(index) {
+      if (index < 0 || index >= questions.length) return;
+
+      saveDraft(false);
+      saveTimer();
+
+      const target = questions[index];
+      window.location.href = `write-an-email-practice.html?id=${target.id}`;
+    }
+
+    textareaEl.addEventListener('input', () => {
+      updateWordCount();
+      saveDraft(false);
+      setSaveStatus('Draft auto-saved locally.');
+    });
+
+    saveDraftBtn.addEventListener('click', () => {
+      saveDraft(true);
+    });
+
+    clearDraftBtn.addEventListener('click', () => {
+      const q = getCurrentQuestion();
+      localStorage.removeItem(draftKey(q.id));
+      localStorage.removeItem(savedAtKey(q.id));
+      textareaEl.value = '';
+      updateWordCount();
+      setSaveStatus('Draft cleared.');
+    });
+
+    backBtnTop.addEventListener('click', () => goToQuestion(currentIndex - 1));
+    prevBtnBottom.addEventListener('click', () => goToQuestion(currentIndex - 1));
+    nextBtnTop.addEventListener('click', () => goToQuestion(currentIndex + 1));
+    nextBtnBottom.addEventListener('click', () => goToQuestion(currentIndex + 1));
+
+    renderQuestion();
+  </script>
 </body>
 </html>
