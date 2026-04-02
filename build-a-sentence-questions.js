@@ -4,7 +4,7 @@ window.buildSentenceQuestions = [
     speakerA: "I saw a job posting for a part-time position at the student bookstore.",
     speakerBPrefix: "",
     speakerBSuffix: "yet?",
-    bank: ["For", "you", "have", "it", "applied"],
+    bank: ["for", "you", "have", "it", "applied"],
     answer: ["Have", "you", "applied", "for", "it"],
     translation: "你申请了吗？"
   },
