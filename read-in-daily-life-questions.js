@@ -1,4 +1,4 @@
-const dailyLifePassages = [
+window.dailyLifePassages = [
 
   // ===== Set 1（你原来的，保留）=====
   {
