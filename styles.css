@@ -1010,3 +1010,149 @@ a{
     font-size:17px;
   }
 }
+
+/* ===== Academic Discussion ===== */
+
+.discussion-page{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:30px;
+  box-shadow:var(--shadow);
+  padding:28px;
+}
+
+.discussion-header{
+  margin-bottom:20px;
+}
+
+.discussion-header h1{
+  margin:0 0 8px;
+  font-size:40px;
+  line-height:1.2;
+}
+
+.discussion-header p{
+  margin:0;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.7;
+}
+
+.discussion-list-grid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:18px;
+}
+
+.discussion-card{
+  display:block;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 4px 16px rgba(24,39,75,.05);
+  transition:.18s ease;
+}
+
+.discussion-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(24,39,75,.09);
+}
+
+.discussion-card-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+  color:#7a869a;
+  font-size:13px;
+  font-weight:700;
+}
+
+.discussion-card-title{
+  font-size:18px;
+  font-weight:800;
+  line-height:1.5;
+  color:var(--text);
+  margin-bottom:10px;
+}
+
+.discussion-card-foot{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.discussion-single-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:28px;
+  box-shadow:0 6px 20px rgba(24,39,75,.06);
+}
+
+.discussion-single-label{
+  display:inline-block;
+  font-size:13px;
+  font-weight:800;
+  color:#6574f7;
+  background:#eef1ff;
+  border-radius:999px;
+  padding:7px 12px;
+  margin-bottom:16px;
+}
+
+.discussion-single-text{
+  font-size:18px;
+  line-height:1.9;
+  color:var(--text);
+  white-space:normal;
+}
+
+.discussion-single-actions{
+  margin-top:24px;
+}
+
+.discussion-back-btn{
+  display:inline-block;
+  color:#2563eb;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.discussion-back-btn:hover{
+  text-decoration:underline;
+}
+
+@media (max-width:900px){
+  .discussion-list-grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width:700px){
+  .discussion-page{
+    padding:20px;
+    border-radius:24px;
+  }
+
+  .discussion-header h1{
+    font-size:32px;
+  }
+
+  .discussion-list-grid{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .discussion-card,
+  .discussion-single-card{
+    padding:20px;
+    border-radius:18px;
+  }
+
+  .discussion-single-text{
+    font-size:16px;
+    line-height:1.8;
+  }
+}
