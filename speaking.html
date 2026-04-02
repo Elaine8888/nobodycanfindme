@@ -1,43 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Speaking Practice</title>
-  <link rel="stylesheet" href="./styles.css?v=20260331speakingfix3" />
-</head>
-<body>
-  <div class="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="logo">Hang in There</a>
+<div class="page-shell">
 
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="reading.html">Reading</a>
-        <a href="listening.html">Listening</a>
-        <a href="speaking.html" class="active">Speaking</a>
-        <a href="writing.html">Writing</a>
-      </div>
+  <header class="hero card">
+    <h1>Speaking Practice</h1>
+    <p>Select a question type, then choose a set.</p>
+  </header>
+
+  <!-- 题型按钮 -->
+  <div class="type-tabs">
+    <button class="type-tab active" onclick="switchType('repeat')">
+      Listen and Repeat
+    </button>
+
+    <button class="type-tab" onclick="switchType('interview')">
+      Take an Interview
+    </button>
+  </div>
+
+  <!-- 内容 -->
+  <div id="type-content"></div>
+
+</div>
+
+<script>
+let currentType = "repeat";
+
+function switchType(type) {
+  currentType = type;
+
+  document.querySelectorAll(".type-tab").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  event.target.classList.add("active");
+
+  renderSets();
+}
+
+function renderSets() {
+  const container = document.getElementById("type-content");
+
+  container.innerHTML = `
+    <h2>${currentType === "repeat" ? "Listen and Repeat" : "Take an Interview"}</h2>
+    <p>Each set contains 10 questions.</p>
+
+    <div class="set-row">
+      ${Array.from({ length: 10 }).map((_, i) => `
+        <div class="set-btn">${i + 1}</div>
+      `).join("")}
+      <span class="set-score">0/10</span>
     </div>
-  </div>
+  `;
+}
 
-  <div class="page-shell">
-    <header class="hero card">
-      <h1>Speaking Practice</h1>
-      <p>Select a question type to begin your practice.</p>
-    </header>
-
-    <section class="card-grid">
-      <a href="listen-and-repeat.html" class="card">
-        <h3>Listen and Repeat</h3>
-        <p>Practice repeating clearly and get familiar with common campus scenes.</p>
-      </a>
-
-      <a href="speaking-interview.html" class="card">
-        <h3>Take an Interview</h3>
-        <p>Practice topic-based interview questions with four prompts.</p>
-      </a>
-    </section>
-  </div>
-</body>
-</html>
+renderSets();
+</script>
