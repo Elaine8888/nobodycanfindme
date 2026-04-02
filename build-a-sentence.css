@@ -76,30 +76,24 @@ h1 {
   flex-wrap: wrap;
   align-items: center;
   align-content: flex-start;
+  gap: 0;
 }
 
-#prefixText,
-#suffixText {
-  display: inline;
+.fixed-text {
+  display: inline-block;
+  margin-right: 6px;
   font-weight: 700;
 }
 
-.slots-inline {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin: 0 4px;
-}
-
 .slot {
-  min-width: 110px;
+  min-width: 92px;
   height: 34px;
   border-bottom: 3px solid #cfcfcf;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0 6px;
+  margin-right: 6px;
   background: transparent;
   transition: background 0.15s ease;
 }
@@ -170,10 +164,10 @@ button {
   font-size: 17px;
   font-weight: bold;
   min-height: 24px;
+  line-height: 1.8;
 }
 
-/* ===== Writing page small number status ===== */
-
+/* Writing 页小数字状态 */
 .bs-grid {
   display: flex;
   gap: 12px;
@@ -244,7 +238,7 @@ button {
   }
 
   .slot {
-    min-width: 88px;
+    min-width: 82px;
     height: 30px;
   }
 
