@@ -2508,9 +2508,9 @@ window.questions = [
     { p: "wh", a: "ich", g: 3 },
     { p: "t", a: "o", g: 1 },
     { p: "th", a: "eir", g: 3 },
-    { p: "skel", a: "etons", g: 4 },
-    { p: "nat", a: "ural", g: 3 },
-    { p: "pro", a: "vide", g: 3 }
+    { p: "skel", a: "etons", g: 5 },
+    { p: "nat", a: "ural", g: 4 },
+    { p: "pro", a: "vide", g: 4 }
   ]
 },
   {
@@ -2529,7 +2529,7 @@ window.questions = [
     { p: "re", a: "ign", g: 3 },
     { p: "dur", a: "ing", g: 3 },
     { p: "ar", a: "ts", g: 2 },
-    { p: "archit", a: "ecture", g: 5 }
+    { p: "archit", a: "ecture", g: 6 }
   ]
 },
   {
@@ -2546,7 +2546,7 @@ window.questions = [
     { p: "mel", a: "ting", g: 4 },
     { p: "riv", a: "ers", g: 3 },
     { p: "la", a: "kes", g: 3 },
-    { p: "agric", a: "ulture", g: 5 },
+    { p: "agric", a: "ulture", g: 6 },
     { p: "wild", a: "life", g: 4 },
     { p: "se", a: "rve", g: 3 }
   ]
