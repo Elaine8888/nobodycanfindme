@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Write an Email</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="nav-inner">
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="writing.html" class="active">Writing</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Write an Email</h1>
+  <p class="subtitle">选择一套题目开始练习</p>
+
+  <div id="list" class="card-grid"></div>
+</div>
+
+<script src="write-an-email-questions.js"></script>
+
+<script>
+const list = document.getElementById("list");
+
+questions.forEach((q, index) => {
+  const card = document.createElement("a");
+  card.href = `write-an-email-practice.html?id=${index}`;
+  card.className = "card";
+
+  card.innerHTML = `
+    <h3>Set ${index + 1}</h3>
+    <p>${q.title}</p>
+  `;
+
+  list.appendChild(card);
+});
+</script>
+
+</body>
+</html>
