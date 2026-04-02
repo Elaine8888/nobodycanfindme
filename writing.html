@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing</title>
-  <link rel="stylesheet" href="/styles.css?v=20260402-writing-tabs-3" />
+  <link rel="stylesheet" href="/styles.css?v=20260402-writing-email-1" />
   <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-sets-1" />
 </head>
 <body>
@@ -47,6 +47,7 @@
   </div>
 
   <script src="/build-a-sentence-questions.js"></script>
+  <script src="/write-an-email-questions.js"></script>
 
   <script>
     fetch('/navbar.html')
@@ -134,14 +135,56 @@
       `;
     }
 
+    function getEmailDraftMeta(questionId) {
+      const draft = localStorage.getItem(`writeEmailDraft_${questionId}`) || '';
+      const savedAt = localStorage.getItem(`writeEmailDraftSavedAt_${questionId}`) || '';
+      const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+
+      return {
+        hasDraft: draft.trim().length > 0,
+        savedAt,
+        wordCount
+      };
+    }
+
+    function formatSavedAt(value) {
+      if (!value) return 'No draft';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Draft saved';
+      return `Saved ${date.toLocaleString()}`;
+    }
+
     function renderEmail() {
       panelTitle.textContent = 'Write an Email';
-      panelDesc.textContent = 'Email tasks can be added here later.';
+      panelDesc.textContent = 'Open a prompt and save your response locally on this device.';
+
+      const questions = window.writeEmailQuestions || [];
 
       writingList.innerHTML = `
-        <div class="writing-empty-card">
-          <div class="writing-empty-title">Write an Email</div>
-          <div class="writing-empty-text">这个题型的题目页还没接入。后面你把文件发我，我继续接进去。</div>
+        <div class="email-list-grid">
+          ${questions.map(item => {
+            const meta = getEmailDraftMeta(item.id);
+
+            return `
+              <a class="email-card" href="/write-an-email-practice.html?id=${item.id}">
+                <div class="email-card-top">
+                  <span class="email-card-tag">Set ${item.id}</span>
+                  <span class="email-card-status ${meta.hasDraft ? 'draft' : 'empty'}">
+                    ${meta.hasDraft ? 'Draft saved' : 'New'}
+                  </span>
+                </div>
+
+                <div class="email-card-title">${item.title}</div>
+                <div class="email-card-sub">To: ${item.to}</div>
+                <div class="email-card-sub">Subject: ${item.subject}</div>
+
+                <div class="email-card-foot">
+                  <span>${formatSavedAt(meta.savedAt)}</span>
+                  <span>${meta.wordCount} words</span>
+                </div>
+              </a>
+            `;
+          }).join('')}
         </div>
       `;
     }
@@ -150,14 +193,18 @@
       panelTitle.textContent = 'Academic Discussion';
       panelDesc.textContent = 'Choose a set to begin your practice.';
 
-      writingList.innerHTML = academicDiscussionSets.map(item => `
-        <a class="writing-card" href="/academic-discussion.html?id=${item.id}">
-          ${createMetaRow([`Set ${item.id}`, 'Discussion'])}
-          <div class="writing-card-title">${item.title}</div>
-          <div class="writing-card-sub">Read the question and respond with your own ideas.</div>
-          <div class="writing-card-foot">Click to open</div>
-        </a>
-      `).join('');
+      writingList.innerHTML = `
+        <div class="writing-list-grid">
+          ${academicDiscussionSets.map(item => `
+            <a class="writing-card" href="/academic-discussion.html?id=${item.id}">
+              ${createMetaRow([`Set ${item.id}`, 'Discussion'])}
+              <div class="writing-card-title">${item.title}</div>
+              <div class="writing-card-sub">Read the question and respond with your own ideas.</div>
+              <div class="writing-card-foot">Click to open</div>
+            </a>
+          `).join('')}
+        </div>
+      `;
     }
 
     function setActiveTab(type) {
