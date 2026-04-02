@@ -6,33 +6,54 @@ body {
 }
 
 .container {
-  max-width: 1000px;
-  margin: 30px auto;
+  max-width: 1100px;
+  margin: 24px auto;
   padding: 20px;
+}
+
+.topbar {
+  margin-bottom: 10px;
+}
+
+.back-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.back-link:hover {
+  text-decoration: underline;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 12px 0 26px;
+  font-size: 2.1rem;
 }
 
 .question-card {
   background: #fff;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 22px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .speaker-row {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.speaker-row:last-child {
+  margin-bottom: 0;
 }
 
 .avatar {
-  width: 72px;
-  height: 72px;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
   background: #d9f3ef;
   border: 3px solid #12a594;
@@ -46,70 +67,194 @@ h1 {
   flex: 1;
 }
 
+.speech {
+  font-weight: 700;
+}
+
+.response-area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+}
+
+#prefixText,
+#suffixText {
+  display: inline;
+  font-weight: 700;
+}
+
 .slots-inline {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 10px;
-  vertical-align: middle;
-  margin: 0 8px;
+  align-items: center;
+  gap: 6px;
+  margin: 0 4px;
 }
 
 .slot {
-  min-width: 120px;
-  min-height: 42px;
+  min-width: 110px;
+  height: 34px;
   border-bottom: 3px solid #cfcfcf;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
-  background: #fff;
+  padding: 0 6px;
+  background: transparent;
+  transition: background 0.15s ease;
 }
 
 .slot.over {
   background: #eef9f7;
+  border-radius: 6px 6px 0 0;
 }
 
 .token {
-  display: inline-block;
-  padding: 10px 16px;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 12px;
   background: #fff;
   border: 1px solid #ccc;
   cursor: grab;
   user-select: none;
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .bank {
-  min-height: 90px;
+  min-height: 92px;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
 }
 
 .controls {
-  margin-top: 20px;
+  margin-top: 18px;
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 button {
   padding: 10px 18px;
-  font-size: 16px;
+  font-size: 15px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  font-weight: 700;
 }
 
-#checkBtn { background: #12a594; color: white; }
-#resetBtn { background: #ddd; }
-#nextBtn { background: #333; color: white; }
+#checkBtn {
+  background: #12a594;
+  color: white;
+}
+
+#resetBtn {
+  background: #ddd;
+}
+
+#nextBtn {
+  background: #333;
+  color: white;
+}
 
 .result {
-  margin-top: 20px;
-  font-size: 18px;
+  margin-top: 16px;
+  font-size: 17px;
   font-weight: bold;
+  min-height: 24px;
+}
+
+/* ===== Writing page small number status ===== */
+
+.bs-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bs-item {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-weight: 800;
+  text-decoration: none;
+  color: #333;
+  transition: 0.16s ease;
+}
+
+.bs-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.bs-item.correct {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+.bs-item.wrong {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .container {
+    padding: 14px;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+    margin-bottom: 20px;
+  }
+
+  .question-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .speaker-row {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .avatar {
+    width: 58px;
+    height: 58px;
+  }
+
+  .speech,
+  .response-area {
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  .slot {
+    min-width: 88px;
+    height: 30px;
+  }
+
+  .token {
+    font-size: 15px;
+    padding: 6px 10px;
+  }
+
+  .bank {
+    padding: 16px;
+    border-radius: 16px;
+  }
 }
