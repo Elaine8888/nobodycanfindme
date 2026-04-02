@@ -1,4 +1,4 @@
-const buildSentenceQuestions = [
+window.buildSentenceQuestions = [
   {
     id: 1,
     speakerA: "The assignment deadline has been extended.",
