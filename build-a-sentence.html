@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Build a Sentence</title>
-  <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-sets-1" />
+  <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-exam-1" />
 </head>
 <body>
   <div class="container">
@@ -14,7 +14,18 @@
 
     <h1>Make an appropriate sentence.</h1>
 
-    <div class="question-card">
+    <div class="exam-topbar">
+      <div class="exam-progress" id="examProgress">Question 1 of 10</div>
+
+      <div class="exam-actions">
+        <div class="timer" id="timer">06:50</div>
+        <button id="backBtn" class="nav-btn secondary-btn">Back</button>
+        <button id="nextBtn" class="nav-btn primary-btn">Next</button>
+        <button id="submitBtn" class="nav-btn submit-btn">Submit</button>
+      </div>
+    </div>
+
+    <div class="question-card" id="questionCard">
       <div class="speaker-row">
         <div class="avatar"></div>
         <div id="speakerA" class="speech"></div>
@@ -29,12 +40,12 @@
     <div id="bank" class="bank"></div>
 
     <div class="controls">
-      <button id="checkBtn">Check</button>
-      <button id="resetBtn">Reset</button>
-      <button id="nextBtn">Next</button>
+      <button id="resetBtn">Reset This Question</button>
     </div>
 
     <div id="result" class="result"></div>
+
+    <div id="finalResult" class="final-result hidden"></div>
   </div>
 
   <script src="/build-a-sentence-questions.js"></script>
