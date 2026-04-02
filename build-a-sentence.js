@@ -18,14 +18,51 @@ const checkBtn = document.getElementById("checkBtn");
 const resetBtn = document.getElementById("resetBtn");
 const nextBtn = document.getElementById("nextBtn");
 
+function normalizeText(text) {
+  return String(text || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+}
+
+function isAnswerCorrect(userSlots, correctAnswer) {
+  if (!Array.isArray(userSlots) || !Array.isArray(correctAnswer)) return false;
+  if (userSlots.length !== correctAnswer.length) return false;
+
+  for (let i = 0; i < userSlots.length; i++) {
+    if (normalizeText(userSlots[i]) !== normalizeText(correctAnswer[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function formatSentence(prefix, answer, suffix) {
+  let sentence = [
+    prefix || "",
+    ...(answer || []),
+    suffix || ""
+  ].join(" ").replace(/\s+/g, " ").trim();
+
+  if (sentence) {
+    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+  }
+
+  return sentence;
+}
+
 function loadQuestion(index) {
   currentQuestion = buildSentenceQuestions[index];
   slotsState = new Array(currentQuestion.answer.length).fill(null);
-  resultEl.textContent = "";
+  resultEl.innerHTML = "";
 
   speakerAEl.textContent = currentQuestion.speakerA;
-  prefixTextEl.textContent = currentQuestion.speakerBPrefix + " ";
-  suffixTextEl.textContent = " " + currentQuestion.speakerBSuffix;
+  prefixTextEl.textContent = currentQuestion.speakerBPrefix
+    ? currentQuestion.speakerBPrefix + " "
+    : "";
+  suffixTextEl.textContent = currentQuestion.speakerBSuffix
+    ? " " + currentQuestion.speakerBSuffix
+    : "";
 
   renderSlots();
   renderBank();
@@ -94,7 +131,7 @@ function createToken(text) {
   token.className = "token";
   token.textContent = text;
   token.draggable = true;
-  token.dataset.token = text;
+  token.dataset.token = normalizeText(text);
 
   token.addEventListener("dragstart", () => {
     draggedTokenId = text;
@@ -151,27 +188,29 @@ checkBtn.addEventListener("click", () => {
   const isComplete = slotsState.every(item => item !== null);
 
   if (!isComplete) {
-    resultEl.textContent = "Please complete the sentence first.";
+    resultEl.innerHTML = `<div>Please complete the sentence first.</div>`;
     return;
   }
 
-  const isCorrect =
-    JSON.stringify(slotsState) === JSON.stringify(currentQuestion.answer);
-
+  const isCorrect = isAnswerCorrect(slotsState, currentQuestion.answer);
   saveStatus(isCorrect);
 
-  const correctSentence = currentQuestion.answer.join(" ");
+  const fullCorrectSentence = formatSentence(
+    currentQuestion.speakerBPrefix,
+    currentQuestion.answer,
+    currentQuestion.speakerBSuffix
+  );
 
   resultEl.innerHTML = `
     <div>${isCorrect ? "✅ Correct!" : "❌ Incorrect."}</div>
-    <div>✔ 正确答案：${correctSentence}</div>
-    <div>📘 翻译：${currentQuestion.translation || ""}</div>
+    <div>✔ 正确答案：${fullCorrectSentence}</div>
+    <div>📘 正确答案翻译：${currentQuestion.translation || ""}</div>
   `;
 });
 
 resetBtn.addEventListener("click", () => {
   slotsState = new Array(currentQuestion.answer.length).fill(null);
-  resultEl.textContent = "";
+  resultEl.innerHTML = "";
   renderSlots();
   renderBank();
 });
