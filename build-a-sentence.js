@@ -159,7 +159,14 @@ checkBtn.addEventListener("click", () => {
     JSON.stringify(slotsState) === JSON.stringify(currentQuestion.answer);
 
   saveStatus(isCorrect);
-  resultEl.textContent = isCorrect ? "Correct!" : "Incorrect.";
+
+  const correctSentence = currentQuestion.answer.join(" ");
+
+  resultEl.innerHTML = `
+    <div>${isCorrect ? "✅ Correct!" : "❌ Incorrect."}</div>
+    <div>✔ 正确答案：${correctSentence}</div>
+    <div>📘 翻译：${currentQuestion.translation || ""}</div>
+  `;
 });
 
 resetBtn.addEventListener("click", () => {
