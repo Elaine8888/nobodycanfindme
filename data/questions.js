@@ -2512,5 +2512,43 @@ window.questions = [
     { p: "nat", a: "ural", g: 3 },
     { p: "pro", a: "vide", g: 3 }
   ]
+},
+  {
+  id: 46,
+  title: "The Ottoman Empire",
+  subtitle: "",
+  date: "20260321",
+  template: "The Ottoman Empire, which lasted from 1299 to 1922, was a formidable force that reshaped the political and cultural landscapes of Europe, the Middle East, and North Africa. Renowned for its mili{0} prowess a{1} strategic conq{2}, the emp{3} reached i{4} zenith un{5} the re{6} of Suleyman the Magnificent, dur{7} which ar{8} and archit{9} flourished. The Ottomans also played a pivotal role in global commerce, controlling key trade routes that linked the spice markets of Asia with the merchant hubs of Europe.",
+  items: [
+    { p: "mili", a: "tary", g: 4 },
+    { p: "a", a: "nd", g: 2 },
+    { p: "conq", a: "uests", g: 5 },
+    { p: "emp", a: "ire", g: 3 },
+    { p: "i", a: "ts", g: 2 },
+    { p: "un", a: "der", g: 3 },
+    { p: "re", a: "ign", g: 3 },
+    { p: "dur", a: "ing", g: 3 },
+    { p: "ar", a: "ts", g: 2 },
+    { p: "archit", a: "ecture", g: 5 }
+  ]
+},
+  {
+  id: 47,
+  title: "Glaciers 2",
+  subtitle: "",
+  date: "20260311",
+  template: "Glaciers play a crucial role in Earth's climate and ecosystems. They store about 70% of the planet’s freshwater and help regulate global temperatures by reflecting sunlight. As they move, glaciers shape lands{0}, carving val{1} and transp{2} sediment. Th{3} seasonal mel{4} feeds riv{5} and la{6}, supporting agric{7} and wild{8}. Glaciers se{9} as indicators of climate change—rapid melting signals shifts in global temperatures. Studying glaciers helps scientists understand past climate patterns and predict future environmental impacts, making them vital to global research.",
+  items: [
+    { p: "lands", a: "capes", g: 5 },
+    { p: "val", a: "leys", g: 4 },
+    { p: "transp", a: "orting", g: 6 },
+    { p: "Th", a: "eir", g: 3 },
+    { p: "mel", a: "ting", g: 4 },
+    { p: "riv", a: "ers", g: 3 },
+    { p: "la", a: "kes", g: 3 },
+    { p: "agric", a: "ulture", g: 5 },
+    { p: "wild", a: "life", g: 4 },
+    { p: "se", a: "rve", g: 3 }
+  ]
 }
   ];
