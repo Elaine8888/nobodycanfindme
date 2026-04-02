@@ -9,9 +9,7 @@ let slotsState = [];
 let draggedTokenId = null;
 
 const speakerAEl = document.getElementById("speakerA");
-const prefixTextEl = document.getElementById("prefixText");
-const suffixTextEl = document.getElementById("suffixText");
-const slotsContainerEl = document.getElementById("slotsContainer");
+const sentenceLineEl = document.getElementById("sentenceLine");
 const bankEl = document.getElementById("bank");
 const resultEl = document.getElementById("result");
 const checkBtn = document.getElementById("checkBtn");
@@ -23,6 +21,34 @@ function normalizeText(text) {
     .trim()
     .replace(/\s+/g, " ")
     .toLowerCase();
+}
+
+function joinSentenceParts(parts) {
+  let sentence = parts
+    .filter(part => part !== null && part !== undefined && part !== "")
+    .join(" ");
+  sentence = sentence.replace(/\s+/g, " ").trim();
+  sentence = sentence.replace(/\s+([?.!,;:])/g, "$1");
+  return sentence;
+}
+
+function buildFullCorrectSentence(question) {
+  const answerQueue = [...question.answer];
+  const parts = [];
+
+  question.segments.forEach(seg => {
+    if (seg.type === "text") {
+      parts.push(seg.value);
+    } else if (seg.type === "slot") {
+      parts.push(answerQueue.shift() || "");
+    }
+  });
+
+  let sentence = joinSentenceParts(parts);
+  if (sentence) {
+    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+  }
+  return sentence;
 }
 
 function isAnswerCorrect(userSlots, correctAnswer) {
@@ -37,52 +63,38 @@ function isAnswerCorrect(userSlots, correctAnswer) {
   return true;
 }
 
-function joinSentenceParts(parts) {
-  let sentence = parts.filter(part => part !== null && part !== undefined && part !== "").join(" ");
-  sentence = sentence.replace(/\s+/g, " ").trim();
-  sentence = sentence.replace(/\s+([?.!,;:])/g, "$1");
-  return sentence;
-}
-
-function formatSentence(prefix, answer, suffix) {
-  let sentence = joinSentenceParts([
-    prefix || "",
-    ...(answer || []),
-    suffix || ""
-  ]);
-
-  if (sentence) {
-    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
-  }
-
-  return sentence;
+function getSlotCount(question) {
+  return question.segments.filter(seg => seg.type === "slot").length;
 }
 
 function loadQuestion(index) {
   currentQuestion = buildSentenceQuestions[index];
-  slotsState = new Array(currentQuestion.answer.length).fill(null);
+  slotsState = new Array(getSlotCount(currentQuestion)).fill(null);
   resultEl.innerHTML = "";
 
-  prefixTextEl.textContent = currentQuestion.speakerBPrefix
-    ? currentQuestion.speakerBPrefix + " "
-    : "";
-  suffixTextEl.textContent = currentQuestion.speakerBSuffix
-    ? " " + currentQuestion.speakerBSuffix
-    : "";
   speakerAEl.textContent = currentQuestion.speakerA;
-
-  renderSlots();
+  renderSentenceLine();
   renderBank();
   updateNextButton();
 }
 
-function renderSlots() {
-  slotsContainerEl.innerHTML = "";
+function renderSentenceLine() {
+  sentenceLineEl.innerHTML = "";
 
-  slotsState.forEach((tokenText, i) => {
+  let slotIndex = 0;
+
+  currentQuestion.segments.forEach(seg => {
+    if (seg.type === "text") {
+      const textEl = document.createElement("span");
+      textEl.className = "fixed-text";
+      textEl.textContent = seg.value;
+      sentenceLineEl.appendChild(textEl);
+      return;
+    }
+
     const slot = document.createElement("span");
     slot.className = "slot";
-    slot.dataset.index = i;
+    slot.dataset.index = slotIndex;
 
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -96,17 +108,45 @@ function renderSlots() {
     slot.addEventListener("drop", (e) => {
       e.preventDefault();
       slot.classList.remove("over");
-      handleDropToSlot(i, draggedTokenId);
+      handleDropToSlot(slotIndex, draggedTokenId);
     });
 
+    const tokenText = slotsState[slotIndex];
     if (tokenText) {
-      const shouldCapitalize = i === 0 && !currentQuestion.speakerBPrefix;
+      const shouldCapitalize = isSentenceStartSlot(slotIndex);
       const token = createToken(tokenText, shouldCapitalize);
       slot.appendChild(token);
     }
 
-    slotsContainerEl.appendChild(slot);
+    sentenceLineEl.appendChild(slot);
+    slotIndex++;
   });
+}
+
+function isSentenceStartSlot(slotIndex) {
+  let count = -1;
+
+  for (const seg of currentQuestion.segments) {
+    if (seg.type === "slot") {
+      count++;
+      if (count === slotIndex) {
+        break;
+      }
+    } else if (seg.type === "text" && normalizeText(seg.value) !== "") {
+      return false;
+    }
+  }
+
+  for (const seg of currentQuestion.segments) {
+    if (seg.type === "text" && normalizeText(seg.value) !== "") {
+      return false;
+    }
+    if (seg.type === "slot") {
+      return slotIndex === 0;
+    }
+  }
+
+  return slotIndex === 0;
 }
 
 function renderBank() {
@@ -129,7 +169,7 @@ function renderBank() {
     e.preventDefault();
     if (!draggedTokenId) return;
     removeTokenFromSlots(draggedTokenId);
-    renderSlots();
+    renderSentenceLine();
     renderBank();
   };
 }
@@ -175,7 +215,7 @@ function handleDropToSlot(slotIndex, tokenText) {
   }
 
   slotsState[slotIndex] = tokenText;
-  renderSlots();
+  renderSentenceLine();
   renderBank();
 }
 
@@ -209,11 +249,7 @@ checkBtn.addEventListener("click", () => {
   const isCorrect = isAnswerCorrect(slotsState, currentQuestion.answer);
   saveStatus(isCorrect);
 
-  const fullCorrectSentence = formatSentence(
-    currentQuestion.speakerBPrefix,
-    currentQuestion.answer,
-    currentQuestion.speakerBSuffix
-  );
+  const fullCorrectSentence = buildFullCorrectSentence(currentQuestion);
 
   resultEl.innerHTML = `
     <div>${isCorrect ? "✅ Correct!" : "❌ Incorrect."}</div>
@@ -223,9 +259,9 @@ checkBtn.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
-  slotsState = new Array(currentQuestion.answer.length).fill(null);
+  slotsState = new Array(getSlotCount(currentQuestion)).fill(null);
   resultEl.innerHTML = "";
-  renderSlots();
+  renderSentenceLine();
   renderBank();
 });
 
