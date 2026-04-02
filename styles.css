@@ -799,6 +799,7 @@ a{
 .writing-hub-header{
   padding:34px 34px 20px;
   border-bottom:1px solid var(--line);
+  text-align: left;
 }
 
 .writing-hub-header h1{
