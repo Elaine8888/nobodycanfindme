@@ -167,11 +167,32 @@ button {
   line-height: 1.8;
 }
 
-/* Writing 页小数字状态 */
+/* Writing 页 Set 布局 */
+.bs-set-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.bs-set-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: nowrap;
+}
+
+.bs-set-title {
+  width: 62px;
+  flex: 0 0 62px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #222;
+}
+
 .bs-grid {
   display: flex;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .bs-item {
@@ -187,6 +208,7 @@ button {
   text-decoration: none;
   color: #333;
   transition: 0.16s ease;
+  flex: 0 0 42px;
 }
 
 .bs-item:hover {
@@ -204,6 +226,14 @@ button {
   background: #dc2626;
   border-color: #dc2626;
   color: #fff;
+}
+
+.bs-set-score {
+  margin-left: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #64748b;
+  white-space: nowrap;
 }
 
 @media (max-width: 700px) {
@@ -250,5 +280,22 @@ button {
   .bank {
     padding: 16px;
     border-radius: 16px;
+  }
+
+  .bs-set-row {
+    align-items: flex-start;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .bs-grid {
+    gap: 10px;
+  }
+
+  .bs-item {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
   }
 }
