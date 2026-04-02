@@ -1,56 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reading</title>
-  <link rel="stylesheet" href="/styles.css?v=reading-clean1"/>
+  <link rel="stylesheet" href="/styles.css?v=20260402-reading-tabs-1" />
 </head>
-
 <body>
+  <div id="navbar"></div>
 
-<div id="navbar"></div>
+  <div class="page-shell">
+    <div class="reading-hub">
+      <header class="reading-hub-header">
+        <h1>阅读练习</h1>
+        <p>先选择题型，再点击题号进入练习。</p>
+      </header>
 
-<div class="page-simple">
+      <div class="reading-type-row">
+        <div class="reading-type-label">题型：</div>
 
-  <h1>Reading</h1>
+        <div class="reading-type-tabs">
+          <button class="reading-type-tab active" data-type="ctw">
+            Complete the Words
+          </button>
 
-  <p class="page-desc">
-    Select a question type to begin your practice.
-  </p>
+          <button class="reading-type-tab" data-type="daily">
+            Read in Daily Life
+          </button>
 
-  <div class="section-list">
+          <button class="reading-type-tab" data-type="academic">
+            Read an Academic Passage
+          </button>
+        </div>
+      </div>
 
-    <a href="complete-the-words.html" class="section-item">
-      <span class="section-title">Complete the Words</span>
-      <span class="section-sub">Train grammar, collocation, and context prediction.</span>
-    </a>
+      <section class="reading-panel">
+        <div class="reading-panel-head">
+          <h2 id="panelTitle">Complete the Words</h2>
+          <p id="panelDesc">Choose a set to begin your practice.</p>
+        </div>
 
-    <a href="read-in-daily-life-practice.html" class="section-item">
-      <span class="section-title">Read in Daily Life</span>
-      <span class="section-sub">Practice scanning and real-life reading skills.</span>
-    </a>
-
-    <a href="read-an-academic-passage.html" class="section-item">
-      <span class="section-title">Read an Academic Passage</span>
-      <span class="section-sub">Improve academic reading and comprehension.</span>
-    </a>
-
+        <div id="readingList" class="reading-list-grid"></div>
+      </section>
+    </div>
   </div>
 
-</div>
+  <script src="/data/questions.js"></script>
+  <script src="/read-in-daily-life-questions.js"></script>
 
-<script>
-  fetch('/navbar.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('navbar').innerHTML = html;
+  <script>
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
 
-      document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
-      const link = document.querySelector('[data-page="reading"]');
-      if (link) link.classList.add('active');
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+        const readingLink = document.querySelector('[data-page="reading"]');
+        if (readingLink) readingLink.classList.add('active');
+      });
+
+    const academicPassages = [
+      { id: 1, title: "The Dynamics of Hollywood’s Golden Age", date: "20260308" },
+      { id: 2, title: "Augmented Reality for Training", date: "20260121" },
+      { id: 3, title: "Formation of Sedimentary Rocks", date: "20260121" },
+      { id: 4, title: "Thinking Outside the Box", date: "20260121" },
+      { id: 5, title: "Plant Communication", date: "20260121" },
+      { id: 6, title: "Green Roof Benefits", date: "20260121" }
+    ];
+
+    const panelTitle = document.getElementById('panelTitle');
+    const panelDesc = document.getElementById('panelDesc');
+    const readingList = document.getElementById('readingList');
+    const tabButtons = document.querySelectorAll('.reading-type-tab');
+
+    function formatTime(seconds) {
+      const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const sec = String(seconds % 60).padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function createMetaRow(metaItems) {
+      return `
+        <div class="reading-card-meta">
+          ${metaItems.map(item => `<span>${item}</span>`).join('')}
+        </div>
+      `;
+    }
+
+    function renderCTW() {
+      panelTitle.textContent = 'Complete the Words';
+      panelDesc.textContent = 'Choose a set to begin your practice.';
+
+      const scores = JSON.parse(localStorage.getItem('ctw_scores_v1') || '{}');
+      const questionList = window.questions || [];
+
+      if (!questionList.length) {
+        readingList.innerHTML = `<div class="reading-empty">题库加载失败，请检查 /data/questions.js</div>`;
+        return;
+      }
+
+      readingList.innerHTML = questionList.map(q => {
+        const score = scores[q.id];
+        const total = (q.items || []).length || 10;
+        const status = score !== undefined ? `最高分 ${score}/${total}` : '未开始';
+        const subtitle = q.subtitle ? `<div class="reading-card-sub">${q.subtitle}</div>` : '';
+        const date = q.date ? q.date : '';
+
+        return `
+          <a class="reading-card" href="/complete-the-words-practice.html?id=${q.id}">
+            ${createMetaRow([`#${q.id}`, status])}
+            <div class="reading-card-title">${q.title || `Practice ${q.id}`}</div>
+            ${subtitle}
+            <div class="reading-card-foot">${date}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderDailyLife() {
+      panelTitle.textContent = 'Read in Daily Life';
+      panelDesc.textContent = 'Choose a set to begin your practice.';
+
+      const passages = window.dailyLifePassages || [];
+
+      if (!passages.length) {
+        readingList.innerHTML = `<div class="reading-empty">题库加载失败，请检查 read-in-daily-life-questions.js</div>`;
+        return;
+      }
+
+      readingList.innerHTML = passages.map(p => {
+        const saved = localStorage.getItem(`dailyLifeResult_${p.id}`);
+
+        let scoreText = `--/${p.questions.length}`;
+        let timeText = '--:--';
+
+        if (saved) {
+          try {
+            const data = JSON.parse(saved);
+            scoreText = `${data.score}/${data.total}`;
+            timeText = formatTime(data.duration || 0);
+          } catch (e) {}
+        }
+
+        return `
+          <a class="reading-card" href="/read-in-daily-life-practice.html?id=${p.id}">
+            ${createMetaRow([`Set ${p.id}`, p.testDate || ''])}
+            <div class="reading-card-title">${p.title || `Set ${p.id}`}</div>
+            <div class="reading-card-sub">${p.heading || ''}</div>
+            <div class="reading-card-foot">Score: ${scoreText} &nbsp;&nbsp; Time: ${timeText}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderAcademic() {
+      panelTitle.textContent = 'Read an Academic Passage';
+      panelDesc.textContent = 'Choose a passage to begin your practice.';
+
+      readingList.innerHTML = academicPassages.map(p => {
+        return `
+          <a class="reading-card" href="/read-an-academic-passage-practice.html?id=${p.id}">
+            ${createMetaRow([`Passage ${p.id}`, p.date || ''])}
+            <div class="reading-card-title">${p.title}</div>
+            <div class="reading-card-foot">Click to start</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function setActiveTab(type) {
+      tabButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+
+      if (type === 'ctw') renderCTW();
+      if (type === 'daily') renderDailyLife();
+      if (type === 'academic') renderAcademic();
+    }
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        setActiveTab(btn.dataset.type);
+      });
     });
-</script>
 
+    setActiveTab('ctw');
+  </script>
 </body>
 </html>
