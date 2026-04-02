@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Practice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<div class="container">
+  <h2 id="title"></h2>
+
+  <p id="prompt" style="margin:20px 0;"></p>
+
+  <textarea id="answer" rows="10" style="width:100%; padding:10px;"></textarea>
+
+  <button onclick="showAnswer()" style="margin-top:20px;">查看参考答案</button>
+
+  <div id="result" style="margin-top:20px;"></div>
+</div>
+
+<script src="write-an-email-questions.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+const q = questions[id];
+
+document.getElementById("title").innerText = q.title;
+document.getElementById("prompt").innerText = q.prompt;
+
+function showAnswer() {
+  document.getElementById("result").innerHTML = `
+    <h3>参考答案：</h3>
+    <p>${q.answer}</p>
+  `;
+}
+</script>
+
+</body>
+</html>
