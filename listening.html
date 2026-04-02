@@ -1,43 +1,54 @@
-.type-tabs {
-  display: flex;
-  gap: 16px;
-  margin: 20px 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Listening Practice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles.css?v=20260330nav1">
+</head>
 
-.type-tab {
-  padding: 12px 24px;
-  border-radius: 16px;
-  border: none;
-  background: #eee;
-  cursor: pointer;
-  font-weight: 600;
-}
+<body>
+  <div class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">Hang in There</a>
 
-.type-tab.active {
-  background: linear-gradient(135deg, #5a6cff, #6a7bff);
-  color: white;
-}
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="reading.html">Reading</a>
+        <a href="listening.html" class="active">Listening</a>
+        <a href="speaking.html">Speaking</a>
+        <a href="writing.html">Writing</a>
+      </div>
+    </div>
+  </div>
 
-.set-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
+  <div class="page-shell">
+    <header class="hero card">
+      <h1>Listening Practice</h1>
+      <p>Select a question type to begin your practice.</p>
+    </header>
 
-.set-btn {
-  width: 48px;
-  height: 48px;
-  background: #e52d2d;
-  color: white;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-}
+    <section class="card-grid">
+      <section class="card">
+        <h3>Listen and Choose a Response</h3>
+        <p>Recognize the most appropriate response in context.</p>
+      </section>
 
-.set-score {
-  margin-left: 10px;
-  color: #666;
-}
+      <section class="card">
+        <h3>Listen to a Conversation</h3>
+        <p>Practice following everyday and campus-style conversations.</p>
+      </section>
+
+      <section class="card">
+        <h3>Listen to an Announcement</h3>
+        <p>Understand public messages and important details.</p>
+      </section>
+
+      <section class="card">
+        <h3>Listen to an Academic Talk</h3>
+        <p>Build lecture listening skills and track key ideas.</p>
+      </section>
+    </section>
+  </div>
+</body>
+</html>
