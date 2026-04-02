@@ -9,16 +9,26 @@ let currentIndex = buildSentenceQuestions.findIndex(
 if (currentIndex < 0) currentIndex = 0;
 
 let currentQuestion = null;
-let slotsState = [];
 let draggedTokenId = null;
+let timerId = null;
+let timeLeft = 410; // 6:50
 
 const speakerAEl = document.getElementById("speakerA");
 const sentenceLineEl = document.getElementById("sentenceLine");
 const bankEl = document.getElementById("bank");
 const resultEl = document.getElementById("result");
-const checkBtn = document.getElementById("checkBtn");
 const resetBtn = document.getElementById("resetBtn");
 const nextBtn = document.getElementById("nextBtn");
+const backBtn = document.getElementById("backBtn");
+const submitBtn = document.getElementById("submitBtn");
+const timerEl = document.getElementById("timer");
+const examProgressEl = document.getElementById("examProgress");
+const finalResultEl = document.getElementById("finalResult");
+const questionCardEl = document.getElementById("questionCard");
+
+let currentSetQuestions = [];
+let currentSetId = null;
+let slotsStateByQuestionId = {};
 
 function normalizeText(text) {
   return String(text || "")
@@ -55,6 +65,25 @@ function buildFullCorrectSentence(question) {
   return sentence;
 }
 
+function buildUserSentence(question, userSlots) {
+  const queue = [...userSlots];
+  const parts = [];
+
+  question.segments.forEach(seg => {
+    if (seg.type === "text") {
+      parts.push(seg.value);
+    } else if (seg.type === "slot") {
+      parts.push(queue.shift() || "____");
+    }
+  });
+
+  let sentence = joinSentenceParts(parts);
+  if (sentence && sentence !== "____") {
+    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+  }
+  return sentence;
+}
+
 function isAnswerCorrect(userSlots, correctAnswer) {
   if (!Array.isArray(userSlots) || !Array.isArray(correctAnswer)) return false;
   if (userSlots.length !== correctAnswer.length) return false;
@@ -71,19 +100,38 @@ function getSlotCount(question) {
   return question.segments.filter(seg => seg.type === "slot").length;
 }
 
-function loadQuestion(index) {
-  currentQuestion = buildSentenceQuestions[index];
-  slotsState = new Array(getSlotCount(currentQuestion)).fill(null);
-  resultEl.innerHTML = "";
+function getCurrentSetQuestions() {
+  return buildSentenceQuestions
+    .filter(q => q.set === currentSetId)
+    .sort((a, b) => a.id - b.id);
+}
 
+function getQuestionState(question) {
+  if (!slotsStateByQuestionId[question.id]) {
+    slotsStateByQuestionId[question.id] = new Array(getSlotCount(question)).fill(null);
+  }
+  return slotsStateByQuestionId[question.id];
+}
+
+function saveCurrentQuestionState() {
+  if (!currentQuestion) return;
+  const slots = getQuestionState(currentQuestion);
+  slotsStateByQuestionId[currentQuestion.id] = [...slots];
+}
+
+function loadQuestion(index) {
+  currentQuestion = currentSetQuestions[index];
+  resultEl.innerHTML = "";
   speakerAEl.textContent = currentQuestion.speakerA;
+
   renderSentenceLine();
   renderBank();
-  updateNextButton();
+  updateNav();
 }
 
 function renderSentenceLine() {
   sentenceLineEl.innerHTML = "";
+  const currentSlots = getQuestionState(currentQuestion);
 
   let slotIndex = 0;
 
@@ -117,7 +165,7 @@ function renderSentenceLine() {
       handleDropToSlot(currentSlotIndex, draggedTokenId);
     });
 
-    const tokenText = slotsState[currentSlotIndex];
+    const tokenText = currentSlots[currentSlotIndex];
     if (tokenText) {
       const shouldCapitalize = isSentenceStartSlot(currentSlotIndex);
       const token = createToken(tokenText, shouldCapitalize);
@@ -157,8 +205,8 @@ function isSentenceStartSlot(slotIndex) {
 
 function renderBank() {
   bankEl.innerHTML = "";
-
-  const usedTokens = slotsState.filter(Boolean);
+  const currentSlots = getQuestionState(currentQuestion);
+  const usedTokens = currentSlots.filter(Boolean);
 
   currentQuestion.bank.forEach((tokenText) => {
     if (!usedTokens.includes(tokenText)) {
@@ -174,7 +222,7 @@ function renderBank() {
   bankEl.ondrop = (e) => {
     e.preventDefault();
     if (!draggedTokenId) return;
-    removeTokenFromSlots(draggedTokenId);
+    removeTokenFromCurrentQuestion(draggedTokenId);
     renderSentenceLine();
     renderBank();
   };
@@ -204,93 +252,167 @@ function createToken(text, shouldCapitalize = false) {
   return token;
 }
 
-function removeTokenFromSlots(tokenText) {
-  const oldIndex = slotsState.indexOf(tokenText);
+function removeTokenFromCurrentQuestion(tokenText) {
+  const currentSlots = getQuestionState(currentQuestion);
+  const oldIndex = currentSlots.indexOf(tokenText);
   if (oldIndex !== -1) {
-    slotsState[oldIndex] = null;
+    currentSlots[oldIndex] = null;
   }
 }
 
 function handleDropToSlot(slotIndex, tokenText) {
   if (!tokenText) return;
 
-  removeTokenFromSlots(tokenText);
+  const currentSlots = getQuestionState(currentQuestion);
 
-  if (slotsState[slotIndex]) {
-    slotsState[slotIndex] = null;
+  const oldIndex = currentSlots.indexOf(tokenText);
+  if (oldIndex !== -1) {
+    currentSlots[oldIndex] = null;
   }
 
-  slotsState[slotIndex] = tokenText;
+  if (currentSlots[slotIndex]) {
+    currentSlots[slotIndex] = null;
+  }
+
+  currentSlots[slotIndex] = tokenText;
   renderSentenceLine();
   renderBank();
 }
 
-function saveStatus(isCorrect) {
+function updateNav() {
+  const currentPos = currentSetQuestions.findIndex(q => q.id === currentQuestion.id);
+
+  examProgressEl.textContent = `Question ${currentPos + 1} of ${currentSetQuestions.length}`;
+  backBtn.disabled = currentPos === 0;
+  nextBtn.disabled = currentPos === currentSetQuestions.length - 1;
+}
+
+function goToQuestionByPos(pos) {
+  if (pos < 0 || pos >= currentSetQuestions.length) return;
+  currentIndex = pos;
+  loadQuestion(currentIndex);
+}
+
+function formatTime(seconds) {
+  const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const sec = String(seconds % 60).padStart(2, "0");
+  return `${min}:${sec}`;
+}
+
+function startTimer() {
+  timerEl.textContent = formatTime(timeLeft);
+
+  timerId = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = formatTime(timeLeft);
+
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      submitExam(true);
+    }
+  }, 1000);
+}
+
+function saveSetStatus(results) {
   const status = JSON.parse(localStorage.getItem("bs_status") || "{}");
-  const key = `${currentQuestion.set}-${currentQuestion.id}`;
-  status[key] = isCorrect ? "correct" : "wrong";
+
+  results.forEach(item => {
+    const key = `${item.question.set}-${item.question.id}`;
+    status[key] = item.isCorrect ? "correct" : "wrong";
+  });
+
   localStorage.setItem("bs_status", JSON.stringify(status));
 }
 
-function getCurrentSetQuestions() {
-  return buildSentenceQuestions
-    .filter(q => q.set === currentQuestion.set)
-    .sort((a, b) => a.id - b.id);
-}
-
-function goToQuestion(set, id) {
-  window.location.href = `/build-a-sentence.html?set=${set}&id=${id}`;
-}
-
-function updateNextButton() {
-  const currentSetQuestions = getCurrentSetQuestions();
-  const currentPos = currentSetQuestions.findIndex(q => q.id === currentQuestion.id);
-
-  if (currentPos >= currentSetQuestions.length - 1) {
-    nextBtn.textContent = "Back to Writing";
-  } else {
-    nextBtn.textContent = "Next";
-  }
-}
-
-checkBtn.addEventListener("click", () => {
-  const isComplete = slotsState.every(item => item !== null);
-
-  if (!isComplete) {
-    resultEl.innerHTML = `<div>Please complete the sentence first.</div>`;
-    return;
+function submitExam(isAutoSubmit = false) {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = null;
   }
 
-  const isCorrect = isAnswerCorrect(slotsState, currentQuestion.answer);
-  saveStatus(isCorrect);
+  saveCurrentQuestionState();
 
-  const fullCorrectSentence = buildFullCorrectSentence(currentQuestion);
+  const results = currentSetQuestions.map(question => {
+    const userSlots = getQuestionState(question);
+    const complete = userSlots.every(x => x !== null);
+    const isCorrect = complete && isAnswerCorrect(userSlots, question.answer);
 
-  resultEl.innerHTML = `
-    <div>${isCorrect ? "✅ Correct!" : "❌ Incorrect."}</div>
-    <div>✔ 正确答案：${fullCorrectSentence}</div>
-    <div>📘 正确答案翻译：${currentQuestion.translation || ""}</div>
-  `;
-});
+    return {
+      question,
+      complete,
+      isCorrect,
+      userSentence: buildUserSentence(question, userSlots),
+      correctSentence: buildFullCorrectSentence(question)
+    };
+  });
 
-resetBtn.addEventListener("click", () => {
-  slotsState = new Array(getSlotCount(currentQuestion)).fill(null);
+  saveSetStatus(results);
+
+  const correctCount = results.filter(r => r.isCorrect).length;
+  const total = results.length;
+  const accuracy = Math.round((correctCount / total) * 100);
+
+  questionCardEl.style.display = "none";
+  bankEl.style.display = "none";
+  document.querySelector(".controls").style.display = "none";
+  document.querySelector(".exam-topbar").style.display = "none";
   resultEl.innerHTML = "";
-  renderSentenceLine();
-  renderBank();
+
+  finalResultEl.classList.remove("hidden");
+  finalResultEl.innerHTML = `
+    <div class="final-score">Score: ${correctCount} / ${total}</div>
+    <div class="final-accuracy">
+      Accuracy: ${accuracy}%${isAutoSubmit ? " · Time is up, so your set was submitted automatically." : ""}
+    </div>
+
+    <div class="review-list">
+      ${results.map((item, idx) => `
+        <div class="review-item ${item.isCorrect ? "correct" : "wrong"}">
+          <div class="review-title">Question ${idx + 1}</div>
+          <div class="review-line"><strong>Your answer:</strong> ${item.userSentence}</div>
+          <div class="review-line"><strong>Correct answer:</strong> ${item.correctSentence}</div>
+          <div class="review-line"><strong>翻译：</strong> ${item.question.translation || ""}</div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function initSetState() {
+  currentSetId = buildSentenceQuestions[currentIndex].set;
+  currentSetQuestions = getCurrentSetQuestions();
+
+  currentSetQuestions.forEach(q => {
+    if (!slotsStateByQuestionId[q.id]) {
+      slotsStateByQuestionId[q.id] = new Array(getSlotCount(q)).fill(null);
+    }
+  });
+
+  currentIndex = currentSetQuestions.findIndex(q => q.id === questionId);
+  if (currentIndex < 0) currentIndex = 0;
+}
+
+backBtn.addEventListener("click", () => {
+  saveCurrentQuestionState();
+  goToQuestionByPos(currentIndex - 1);
 });
 
 nextBtn.addEventListener("click", () => {
-  const currentSetQuestions = getCurrentSetQuestions();
-  const currentPos = currentSetQuestions.findIndex(q => q.id === currentQuestion.id);
-
-  if (currentPos >= currentSetQuestions.length - 1) {
-    window.location.href = "/writing.html";
-    return;
-  }
-
-  const nextQuestion = currentSetQuestions[currentPos + 1];
-  goToQuestion(nextQuestion.set, nextQuestion.id);
+  saveCurrentQuestionState();
+  goToQuestionByPos(currentIndex + 1);
 });
 
+submitBtn.addEventListener("click", () => {
+  submitExam(false);
+});
+
+resetBtn.addEventListener("click", () => {
+  slotsStateByQuestionId[currentQuestion.id] = new Array(getSlotCount(currentQuestion)).fill(null);
+  renderSentenceLine();
+  renderBank();
+  resultEl.innerHTML = "";
+});
+
+initSetState();
 loadQuestion(currentIndex);
+startTimer();
