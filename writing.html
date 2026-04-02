@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing</title>
   <link rel="stylesheet" href="/styles.css?v=20260402-writing-tabs-2" />
-  <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-status-2" />
+  <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-sets-1" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -41,7 +41,7 @@
           <p id="writingPanelDesc">Choose a set to begin your practice.</p>
         </div>
 
-        <div id="writingList" class="writing-list-grid"></div>
+        <div id="writingList"></div>
       </section>
     </div>
   </div>
@@ -83,21 +83,52 @@
 
     function renderBuildSentence() {
       panelTitle.textContent = 'Build a Sentence';
-      panelDesc.textContent = 'Click a number to start.';
+      panelDesc.textContent = 'Each set contains 10 questions.';
 
       const status = JSON.parse(localStorage.getItem("bs_status") || "{}");
       const questions = window.buildSentenceQuestions || [];
 
+      const setMap = {};
+      questions.forEach(q => {
+        if (!setMap[q.set]) setMap[q.set] = [];
+        setMap[q.set].push(q);
+      });
+
+      const sortedSetIds = Object.keys(setMap)
+        .map(Number)
+        .sort((a, b) => a - b);
+
       writingList.innerHTML = `
-        <div class="bs-grid">
-          ${questions.map(item => {
-            const s = status[item.id];
-            let cls = "bs-item";
+        <div class="bs-set-list">
+          ${sortedSetIds.map(setId => {
+            const setQuestions = setMap[setId].sort((a, b) => a.id - b.id);
 
-            if (s === "correct") cls += " correct";
-            else if (s === "wrong") cls += " wrong";
+            let correctCount = 0;
+            setQuestions.forEach(q => {
+              const key = `${q.set}-${q.id}`;
+              if (status[key] === "correct") correctCount++;
+            });
 
-            return `<a href="/build-a-sentence.html?id=${item.id}" class="${cls}">${item.id}</a>`;
+            return `
+              <div class="bs-set-row">
+                <div class="bs-set-title">Set ${setId}</div>
+
+                <div class="bs-grid">
+                  ${setQuestions.map(q => {
+                    const key = `${q.set}-${q.id}`;
+                    const s = status[key];
+                    let cls = "bs-item";
+
+                    if (s === "correct") cls += " correct";
+                    else if (s === "wrong") cls += " wrong";
+
+                    return `<a href="/build-a-sentence.html?set=${q.set}&id=${q.id}" class="${cls}">${q.id}</a>`;
+                  }).join('')}
+                </div>
+
+                <div class="bs-set-score">${correctCount}/${setQuestions.length}</div>
+              </div>
+            `;
           }).join('')}
         </div>
       `;
