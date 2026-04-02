@@ -1,8 +1,12 @@
 const params = new URLSearchParams(window.location.search);
-let currentIndex = Number(params.get("id")) - 1 || 0;
+const setId = Number(params.get("set")) || 1;
+const questionId = Number(params.get("id")) || 1;
+
+let currentIndex = buildSentenceQuestions.findIndex(
+  q => q.set === setId && q.id === questionId
+);
 
 if (currentIndex < 0) currentIndex = 0;
-if (currentIndex >= buildSentenceQuestions.length) currentIndex = 0;
 
 let currentQuestion = null;
 let slotsState = [];
@@ -221,17 +225,26 @@ function handleDropToSlot(slotIndex, tokenText) {
 
 function saveStatus(isCorrect) {
   const status = JSON.parse(localStorage.getItem("bs_status") || "{}");
-  status[currentQuestion.id] = isCorrect ? "correct" : "wrong";
+  const key = `${currentQuestion.set}-${currentQuestion.id}`;
+  status[key] = isCorrect ? "correct" : "wrong";
   localStorage.setItem("bs_status", JSON.stringify(status));
 }
 
-function goToQuestionByIndex(index) {
-  const targetId = buildSentenceQuestions[index].id;
-  window.location.href = `/build-a-sentence.html?id=${targetId}`;
+function getCurrentSetQuestions() {
+  return buildSentenceQuestions
+    .filter(q => q.set === currentQuestion.set)
+    .sort((a, b) => a.id - b.id);
+}
+
+function goToQuestion(set, id) {
+  window.location.href = `/build-a-sentence.html?set=${set}&id=${id}`;
 }
 
 function updateNextButton() {
-  if (currentIndex >= buildSentenceQuestions.length - 1) {
+  const currentSetQuestions = getCurrentSetQuestions();
+  const currentPos = currentSetQuestions.findIndex(q => q.id === currentQuestion.id);
+
+  if (currentPos >= currentSetQuestions.length - 1) {
     nextBtn.textContent = "Back to Writing";
   } else {
     nextBtn.textContent = "Next";
@@ -266,12 +279,16 @@ resetBtn.addEventListener("click", () => {
 });
 
 nextBtn.addEventListener("click", () => {
-  if (currentIndex >= buildSentenceQuestions.length - 1) {
+  const currentSetQuestions = getCurrentSetQuestions();
+  const currentPos = currentSetQuestions.findIndex(q => q.id === currentQuestion.id);
+
+  if (currentPos >= currentSetQuestions.length - 1) {
     window.location.href = "/writing.html";
     return;
   }
 
-  goToQuestionByIndex(currentIndex + 1);
+  const nextQuestion = currentSetQuestions[currentPos + 1];
+  goToQuestion(nextQuestion.set, nextQuestion.id);
 });
 
 loadQuestion(currentIndex);
