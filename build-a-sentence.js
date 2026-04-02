@@ -96,9 +96,11 @@ function renderSentenceLine() {
       return;
     }
 
+    const currentSlotIndex = slotIndex;
+
     const slot = document.createElement("span");
     slot.className = "slot";
-    slot.dataset.index = slotIndex;
+    slot.dataset.index = currentSlotIndex;
 
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -112,12 +114,12 @@ function renderSentenceLine() {
     slot.addEventListener("drop", (e) => {
       e.preventDefault();
       slot.classList.remove("over");
-      handleDropToSlot(slotIndex, draggedTokenId);
+      handleDropToSlot(currentSlotIndex, draggedTokenId);
     });
 
-    const tokenText = slotsState[slotIndex];
+    const tokenText = slotsState[currentSlotIndex];
     if (tokenText) {
-      const shouldCapitalize = isSentenceStartSlot(slotIndex);
+      const shouldCapitalize = isSentenceStartSlot(currentSlotIndex);
       const token = createToken(tokenText, shouldCapitalize);
       slot.appendChild(token);
     }
