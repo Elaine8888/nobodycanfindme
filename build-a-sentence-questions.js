@@ -1,6 +1,8 @@
 window.buildSentenceQuestions = [
+  // ===== Set 1 =====
   {
     id: 1,
+    set: 1,
     speakerA: "I saw a job posting for a part-time position at the student bookstore.",
     segments: [
       { type: "slot" },
@@ -16,6 +18,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 2,
+    set: 1,
     speakerA: "I’m thinking of applying for a scholarship.",
     segments: [
       { type: "slot" },
@@ -32,6 +35,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 3,
+    set: 1,
     speakerA: "Hannah mentioned the upcoming research conference in her email.",
     segments: [
       { type: "slot" },
@@ -49,6 +53,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 4,
+    set: 1,
     speakerA: "I have a meeting with my advisor this afternoon.",
     segments: [
       { type: "slot" },
@@ -64,6 +69,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 5,
+    set: 1,
     speakerA: "I need to finish my essay by Friday.",
     segments: [
       { type: "slot" },
@@ -80,6 +86,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 6,
+    set: 1,
     speakerA: "Tomorrow is the big game between our school and the rival team.",
     segments: [
       { type: "slot" },
@@ -96,6 +103,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 7,
+    set: 1,
     speakerA: "Did you finish the assignment on time?",
     segments: [
       { type: "slot" },
@@ -113,6 +121,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 8,
+    set: 1,
     speakerA: "The assignment deadline has been extended.",
     segments: [
       { type: "text", value: "Do" },
@@ -130,6 +139,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 9,
+    set: 1,
     speakerA: "Did you get a chance to review the report?",
     segments: [
       { type: "text", value: "Sorry, but I" },
@@ -148,6 +158,7 @@ window.buildSentenceQuestions = [
   },
   {
     id: 10,
+    set: 1,
     speakerA: "Why aren't you attending the conference?",
     segments: [
       { type: "text", value: "The dates" },
@@ -163,4 +174,11 @@ window.buildSentenceQuestions = [
     answer: ["when", "it", "is scheduled", "conflict with", "my", "other commitments"],
     translation: "会议预定的日期和我其他的安排有冲突。"
   }
+
+  // 以后新增 Set 2，就继续往下加：
+  // {
+  //   id: 1,
+  //   set: 2,
+  //   ...
+  // }
 ];
