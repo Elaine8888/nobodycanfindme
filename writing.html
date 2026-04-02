@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing</title>
-  <link rel="stylesheet" href="/styles.css?v=20260402-writing-tabs-1" />
+  <link rel="stylesheet" href="/styles.css?v=20260402-writing-tabs-2" />
+  <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-status-2" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -45,6 +46,8 @@
     </div>
   </div>
 
+  <script src="/build-a-sentence-questions.js"></script>
+
   <script>
     fetch('/navbar.html')
       .then(res => res.text())
@@ -55,10 +58,6 @@
         const writingLink = document.querySelector('[data-page="writing"]');
         if (writingLink) writingLink.classList.add('active');
       });
-
-    const buildSentenceSets = [
-      { id: 1, title: "Build a Sentence Practice", desc: "Drag the words into the correct order." }
-    ];
 
     const academicDiscussionSets = [
       { id: 1, title: "Set 1 — The Driving Force of History" },
@@ -84,16 +83,24 @@
 
     function renderBuildSentence() {
       panelTitle.textContent = 'Build a Sentence';
-      panelDesc.textContent = 'Choose a set to begin your practice.';
+      panelDesc.textContent = 'Click a number to start.';
 
-      writingList.innerHTML = buildSentenceSets.map(item => `
-        <a class="writing-card" href="/build-a-sentence.html">
-          ${createMetaRow([`Set ${item.id}`, 'Ready'])}
-          <div class="writing-card-title">${item.title}</div>
-          <div class="writing-card-sub">${item.desc}</div>
-          <div class="writing-card-foot">Click to start</div>
-        </a>
-      `).join('');
+      const status = JSON.parse(localStorage.getItem("bs_status") || "{}");
+      const questions = window.buildSentenceQuestions || [];
+
+      writingList.innerHTML = `
+        <div class="bs-grid">
+          ${questions.map(item => {
+            const s = status[item.id];
+            let cls = "bs-item";
+
+            if (s === "correct") cls += " correct";
+            else if (s === "wrong") cls += " wrong";
+
+            return `<a href="/build-a-sentence.html?id=${item.id}" class="${cls}">${item.id}</a>`;
+          }).join('')}
+        </div>
+      `;
     }
 
     function renderEmail() {
@@ -103,7 +110,7 @@
       writingList.innerHTML = `
         <div class="writing-empty-card">
           <div class="writing-empty-title">Write an Email</div>
-          <div class="writing-empty-text">这个题型的题目页还没接入。后面你把文件发我，我可以继续接成和其他题型一样的列表页。</div>
+          <div class="writing-empty-text">这个题型的题目页还没接入。后面你把文件发我，我继续接进去。</div>
         </div>
       `;
     }
