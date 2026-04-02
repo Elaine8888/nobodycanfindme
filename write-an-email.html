@@ -4,45 +4,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Write an Email</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260403-email-list-1" />
 </head>
-
 <body>
+  <div id="navbar"></div>
 
-<div class="navbar">
-  <div class="nav-inner">
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="writing.html" class="active">Writing</a>
+  <div class="page-shell">
+    <div class="email-page">
+      <a class="top-link" href="writing.html">← Back to Writing</a>
+
+      <header class="email-page-header">
+        <h1>Write an Email</h1>
+        <p>Open a prompt and save your response locally on this device.</p>
+      </header>
+
+      <div id="list" class="email-list-grid"></div>
     </div>
   </div>
-</div>
 
-<div class="container">
-  <h1>Write an Email</h1>
-  <p class="subtitle">选择一套题目开始练习</p>
+  <script src="write-an-email-questions.js"></script>
 
-  <div id="list" class="card-grid"></div>
-</div>
+  <script>
+    fetch('navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar').innerHTML = html;
 
-<script src="write-an-email-questions.js"></script>
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.classList.remove('active');
+        });
 
-<script>
-const list = document.getElementById("list");
+        const writingLink = document.querySelector('[data-page="writing"]')
+          || [...document.querySelectorAll('.nav-links a')].find(a => a.textContent.trim() === 'Writing');
 
-questions.forEach((q, index) => {
-  const card = document.createElement("a");
-  card.href = `write-an-email-practice.html?id=${index}`;
-  card.className = "card";
+        if (writingLink) writingLink.classList.add('active');
+      });
 
-  card.innerHTML = `
-    <h3>Set ${index + 1}</h3>
-    <p>${q.title}</p>
-  `;
+    const list = document.getElementById("list");
+    const questions = window.writeEmailQuestions || [];
 
-  list.appendChild(card);
-});
-</script>
+    function getDraftMeta(questionId) {
+      const draft = localStorage.getItem(`writeEmailDraft_${questionId}`) || '';
+      const savedAt = localStorage.getItem(`writeEmailDraftSavedAt_${questionId}`) || '';
+      const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
 
+      return {
+        hasDraft: draft.trim().length > 0,
+        savedAt,
+        wordCount
+      };
+    }
+
+    function formatSavedAt(value) {
+      if (!value) return 'No draft';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Draft saved';
+      return `Saved ${date.toLocaleString()}`;
+    }
+
+    list.innerHTML = questions.map((q) => {
+      const meta = getDraftMeta(q.id);
+
+      return `
+        <a href="write-an-email-practice.html?id=${q.id}" class="email-card">
+          <div class="email-card-top">
+            <span class="email-card-tag">Set ${q.id}</span>
+            <span class="email-card-status ${meta.hasDraft ? 'draft' : 'empty'}">
+              ${meta.hasDraft ? 'Draft saved' : 'New'}
+            </span>
+          </div>
+
+          <div class="email-card-title">${q.title}</div>
+          <div class="email-card-sub">To: ${q.to}</div>
+          <div class="email-card-sub">Subject: ${q.subject}</div>
+
+          <div class="email-card-foot">
+            <span>${formatSavedAt(meta.savedAt)}</span>
+            <span>${meta.wordCount} words</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+  </script>
 </body>
 </html>
