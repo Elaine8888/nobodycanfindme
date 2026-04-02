@@ -1,4 +1,9 @@
-let currentIndex = 0;
+const params = new URLSearchParams(window.location.search);
+let currentIndex = Number(params.get("id")) - 1 || 0;
+
+if (currentIndex < 0) currentIndex = 0;
+if (currentIndex >= buildSentenceQuestions.length) currentIndex = 0;
+
 let currentQuestion = null;
 let slotsState = [];
 let draggedTokenId = null;
@@ -9,6 +14,9 @@ const suffixTextEl = document.getElementById("suffixText");
 const slotsContainerEl = document.getElementById("slotsContainer");
 const bankEl = document.getElementById("bank");
 const resultEl = document.getElementById("result");
+const checkBtn = document.getElementById("checkBtn");
+const resetBtn = document.getElementById("resetBtn");
+const nextBtn = document.getElementById("nextBtn");
 
 function loadQuestion(index) {
   currentQuestion = buildSentenceQuestions[index];
@@ -21,13 +29,14 @@ function loadQuestion(index) {
 
   renderSlots();
   renderBank();
+  updateNextButton();
 }
 
 function renderSlots() {
   slotsContainerEl.innerHTML = "";
 
   slotsState.forEach((tokenText, i) => {
-    const slot = document.createElement("div");
+    const slot = document.createElement("span");
     slot.className = "slot";
     slot.dataset.index = i;
 
@@ -47,7 +56,7 @@ function renderSlots() {
     });
 
     if (tokenText) {
-      const token = createToken(tokenText, true);
+      const token = createToken(tokenText);
       slot.appendChild(token);
     }
 
@@ -62,26 +71,26 @@ function renderBank() {
 
   currentQuestion.bank.forEach((tokenText) => {
     if (!usedTokens.includes(tokenText)) {
-      const token = createToken(tokenText, false);
+      const token = createToken(tokenText);
       bankEl.appendChild(token);
     }
   });
 
-  bankEl.addEventListener("dragover", (e) => {
+  bankEl.ondragover = (e) => {
     e.preventDefault();
-  });
+  };
 
-  bankEl.addEventListener("drop", (e) => {
+  bankEl.ondrop = (e) => {
     e.preventDefault();
     if (!draggedTokenId) return;
     removeTokenFromSlots(draggedTokenId);
     renderSlots();
     renderBank();
-  });
+  };
 }
 
-function createToken(text, inSlot) {
-  const token = document.createElement("div");
+function createToken(text) {
+  const token = document.createElement("span");
   token.className = "token";
   token.textContent = text;
   token.draggable = true;
@@ -93,10 +102,6 @@ function createToken(text, inSlot) {
 
   token.addEventListener("dragend", () => {
     draggedTokenId = null;
-  });
-
-  token.addEventListener("click", () => {
-    // 以后可以扩展成手机端“先选词，再点空位”
   });
 
   return token;
@@ -115,7 +120,6 @@ function handleDropToSlot(slotIndex, tokenText) {
   removeTokenFromSlots(tokenText);
 
   if (slotsState[slotIndex]) {
-    // 如果这个位置已有词，原词自动回词库
     slotsState[slotIndex] = null;
   }
 
@@ -124,7 +128,26 @@ function handleDropToSlot(slotIndex, tokenText) {
   renderBank();
 }
 
-document.getElementById("checkBtn").addEventListener("click", () => {
+function saveStatus(isCorrect) {
+  const status = JSON.parse(localStorage.getItem("bs_status") || "{}");
+  status[currentQuestion.id] = isCorrect ? "correct" : "wrong";
+  localStorage.setItem("bs_status", JSON.stringify(status));
+}
+
+function goToQuestionByIndex(index) {
+  const targetId = buildSentenceQuestions[index].id;
+  window.location.href = `/build-a-sentence.html?id=${targetId}`;
+}
+
+function updateNextButton() {
+  if (currentIndex >= buildSentenceQuestions.length - 1) {
+    nextBtn.textContent = "Back to Writing";
+  } else {
+    nextBtn.textContent = "Next";
+  }
+}
+
+checkBtn.addEventListener("click", () => {
   const isComplete = slotsState.every(item => item !== null);
 
   if (!isComplete) {
@@ -135,19 +158,24 @@ document.getElementById("checkBtn").addEventListener("click", () => {
   const isCorrect =
     JSON.stringify(slotsState) === JSON.stringify(currentQuestion.answer);
 
+  saveStatus(isCorrect);
   resultEl.textContent = isCorrect ? "Correct!" : "Incorrect.";
 });
 
-document.getElementById("resetBtn").addEventListener("click", () => {
+resetBtn.addEventListener("click", () => {
   slotsState = new Array(currentQuestion.answer.length).fill(null);
   resultEl.textContent = "";
   renderSlots();
   renderBank();
 });
 
-document.getElementById("nextBtn").addEventListener("click", () => {
-  currentIndex = (currentIndex + 1) % buildSentenceQuestions.length;
-  loadQuestion(currentIndex);
+nextBtn.addEventListener("click", () => {
+  if (currentIndex >= buildSentenceQuestions.length - 1) {
+    window.location.href = "/writing.html";
+    return;
+  }
+
+  goToQuestionByIndex(currentIndex + 1);
 });
 
 loadQuestion(currentIndex);
