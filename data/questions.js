@@ -2501,7 +2501,7 @@ window.questions = [
   date: "20260329",
   template: "Coral reefs are vibrant underwater ecosystems found in warm, shallow oceans around the world. Coral reefs are prod{0} by colo{1} of ti{2} animals cal{3} coral polyps, wh{4} secrete calcium carbonate t{5} build th{6} hard skel{7}. These nat{8} formations pro{9} critical habitats for a diverse array of marine species, including fish, crustaceans, and mollusks. They also offer protection to coastal areas by reducing the impact of wave and storms. However, coral reefs are facing threats from climate change, pollution, and overfishing.",
   items: [
-    { p: "produ", a: "ced", g: 3 },
+    { p: "prod", a: "uced", g: 4 },
     { p: "colo", a: "nies", g: 4 },
     { p: "ti", a: "ny", g: 2 },
     { p: "cal", a: "led", g: 3 },
