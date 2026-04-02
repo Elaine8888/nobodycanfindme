@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Write an Email Practice</title>
-  <link rel="stylesheet" href="styles.css?v=20260403-email-practice-1" />
+  <link rel="stylesheet" href="styles.css?v=20260403-email-practice-2" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -18,8 +18,7 @@
 
         <div class="email-practice-actions">
           <div class="email-timer" id="emailTimer">07:00</div>
-          <button id="emailBackBtn" class="email-nav-btn secondary">Back</button>
-          <button id="emailNextBtn" class="email-nav-btn primary">Next</button>
+          <button id="submitBtn" class="email-nav-btn dark">Submit</button>
         </div>
       </div>
 
@@ -55,8 +54,7 @@
             <div class="email-save-status" id="emailSaveStatus">Draft not saved yet.</div>
 
             <div class="email-bottom-actions">
-              <button id="prevQuestionBtn" class="email-nav-btn secondary">Previous</button>
-              <button id="nextQuestionBtn" class="email-nav-btn primary">Next</button>
+              <button id="submitBtnBottom" class="email-nav-btn dark">Submit</button>
             </div>
           </div>
         </section>
@@ -101,15 +99,13 @@
     const wordCountEl = document.getElementById('emailWordCount');
     const saveStatusEl = document.getElementById('emailSaveStatus');
 
-    const backBtnTop = document.getElementById('emailBackBtn');
-    const nextBtnTop = document.getElementById('emailNextBtn');
-    const prevBtnBottom = document.getElementById('prevQuestionBtn');
-    const nextBtnBottom = document.getElementById('nextQuestionBtn');
     const saveDraftBtn = document.getElementById('saveDraftBtn');
     const clearDraftBtn = document.getElementById('clearDraftBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnBottom = document.getElementById('submitBtnBottom');
 
     let timerId = null;
-    let timeLeft = 420;
+    let timeLeft = 420; // 7 minutes
 
     function getCurrentQuestion() {
       return questions[currentIndex];
@@ -125,6 +121,10 @@
 
     function timerKey(id) {
       return `writeEmailTimer_${id}`;
+    }
+
+    function submittedKey(id) {
+      return `writeEmailSubmitted_${id}`;
     }
 
     function setSaveStatus(text) {
@@ -156,27 +156,10 @@
         const value = Number(saved);
         timeLeft = Number.isFinite(value) ? value : q.durationSeconds;
       } else {
-        timeLeft = q.durationSeconds;
+        timeLeft = q.durationSeconds || 420;
       }
 
       timerEl.textContent = formatTime(timeLeft);
-    }
-
-    function startTimer() {
-      if (timerId) clearInterval(timerId);
-
-      timerId = setInterval(() => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          timerEl.textContent = formatTime(timeLeft);
-          saveTimer();
-        } else {
-          clearInterval(timerId);
-          timerId = null;
-          setSaveStatus('Time is up. Your draft is still saved locally.');
-          textareaEl.blur();
-        }
-      }, 1000);
     }
 
     function saveDraft(showMessage = true) {
@@ -208,6 +191,49 @@
       }
     }
 
+    function disableEditing(message) {
+      textareaEl.disabled = true;
+      saveDraftBtn.disabled = true;
+      clearDraftBtn.disabled = true;
+      submitBtn.disabled = true;
+      submitBtnBottom.disabled = true;
+      setSaveStatus(message);
+    }
+
+    function submitResponse(isAuto = false) {
+      const q = getCurrentQuestion();
+
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+
+      saveDraft(false);
+      saveTimer();
+      localStorage.setItem(submittedKey(q.id), 'true');
+
+      disableEditing(
+        isAuto
+          ? 'Time is up. Your response has been submitted locally on this device.'
+          : 'Your response has been submitted locally on this device.'
+      );
+    }
+
+    function startTimer() {
+      if (timerId) clearInterval(timerId);
+
+      timerId = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          timerEl.textContent = formatTime(timeLeft);
+          saveTimer();
+        } else {
+          timerEl.textContent = '00:00';
+          submitResponse(true);
+        }
+      }, 1000);
+    }
+
     function renderQuestion() {
       const q = getCurrentQuestion();
 
@@ -221,22 +247,20 @@
 
       loadDraft();
       loadTimer();
-      startTimer();
 
-      backBtnTop.disabled = currentIndex === 0;
-      prevBtnBottom.disabled = currentIndex === 0;
-      nextBtnTop.disabled = currentIndex === questions.length - 1;
-      nextBtnBottom.disabled = currentIndex === questions.length - 1;
-    }
+      const alreadySubmitted = localStorage.getItem(submittedKey(q.id)) === 'true';
 
-    function goToQuestion(index) {
-      if (index < 0 || index >= questions.length) return;
-
-      saveDraft(false);
-      saveTimer();
-
-      const target = questions[index];
-      window.location.href = `write-an-email-practice.html?id=${target.id}`;
+      if (alreadySubmitted) {
+        disableEditing('This response has already been submitted locally on this device.');
+        timerEl.textContent = formatTime(timeLeft);
+      } else {
+        textareaEl.disabled = false;
+        saveDraftBtn.disabled = false;
+        clearDraftBtn.disabled = false;
+        submitBtn.disabled = false;
+        submitBtnBottom.disabled = false;
+        startTimer();
+      }
     }
 
     textareaEl.addEventListener('input', () => {
@@ -258,10 +282,13 @@
       setSaveStatus('Draft cleared.');
     });
 
-    backBtnTop.addEventListener('click', () => goToQuestion(currentIndex - 1));
-    prevBtnBottom.addEventListener('click', () => goToQuestion(currentIndex - 1));
-    nextBtnTop.addEventListener('click', () => goToQuestion(currentIndex + 1));
-    nextBtnBottom.addEventListener('click', () => goToQuestion(currentIndex + 1));
+    submitBtn.addEventListener('click', () => {
+      submitResponse(false);
+    });
+
+    submitBtnBottom.addEventListener('click', () => {
+      submitResponse(false);
+    });
 
     renderQuestion();
   </script>
