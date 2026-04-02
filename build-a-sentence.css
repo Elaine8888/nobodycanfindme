@@ -32,6 +32,63 @@ h1 {
   font-size: 2.1rem;
 }
 
+.exam-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.exam-progress {
+  font-size: 16px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.exam-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timer {
+  min-width: 86px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #2563eb;
+  background: #eef4ff;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.nav-btn {
+  padding: 10px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.secondary-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.submit-btn {
+  background: #111827;
+  color: white;
+}
+
 .question-card {
   background: #fff;
   border-radius: 20px;
@@ -145,26 +202,75 @@ button {
   font-weight: 700;
 }
 
-#checkBtn {
-  background: #12a594;
-  color: white;
-}
-
 #resetBtn {
   background: #ddd;
 }
 
-#nextBtn {
-  background: #333;
-  color: white;
-}
-
 .result {
   margin-top: 16px;
-  font-size: 17px;
-  font-weight: bold;
-  min-height: 24px;
-  line-height: 1.8;
+  font-size: 15px;
+  min-height: 22px;
+  color: #64748b;
+}
+
+.final-result {
+  margin-top: 24px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.final-result.hidden {
+  display: none;
+}
+
+.final-score {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.final-accuracy {
+  font-size: 16px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 20px;
+}
+
+.review-list {
+  display: grid;
+  gap: 14px;
+}
+
+.review-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  background: #fcfdff;
+}
+
+.review-item.correct {
+  border-left: 6px solid #16a34a;
+}
+
+.review-item.wrong {
+  border-left: 6px solid #dc2626;
+}
+
+.review-title {
+  font-weight: 800;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.review-line {
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+.review-line strong {
+  color: #111827;
 }
 
 /* Writing 页 Set 布局 */
