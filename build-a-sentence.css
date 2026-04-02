@@ -1,0 +1,115 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.question-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.speaker-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #d9f3ef;
+  border: 3px solid #12a594;
+  flex-shrink: 0;
+}
+
+.speech,
+.response-area {
+  font-size: 20px;
+  line-height: 1.8;
+  flex: 1;
+}
+
+.slots-inline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  vertical-align: middle;
+  margin: 0 8px;
+}
+
+.slot {
+  min-width: 120px;
+  min-height: 42px;
+  border-bottom: 3px solid #cfcfcf;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: #fff;
+}
+
+.slot.over {
+  background: #eef9f7;
+}
+
+.token {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: grab;
+  user-select: none;
+  font-size: 18px;
+}
+
+.bank {
+  min-height: 90px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  padding: 10px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#checkBtn { background: #12a594; color: white; }
+#resetBtn { background: #ddd; }
+#nextBtn { background: #333; color: white; }
+
+.result {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
