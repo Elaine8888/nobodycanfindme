@@ -37,12 +37,19 @@ function isAnswerCorrect(userSlots, correctAnswer) {
   return true;
 }
 
+function joinSentenceParts(parts) {
+  let sentence = parts.filter(part => part !== null && part !== undefined && part !== "").join(" ");
+  sentence = sentence.replace(/\s+/g, " ").trim();
+  sentence = sentence.replace(/\s+([?.!,;:])/g, "$1");
+  return sentence;
+}
+
 function formatSentence(prefix, answer, suffix) {
-  let sentence = [
+  let sentence = joinSentenceParts([
     prefix || "",
     ...(answer || []),
     suffix || ""
-  ].join(" ").replace(/\s+/g, " ").trim();
+  ]);
 
   if (sentence) {
     sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
@@ -56,13 +63,13 @@ function loadQuestion(index) {
   slotsState = new Array(currentQuestion.answer.length).fill(null);
   resultEl.innerHTML = "";
 
-  speakerAEl.textContent = currentQuestion.speakerA;
   prefixTextEl.textContent = currentQuestion.speakerBPrefix
     ? currentQuestion.speakerBPrefix + " "
     : "";
   suffixTextEl.textContent = currentQuestion.speakerBSuffix
     ? " " + currentQuestion.speakerBSuffix
     : "";
+  speakerAEl.textContent = currentQuestion.speakerA;
 
   renderSlots();
   renderBank();
@@ -93,7 +100,8 @@ function renderSlots() {
     });
 
     if (tokenText) {
-      const token = createToken(tokenText);
+      const shouldCapitalize = i === 0 && !currentQuestion.speakerBPrefix;
+      const token = createToken(tokenText, shouldCapitalize);
       slot.appendChild(token);
     }
 
@@ -108,7 +116,7 @@ function renderBank() {
 
   currentQuestion.bank.forEach((tokenText) => {
     if (!usedTokens.includes(tokenText)) {
-      const token = createToken(tokenText);
+      const token = createToken(tokenText, false);
       bankEl.appendChild(token);
     }
   });
@@ -126,10 +134,16 @@ function renderBank() {
   };
 }
 
-function createToken(text) {
+function createToken(text, shouldCapitalize = false) {
   const token = document.createElement("span");
   token.className = "token";
-  token.textContent = text;
+
+  let displayText = text;
+  if (shouldCapitalize && displayText) {
+    displayText = displayText.charAt(0).toUpperCase() + displayText.slice(1);
+  }
+
+  token.textContent = displayText;
   token.draggable = true;
   token.dataset.token = normalizeText(text);
 
