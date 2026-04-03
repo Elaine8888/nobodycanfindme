@@ -1519,3 +1519,100 @@ a{
     font-size:16px;
   }
 }
+
+/* ===== Speaking Hub ===== */
+
+.speaking-hub{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:30px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.speaking-hub-header{
+  padding:34px;
+  border-bottom:1px solid var(--line);
+}
+
+.speaking-hub-header h1{
+  margin:0 0 10px;
+  font-size:42px;
+}
+
+.speaking-hub-header p{
+  margin:0;
+  color:var(--muted);
+}
+
+.speaking-type-row{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:26px 34px 10px;
+}
+
+.speaking-type-label{
+  font-weight:800;
+}
+
+.speaking-type-tabs{
+  display:flex;
+  gap:14px;
+}
+
+.speaking-type-tab{
+  border:none;
+  background:#f2f5fb;
+  padding:16px 26px;
+  border-radius:16px;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.speaking-type-tab.active{
+  background:#6574f7;
+  color:#fff;
+}
+
+.speaking-panel{
+  padding:20px 34px 34px;
+}
+
+.speaking-panel-head{
+  margin-bottom:18px;
+}
+
+.speaking-list-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.speaking-card{
+  display:block;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  text-decoration:none;
+}
+
+.speaking-card-title{
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.speaking-card-meta{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  color:#7a869a;
+  margin-bottom:10px;
+}
+
+.speaking-card-foot{
+  color:var(--muted);
+  font-size:14px;
+}
