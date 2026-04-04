@@ -284,13 +284,85 @@
 
     submitBtn.addEventListener('click', () => {
       submitResponse(false);
+      scoreWithAI();
     });
 
     submitBtnBottom.addEventListener('click', () => {
-      submitResponse(false);
-    });
+  submitResponse(false);
+  scoreWithAI();
+});
 
     renderQuestion();
+    async function scoreWithAI() {
+  const q = getCurrentQuestion();
+  const studentText = textareaEl.value.trim();
+
+  if (!studentText) {
+    alert("请先写点内容再评分");
+    return;
+  }
+
+  // 显示加载状态
+  setSaveStatus("AI正在评分中，请稍等...");
+
+  try {
+    const res = await fetch('https://hanginthere-api.vercel.app/api/score-write-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        promptTitle: q.promptTitle,
+        scenario: q.scenario,
+        tasks: q.tasks,
+        to: q.to,
+        subject: q.subject,
+        studentResponse: studentText
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "评分失败");
+    }
+
+    showScoreResult(data);
+
+  } catch (err) {
+    console.error(err);
+    alert("评分出错：" + err.message);
+    setSaveStatus("评分失败");
+  }
+}
+
+function showScoreResult(result) {
+  const container = document.createElement('div');
+  container.style.marginTop = '20px';
+  container.style.padding = '16px';
+  container.style.background = '#f8f9fb';
+  container.style.borderRadius = '10px';
+
+  container.innerHTML = `
+    <h3>🎯 Score: ${result.finalScore}</h3>
+
+    <p><strong>📌 总评：</strong>${result.summary}</p>
+
+    <p><strong>📌 Problems：</strong></p>
+    <ul>
+      ${result.problems.map(p => `<li>${p}</li>`).join('')}
+    </ul>
+
+    <p><strong>🛠 Suggestions：</strong></p>
+    <ul>
+      ${result.suggestions.map(s => `<li>${s}</li>`).join('')}
+    </ul>
+  `;
+
+  document.querySelector('.email-compose-card').appendChild(container);
+
+  setSaveStatus("评分完成 ✅");
+}
   </script>
 </body>
 </html>
