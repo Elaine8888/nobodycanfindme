@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Write an Email</title>
-  <link rel="stylesheet" href="styles.css?v=20260403-email-list-1" />
+  <link rel="stylesheet" href="styles.css?v=20260403-email-exam-1" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -15,7 +15,7 @@
 
       <header class="email-page-header">
         <h1>Write an Email</h1>
-        <p>Open a prompt and save your response locally on this device.</p>
+        <p>Choose a prompt to begin your exam practice.</p>
       </header>
 
       <div id="list" class="email-list-grid"></div>
@@ -34,8 +34,9 @@
           link.classList.remove('active');
         });
 
-        const writingLink = document.querySelector('[data-page="writing"]')
-          || [...document.querySelectorAll('.nav-links a')].find(a => a.textContent.trim() === 'Writing');
+        const writingLink =
+          document.querySelector('[data-page="writing"]') ||
+          [...document.querySelectorAll('.nav-links a')].find(a => a.textContent.trim() === 'Writing');
 
         if (writingLink) writingLink.classList.add('active');
       });
@@ -43,15 +44,34 @@
     const list = document.getElementById("list");
     const questions = window.writeEmailQuestions || [];
 
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return '--:--';
+      const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const sec = String(seconds % 60).padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
     function getDraftMeta(questionId) {
       const draft = localStorage.getItem(`writeEmailDraft_${questionId}`) || '';
       const savedAt = localStorage.getItem(`writeEmailDraftSavedAt_${questionId}`) || '';
+      const resultRaw = localStorage.getItem(`writeEmailResult_${questionId}`) || '';
+
       const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+
+      let result = null;
+      if (resultRaw) {
+        try {
+          result = JSON.parse(resultRaw);
+        } catch (e) {
+          result = null;
+        }
+      }
 
       return {
         hasDraft: draft.trim().length > 0,
         savedAt,
-        wordCount
+        wordCount,
+        result
       };
     }
 
@@ -65,12 +85,29 @@
     list.innerHTML = questions.map((q) => {
       const meta = getDraftMeta(q.id);
 
+      let statusText = meta.hasDraft ? 'Draft saved' : 'New';
+      if (meta.result?.submitted) statusText = 'Submitted';
+
+      let scoreLine = '';
+      if (meta.result?.scoreText) {
+        scoreLine = `<span>${meta.result.scoreText}</span>`;
+      } else {
+        scoreLine = `<span>Not scored</span>`;
+      }
+
+      let timeLine = '';
+      if (meta.result?.durationUsedSeconds !== undefined) {
+        timeLine = `<span>Time: ${formatTime(meta.result.durationUsedSeconds)}</span>`;
+      } else {
+        timeLine = `<span>Time: --:--</span>`;
+      }
+
       return `
         <a href="write-an-email-practice.html?id=${q.id}" class="email-card">
           <div class="email-card-top">
             <span class="email-card-tag">Set ${q.id}</span>
-            <span class="email-card-status ${meta.hasDraft ? 'draft' : 'empty'}">
-              ${meta.hasDraft ? 'Draft saved' : 'New'}
+            <span class="email-card-status ${meta.result?.submitted ? 'draft' : 'empty'}">
+              ${statusText}
             </span>
           </div>
 
@@ -81,6 +118,11 @@
           <div class="email-card-foot">
             <span>${formatSavedAt(meta.savedAt)}</span>
             <span>${meta.wordCount} words</span>
+          </div>
+
+          <div class="email-card-foot" style="margin-top:8px;">
+            ${scoreLine}
+            ${timeLine}
           </div>
         </a>
       `;
