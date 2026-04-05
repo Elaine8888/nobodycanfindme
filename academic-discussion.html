@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Academic Discussion</title>
-  <link rel="stylesheet" href="/styles.css?v=20260402-academic-discussion-1"/>
+  <link rel="stylesheet" href="/styles.css?v=20260405-academic-discussion-list-1"/>
 </head>
 <body>
   <div id="navbar"></div>
@@ -14,13 +14,15 @@
       <a class="top-link" href="/writing.html">← Back to Writing</a>
 
       <header class="discussion-header">
-        <h1 id="discussionTitle">Academic Discussion</h1>
-        <p id="discussionSubtitle">Read the question and respond with your own ideas.</p>
+        <h1>Academic Discussion</h1>
+        <p>Choose a set to begin your practice.</p>
       </header>
 
       <div id="discussionRoot"></div>
     </div>
   </div>
+
+  <script src="/academic-discussion-questions.js"></script>
 
   <script>
     fetch('/navbar.html')
@@ -33,89 +35,52 @@
         if (writingLink) writingLink.classList.add('active');
       });
 
-    const discussionData = [
-      {
-        id: 1,
-        title: "The Driving Force of History",
-        prompt: `Some historians believe that individuals such as political leaders or influential thinkers have a greater impact on historical progress than broader social and economic forces. Others argue that social and economic events are the primary drivers of historical change. In your opinion, which has a greater influence on shaping history: individual actions or broader social and economic forces? Why?`
-      },
-      {
-        id: 2,
-        title: "Brand Loyalty and Personalization",
-        prompt: `We’ve been discussing various strategies to build brand loyalty. One effective strategy is offering personalized services and products to customers. Personalization can make customers feel valued and understood. Do you think personalization is the key to building strong brand loyalty? Why or why not?`
-      },
-      {
-        id: 3,
-        title: "Conformity",
-        prompt: `Conformity means behaving in ways that match what others in a group expect. It can influence how people dress, speak, or make choices. Some researchers believe conformity keeps society peaceful and organized. Others argue that it limits personal expression and original thinking. Do you believe conformity is mostly helpful or mostly harmful to individuals and society? Explain your opinion clearly.`
-      },
-      {
-        id: 4,
-        title: "Corporate Transparency",
-        prompt: `We’ve been discussing the practice of corporate transparency, where businesses are completely transparent with their employees about their operations. Others argue that certain information should remain confidential to protect competitive advantages. Do you think corporate transparency is essential, or should some information be kept confidential? Why?`
-      },
-      {
-        id: 5,
-        title: "Project-Based Learning",
-        prompt: `We’ve been discussing the impact of different teaching methods on student learning. Some educational experts believe that project-based learning is the most effective way to learn. Do you think project-based learning is beneficial for students? Why or why not?`
-      },
-      {
-        id: 6,
-        title: "Customer Feedback",
-        prompt: `We’ve been discussing the importance of customer feedback in product development. Gathering feedback can help companies understand customer needs and improve their products. However, some argue that relying too heavily on customer feedback can stifle innovation. What is your opinion on this?`
-      }
-    ];
-
-    const params = new URLSearchParams(window.location.search);
-    const setId = Number(params.get('id')) || null;
-
     const root = document.getElementById('discussionRoot');
-    const titleEl = document.getElementById('discussionTitle');
-    const subtitleEl = document.getElementById('discussionSubtitle');
+    const discussionData = window.academicDiscussionQuestions || [];
 
-    function renderList() {
-      titleEl.textContent = 'Academic Discussion';
-      subtitleEl.textContent = 'Choose a set to begin your practice.';
+    function getDiscussionDraftMeta(questionId) {
+      const draft = localStorage.getItem(`academicDiscussionDraft_${questionId}`) || '';
+      const savedAt = localStorage.getItem(`academicDiscussionDraftSavedAt_${questionId}`) || '';
+      const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
 
-      root.innerHTML = `
-        <div class="discussion-list-grid">
-          ${discussionData.map(item => `
-            <a class="discussion-card" href="/academic-discussion.html?id=${item.id}">
+      return {
+        hasDraft: draft.trim().length > 0,
+        savedAt,
+        wordCount
+      };
+    }
+
+    function formatSavedAt(value) {
+      if (!value) return 'No draft';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Draft saved';
+      return `Saved ${date.toLocaleString()}`;
+    }
+
+    root.innerHTML = `
+      <div class="discussion-list-grid">
+        ${discussionData.map(item => {
+          const meta = getDiscussionDraftMeta(item.id);
+
+          return `
+            <a class="discussion-card" href="/academic-discussion-practice.html?id=${item.id}">
               <div class="discussion-card-meta">
                 <span>Set ${item.id}</span>
                 <span>Discussion</span>
               </div>
               <div class="discussion-card-title">${item.title}</div>
-              <div class="discussion-card-foot">Click to open</div>
+              <div class="discussion-card-sub">
+                ${item.professorQuestion ? item.professorQuestion.slice(0, 110) + '...' : 'Read the discussion and respond with your own ideas.'}
+              </div>
+              <div class="discussion-card-foot">
+                <span>${meta.hasDraft ? formatSavedAt(meta.savedAt) : 'Click to open'}</span>
+                <span>${meta.wordCount} words</span>
+              </div>
             </a>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    function renderSingle(item) {
-      titleEl.textContent = item.title;
-      subtitleEl.textContent = 'Read the question and respond with your own ideas.';
-
-      root.innerHTML = `
-        <div class="discussion-single-card">
-          <div class="discussion-single-label">Prompt</div>
-          <div class="discussion-single-text">${item.prompt.replace(/\n/g, '<br>')}</div>
-
-          <div class="discussion-single-actions">
-            <a class="discussion-back-btn" href="/academic-discussion.html">← Back to Set List</a>
-          </div>
-        </div>
-      `;
-    }
-
-    const current = discussionData.find(item => item.id === setId);
-
-    if (current) {
-      renderSingle(current);
-    } else {
-      renderList();
-    }
+          `;
+        }).join('')}
+      </div>
+    `;
   </script>
 </body>
 </html>
