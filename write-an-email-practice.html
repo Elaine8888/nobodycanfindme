@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Write an Email Practice</title>
-  <link rel="stylesheet" href="styles.css?v=20260403-email-exam-2" />
+  <link rel="stylesheet" href="styles.css?v=20260405-email-exam-rubric-1" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -25,11 +25,8 @@
       <div class="email-practice-layout">
         <section class="email-prompt-card">
           <div class="email-prompt-text" id="emailScenario"></div>
-
           <div class="email-prompt-title" id="emailPromptTitle"></div>
-
           <ul class="email-task-list" id="emailTaskList"></ul>
-
           <div class="email-note" id="emailNote"></div>
         </section>
 
@@ -228,7 +225,6 @@
     function showStoredResultIfAny() {
       const result = getStoredResult();
       if (!result) return;
-
       showScoreResult(result, true);
     }
 
@@ -313,9 +309,22 @@
       const q = getCurrentQuestion();
       localStorage.removeItem(draftKey(q.id));
       localStorage.removeItem(savedAtKey(q.id));
+      localStorage.removeItem(timerKey(q.id));
+      localStorage.removeItem(submittedKey(q.id));
+      localStorage.removeItem(resultKey(q.id));
       textareaEl.value = '';
       updateWordCount();
-      setSaveStatus('Draft cleared.');
+      scoreResultRoot.innerHTML = '';
+      timeLeft = q.durationSeconds || 420;
+      durationUsedSeconds = 0;
+      timerEl.textContent = formatTime(timeLeft);
+      textareaEl.disabled = false;
+      saveDraftBtn.disabled = false;
+      clearDraftBtn.disabled = false;
+      submitBtn.disabled = false;
+      submitBtnBottom.disabled = false;
+      setSaveStatus('Draft and score cleared.');
+      startTimer();
     });
 
     submitBtn.addEventListener('click', () => {
@@ -378,6 +387,24 @@
           summary: data.summary || "",
           problems: Array.isArray(data.problems) ? data.problems : [],
           suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
+          taskCompletion: {
+            score: Number.isFinite(Number(data?.taskCompletion?.score))
+              ? Number(data.taskCompletion.score)
+              : null,
+            comment: data?.taskCompletion?.comment || ""
+          },
+          contentSupport: {
+            score: Number.isFinite(Number(data?.contentSupport?.score))
+              ? Number(data.contentSupport.score)
+              : null,
+            comment: data?.contentSupport?.comment || ""
+          },
+          languageAccuracy: {
+            score: Number.isFinite(Number(data?.languageAccuracy?.score))
+              ? Number(data.languageAccuracy.score)
+              : null,
+            comment: data?.languageAccuracy?.comment || ""
+          },
           durationUsedSeconds,
           submittedAt: new Date().toISOString()
         };
@@ -392,6 +419,23 @@
       }
     }
 
+    function renderDimension(title, key, item) {
+      const scorePart = item && item.score !== null && item.score !== undefined
+        ? `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${title}：${item.score}/5</div>`
+        : `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${title}</div>`;
+
+      const commentPart = item && item.comment
+        ? `<div style="color:#334155; line-height:1.7;">${item.comment}</div>`
+        : `<div style="color:#94a3b8; line-height:1.7;">暂无该项评价。</div>`;
+
+      return `
+        <div data-key="${key}" style="padding:12px 14px; border:1px solid #e2e8f0; border-radius:10px; background:#ffffff;">
+          ${scorePart}
+          ${commentPart}
+        </div>
+      `;
+    }
+
     function showScoreResult(result, fromStorage = false) {
       const old = document.querySelector('.ai-score-box');
       if (old) old.remove();
@@ -399,24 +443,40 @@
       const container = document.createElement('div');
       container.className = 'ai-score-box';
       container.style.marginTop = '20px';
-      container.style.padding = '16px';
+      container.style.padding = '18px';
       container.style.background = '#f8f9fb';
-      container.style.borderRadius = '10px';
+      container.style.borderRadius = '12px';
       container.style.border = '1px solid #e2e8f0';
 
-      container.innerHTML = `
-        <h3 style="margin:0 0 12px 0;">🎯 Score: ${result.scoreText}</h3>
+      const problemsHtml = (result.problems || []).length
+        ? (result.problems || []).map(p => `<li>${p}</li>`).join('')
+        : '<li>暂无明显问题。</li>';
 
-        <p style="margin:0 0 10px 0;"><strong>📌 总评：</strong>${result.summary || ''}</p>
+      const suggestionsHtml = (result.suggestions || []).length
+        ? (result.suggestions || []).map(s => `<li>${s}</li>`).join('')
+        : '<li>暂无建议。</li>';
+
+      container.innerHTML = `
+        <h3 style="margin:0 0 14px 0; color:#1e293b;">🎯 Score: ${result.scoreText}</h3>
+
+        <div style="display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:16px;">
+          ${renderDimension('任务完成度', 'taskCompletion', result.taskCompletion)}
+          ${renderDimension('内容与展开', 'contentSupport', result.contentSupport)}
+          ${renderDimension('语言与准确性', 'languageAccuracy', result.languageAccuracy)}
+        </div>
+
+        <p style="margin:0 0 12px 0; color:#1e293b; line-height:1.8;">
+          <strong>📌 总评：</strong>${result.summary || ''}
+        </p>
 
         <p style="margin:0 0 6px 0;"><strong>📌 Problems：</strong></p>
-        <ul style="margin-top:6px;">
-          ${(result.problems || []).map(p => `<li>${p}</li>`).join('')}
+        <ul style="margin-top:6px; color:#334155; line-height:1.8;">
+          ${problemsHtml}
         </ul>
 
         <p style="margin:12px 0 6px 0;"><strong>🛠 Suggestions：</strong></p>
-        <ul style="margin-top:6px;">
-          ${(result.suggestions || []).map(s => `<li>${s}</li>`).join('')}
+        <ul style="margin-top:6px; color:#334155; line-height:1.8;">
+          ${suggestionsHtml}
         </ul>
 
         <p style="margin:12px 0 0 0; color:#64748b;">
