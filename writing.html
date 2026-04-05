@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing</title>
-  <link rel="stylesheet" href="/styles.css?v=20260402-writing-email-1" />
+  <link rel="stylesheet" href="/styles.css?v=20260405-writing-discussion-1" />
   <link rel="stylesheet" href="/build-a-sentence.css?v=20260402-bs-sets-1" />
 </head>
 <body>
@@ -48,6 +48,7 @@
 
   <script src="/build-a-sentence-questions.js"></script>
   <script src="/write-an-email-questions.js"></script>
+  <script src="/academic-discussion-questions.js"></script>
 
   <script>
     fetch('/navbar.html')
@@ -59,15 +60,6 @@
         const writingLink = document.querySelector('[data-page="writing"]');
         if (writingLink) writingLink.classList.add('active');
       });
-
-   const academicDiscussionSets = [
-  { id: 1, title: "The Driving Force of History" },
-  { id: 2, title: "Brand Loyalty and Personalization" },
-  { id: 3, title: "Conformity" },
-  { id: 4, title: "Corporate Transparency" },
-  { id: 5, title: "Project-Based Learning" },
-  { id: 6, title: "Customer Feedback" }
-];
 
     const panelTitle = document.getElementById('writingPanelTitle');
     const panelDesc = document.getElementById('writingPanelDesc');
@@ -147,6 +139,18 @@
       };
     }
 
+    function getDiscussionDraftMeta(questionId) {
+      const draft = localStorage.getItem(`academicDiscussionDraft_${questionId}`) || '';
+      const savedAt = localStorage.getItem(`academicDiscussionDraftSavedAt_${questionId}`) || '';
+      const wordCount = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+
+      return {
+        hasDraft: draft.trim().length > 0,
+        savedAt,
+        wordCount
+      };
+    }
+
     function formatSavedAt(value) {
       if (!value) return 'No draft';
       const date = new Date(value);
@@ -191,18 +195,29 @@
 
     function renderDiscussion() {
       panelTitle.textContent = 'Academic Discussion';
-      panelDesc.textContent = 'Choose a set to begin your practice.';
+      panelDesc.textContent = 'Read the discussion and write your own response.';
+
+      const questions = window.academicDiscussionQuestions || [];
 
       writingList.innerHTML = `
         <div class="writing-list-grid">
-          ${academicDiscussionSets.map(item => `
-            <a class="writing-card" href="/academic-discussion.html?id=${item.id}">
-              ${createMetaRow([`Set ${item.id}`, 'Discussion'])}
-              <div class="writing-card-title">${item.title}</div>
-              <div class="writing-card-sub">Read the question and respond with your own ideas.</div>
-              <div class="writing-card-foot">Click to open</div>
-            </a>
-          `).join('')}
+          ${questions.map(item => {
+            const meta = getDiscussionDraftMeta(item.id);
+
+            return `
+              <a class="writing-card" href="/academic-discussion-practice.html?id=${item.id}">
+                ${createMetaRow([`Set ${item.id}`, 'Discussion'])}
+                <div class="writing-card-title">${item.title}</div>
+                <div class="writing-card-sub">
+                  ${item.professorQuestion ? item.professorQuestion.slice(0, 88) + '...' : 'Read the discussion and respond with your own ideas.'}
+                </div>
+                <div class="writing-card-foot">
+                  <span>${meta.hasDraft ? formatSavedAt(meta.savedAt) : 'Click to open'}</span>
+                  <span>${meta.wordCount} words</span>
+                </div>
+              </a>
+            `;
+          }).join('')}
         </div>
       `;
     }
