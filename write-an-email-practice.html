@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Write an Email Practice</title>
-  <link rel="stylesheet" href="styles.css?v=20260403-email-practice-2" />
+  <link rel="stylesheet" href="styles.css?v=20260403-email-exam-2" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -14,7 +14,7 @@
       <a class="top-link" href="write-an-email.html">← Back to Email List</a>
 
       <div class="email-practice-topbar">
-        <div class="email-practice-progress" id="emailProgress">Question 1 of 2</div>
+        <div class="email-practice-progress" id="emailProgress"></div>
 
         <div class="email-practice-actions">
           <div class="email-timer" id="emailTimer">07:00</div>
@@ -57,6 +57,8 @@
               <button id="submitBtnBottom" class="email-nav-btn dark">Submit</button>
             </div>
           </div>
+
+          <div id="scoreResultRoot"></div>
         </section>
       </div>
     </div>
@@ -98,6 +100,7 @@
     const textareaEl = document.getElementById('emailTextarea');
     const wordCountEl = document.getElementById('emailWordCount');
     const saveStatusEl = document.getElementById('emailSaveStatus');
+    const scoreResultRoot = document.getElementById('scoreResultRoot');
 
     const saveDraftBtn = document.getElementById('saveDraftBtn');
     const clearDraftBtn = document.getElementById('clearDraftBtn');
@@ -105,7 +108,8 @@
     const submitBtnBottom = document.getElementById('submitBtnBottom');
 
     let timerId = null;
-    let timeLeft = 420; // 7 minutes
+    let timeLeft = 420;
+    let durationUsedSeconds = 0;
 
     function getCurrentQuestion() {
       return questions[currentIndex];
@@ -125,6 +129,10 @@
 
     function submittedKey(id) {
       return `writeEmailSubmitted_${id}`;
+    }
+
+    function resultKey(id) {
+      return `writeEmailResult_${id}`;
     }
 
     function setSaveStatus(text) {
@@ -159,6 +167,7 @@
         timeLeft = q.durationSeconds || 420;
       }
 
+      durationUsedSeconds = (q.durationSeconds || 420) - timeLeft;
       timerEl.textContent = formatTime(timeLeft);
     }
 
@@ -200,6 +209,29 @@
       setSaveStatus(message);
     }
 
+    function getStoredResult() {
+      const q = getCurrentQuestion();
+      const raw = localStorage.getItem(resultKey(q.id));
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveResult(result) {
+      const q = getCurrentQuestion();
+      localStorage.setItem(resultKey(q.id), JSON.stringify(result));
+    }
+
+    function showStoredResultIfAny() {
+      const result = getStoredResult();
+      if (!result) return;
+
+      showScoreResult(result, true);
+    }
+
     function submitResponse(isAuto = false) {
       const q = getCurrentQuestion();
 
@@ -210,6 +242,7 @@
 
       saveDraft(false);
       saveTimer();
+      durationUsedSeconds = (q.durationSeconds || 420) - timeLeft;
       localStorage.setItem(submittedKey(q.id), 'true');
 
       disableEditing(
@@ -225,11 +258,13 @@
       timerId = setInterval(() => {
         if (timeLeft > 0) {
           timeLeft--;
+          durationUsedSeconds++;
           timerEl.textContent = formatTime(timeLeft);
           saveTimer();
         } else {
           timerEl.textContent = '00:00';
           submitResponse(true);
+          scoreWithAI(true);
         }
       }, 1000);
     }
@@ -247,6 +282,7 @@
 
       loadDraft();
       loadTimer();
+      showStoredResultIfAny();
 
       const alreadySubmitted = localStorage.getItem(submittedKey(q.id)) === 'true';
 
@@ -283,86 +319,121 @@
     });
 
     submitBtn.addEventListener('click', () => {
-      submitResponse(false);
-      scoreWithAI();
+      if (!submitBtn.disabled) {
+        submitResponse(false);
+        scoreWithAI(false);
+      }
     });
 
     submitBtnBottom.addEventListener('click', () => {
-  submitResponse(false);
-  scoreWithAI();
-});
-
-    renderQuestion();
-    async function scoreWithAI() {
-  const q = getCurrentQuestion();
-  const studentText = textareaEl.value.trim();
-
-  if (!studentText) {
-    alert("请先写点内容再评分");
-    return;
-  }
-
-  // 显示加载状态
-  setSaveStatus("AI正在评分中，请稍等...");
-
-  try {
-    const res = await fetch('https://hanginthere-api.vercel.app/api/score-write-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        promptTitle: q.promptTitle,
-        scenario: q.scenario,
-        tasks: q.tasks,
-        to: q.to,
-        subject: q.subject,
-        studentResponse: studentText
-      })
+      if (!submitBtnBottom.disabled) {
+        submitResponse(false);
+        scoreWithAI(false);
+      }
     });
 
-    const data = await res.json();
+    async function scoreWithAI(isAutoSubmit = false) {
+      const q = getCurrentQuestion();
+      const studentText = textareaEl.value.trim();
 
-    if (!res.ok) {
-      throw new Error(data.error || "评分失败");
+      if (!studentText) {
+        alert("请先写点内容再评分");
+        return;
+      }
+
+      setSaveStatus("AI正在评分中，请稍等...");
+
+      try {
+        const res = await fetch('https://hanginthere-api.vercel.app/api/score-write-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            promptTitle: q.promptTitle,
+            scenario: q.scenario,
+            tasks: q.tasks,
+            to: q.to,
+            subject: q.subject,
+            studentResponse: studentText
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "评分失败");
+        }
+
+        const finalScoreNumber = Number(data.finalScore);
+        const scoreText = Number.isFinite(finalScoreNumber)
+          ? `${finalScoreNumber}/5`
+          : `${data.finalScore}/5`;
+
+        const resultToStore = {
+          submitted: true,
+          autoSubmitted: isAutoSubmit,
+          finalScore: data.finalScore,
+          scoreText,
+          summary: data.summary || "",
+          problems: Array.isArray(data.problems) ? data.problems : [],
+          suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
+          durationUsedSeconds,
+          submittedAt: new Date().toISOString()
+        };
+
+        saveResult(resultToStore);
+        showScoreResult(resultToStore, false);
+
+      } catch (err) {
+        console.error(err);
+        alert("评分出错：" + err.message);
+        setSaveStatus("评分失败");
+      }
     }
 
-    showScoreResult(data);
+    function showScoreResult(result, fromStorage = false) {
+      const old = document.querySelector('.ai-score-box');
+      if (old) old.remove();
 
-  } catch (err) {
-    console.error(err);
-    alert("评分出错：" + err.message);
-    setSaveStatus("评分失败");
-  }
-}
+      const container = document.createElement('div');
+      container.className = 'ai-score-box';
+      container.style.marginTop = '20px';
+      container.style.padding = '16px';
+      container.style.background = '#f8f9fb';
+      container.style.borderRadius = '10px';
+      container.style.border = '1px solid #e2e8f0';
 
-function showScoreResult(result) {
-  const container = document.createElement('div');
-  container.style.marginTop = '20px';
-  container.style.padding = '16px';
-  container.style.background = '#f8f9fb';
-  container.style.borderRadius = '10px';
+      container.innerHTML = `
+        <h3 style="margin:0 0 12px 0;">🎯 Score: ${result.scoreText}</h3>
 
-  container.innerHTML = `
-    <h3>🎯 Score: ${result.finalScore}</h3>
+        <p style="margin:0 0 10px 0;"><strong>📌 总评：</strong>${result.summary || ''}</p>
 
-    <p><strong>📌 总评：</strong>${result.summary}</p>
+        <p style="margin:0 0 6px 0;"><strong>📌 Problems：</strong></p>
+        <ul style="margin-top:6px;">
+          ${(result.problems || []).map(p => `<li>${p}</li>`).join('')}
+        </ul>
 
-    <p><strong>📌 Problems：</strong></p>
-    <ul>
-      ${result.problems.map(p => `<li>${p}</li>`).join('')}
-    </ul>
+        <p style="margin:12px 0 6px 0;"><strong>🛠 Suggestions：</strong></p>
+        <ul style="margin-top:6px;">
+          ${(result.suggestions || []).map(s => `<li>${s}</li>`).join('')}
+        </ul>
 
-    <p><strong>🛠 Suggestions：</strong></p>
-    <ul>
-      ${result.suggestions.map(s => `<li>${s}</li>`).join('')}
-    </ul>
-  `;
+        <p style="margin:12px 0 0 0; color:#64748b;">
+          Time Used: ${formatTime(result.durationUsedSeconds || 0)}
+        </p>
+      `;
 
-  document.querySelector('.email-compose-card').appendChild(container);
+      scoreResultRoot.appendChild(container);
 
-  setSaveStatus("评分完成 ✅");
-}
+      if (fromStorage) {
+        setSaveStatus("已加载该题的历史评分结果。");
+      } else {
+        setSaveStatus("评分完成 ✅");
+      }
+    }
+
+    renderQuestion();
   </script>
 </body>
 </html>
