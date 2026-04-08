@@ -419,7 +419,7 @@
 
     <div class="topbar">
       <span class="badge">Reading · Daily Life</span>
-      <span class="progress" id="progress">Passage 1 · Question 1 of 2</span>
+      <span class="progress" id="progress">Question 1 of 2</span>
     </div>
 
     <div class="layout">
@@ -457,27 +457,62 @@
 
   <script src="read-in-daily-life-questions.js"></script>
   <script>
-    let currentPassageIndex = 0;
+    function getPassageFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const id = Number(params.get("id"));
+
+      if (!Array.isArray(window.dailyLifePassages) || !window.dailyLifePassages.length) {
+        return {
+          passage: null,
+          index: -1
+        };
+      }
+
+      const foundIndex = window.dailyLifePassages.findIndex(p => Number(p.id) === id);
+
+      if (foundIndex !== -1) {
+        return {
+          passage: window.dailyLifePassages[foundIndex],
+          index: foundIndex
+        };
+      }
+
+      return {
+        passage: window.dailyLifePassages[0],
+        index: 0
+      };
+    }
+
+    const passageInfo = getPassageFromUrl();
+    const currentPassage = passageInfo.passage;
+    const currentPassageIndex = passageInfo.index;
+
     let currentQuestionIndex = 0;
-    const currentPassage = dailyLifePassages[currentPassageIndex];
-    let userAnswers = new Array(currentPassage.questions.length).fill(null);
+    let userAnswers = currentPassage ? new Array(currentPassage.questions.length).fill(null) : [];
     let hasSubmitted = false;
+    let startTime = Date.now();
 
     function renderPassage(data) {
-      document.getElementById("passageTitle").textContent = data.title;
+      document.getElementById("passageTitle").textContent = data.title || "Passage";
 
-      const bodyHtml = data.passage.replace(
+      const headingHtml = data.heading
+        ? `<div class="notice-title">${data.heading}</div>`
+        : "";
+
+      const bodyHtml = (data.passage || "").replace(
         /www\.[^\s]+/g,
         '<span class="linkish">$&</span>'
       );
 
       document.getElementById("passageBox").innerHTML = `
-        <div class="notice-title">${data.heading}</div>
+        ${headingHtml}
         <div class="notice-text">${bodyHtml.replace(/\n/g, "<br>")}</div>
       `;
     }
 
     function renderQuestion() {
+      if (!currentPassage) return;
+
       const q = currentPassage.questions[currentQuestionIndex];
       const container = document.getElementById("questionContainer");
       const selectedAnswer = userAnswers[currentQuestionIndex];
@@ -514,16 +549,19 @@
     }
 
     function updateProgress() {
+      if (!currentPassage) return;
       document.getElementById("progress").textContent =
-        `Passage ${currentPassageIndex + 1} · Question ${currentQuestionIndex + 1} of ${currentPassage.questions.length}`;
+        `Question ${currentQuestionIndex + 1} of ${currentPassage.questions.length}`;
     }
 
     function updateNavButtons() {
+      if (!currentPassage) return;
       document.getElementById("backBtn").disabled = currentQuestionIndex === 0;
       document.getElementById("nextBtn").disabled = currentQuestionIndex === currentPassage.questions.length - 1;
     }
 
     function goBack() {
+      if (!currentPassage) return;
       if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
         renderQuestion();
@@ -531,6 +569,7 @@
     }
 
     function goNext() {
+      if (!currentPassage) return;
       if (currentQuestionIndex < currentPassage.questions.length - 1) {
         currentQuestionIndex++;
         renderQuestion();
@@ -558,7 +597,22 @@
       }
     }
 
+    function saveResult(score, total, duration) {
+      if (!currentPassage) return;
+
+      const result = {
+        score,
+        total,
+        duration,
+        submittedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(`dailyLifeResult_${currentPassage.id}`, JSON.stringify(result));
+    }
+
     function checkAnswers() {
+      if (!currentPassage) return;
+
       hasSubmitted = true;
 
       let score = 0;
@@ -591,6 +645,9 @@
       });
 
       const accuracy = ((score / total) * 100).toFixed(0);
+      const duration = Math.round((Date.now() - startTime) / 1000);
+
+      saveResult(score, total, duration);
 
       const resultCard = document.getElementById("resultCard");
       resultCard.style.display = "block";
@@ -609,9 +666,12 @@
     }
 
     function resetAnswers() {
+      if (!currentPassage) return;
+
       userAnswers = new Array(currentPassage.questions.length).fill(null);
       currentQuestionIndex = 0;
       hasSubmitted = false;
+      startTime = Date.now();
 
       const resultCard = document.getElementById("resultCard");
       resultCard.style.display = "none";
@@ -625,8 +685,28 @@
       renderQuestion();
     }
 
-    renderPassage(currentPassage);
-    renderQuestion();
+    function renderErrorState() {
+      document.getElementById("passageTitle").textContent = "Passage Not Found";
+      document.getElementById("passageBox").innerHTML = `
+        <div class="notice-text">未找到对应文章，请返回列表页重新进入。</div>
+      `;
+      document.getElementById("questionContainer").innerHTML = `
+        <p class="question-title">No questions available.</p>
+      `;
+      document.getElementById("backBtn").disabled = true;
+      document.getElementById("nextBtn").disabled = true;
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("submitBtn").style.opacity = "0.65";
+      document.getElementById("submitBtn").style.cursor = "not-allowed";
+      document.getElementById("progress").textContent = "No passage loaded";
+    }
+
+    if (currentPassage) {
+      renderPassage(currentPassage);
+      renderQuestion();
+    } else {
+      renderErrorState();
+    }
   </script>
 </body>
 </html>
