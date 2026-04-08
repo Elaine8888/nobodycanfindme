@@ -252,7 +252,7 @@ Thank you for your cooperation.`,
           "Students should use Lot C，因此选 C。"
       }
     ]
-  }
+  },
 // ===== 新增 =====
   {
     id: 7,
