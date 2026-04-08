@@ -704,7 +704,7 @@
       scoreResultBox.innerHTML = '';
 
       try {
-        const response = await fetch('/api/score-academic-discussion', {
+        const response = await fetch('https://hanginthere-api.vercel.app/api/score-academic-discussion', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
