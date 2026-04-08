@@ -253,5 +253,232 @@ Thank you for your cooperation.`,
       }
     ]
   }
+// ===== 新增 =====
+  {
+    id: 7,
+    testDate: "20260121",
+    title: "Apartment Notice",
+    heading: "Water Supply Interruption",
+    passage: `Please be advised that water service will be temporarily suspended on Tuesday from 9 A.M. to 2 P.M. due to maintenance work. Residents are encouraged to store water in advance.`,
+    questions: [
+      {
+        q: "Why will the water supply be interrupted?",
+        options: [
+          "Construction",
+          "Maintenance work",
+          "Water shortage",
+          "Cleaning"
+        ],
+        answer: 1,
+        explanation: "原文 due to maintenance work，因此选 B。"
+      },
+      {
+        q: "What are residents advised to do?",
+        options: [
+          "Leave the building",
+          "Buy bottled water",
+          "Store water beforehand",
+          "Call the office"
+        ],
+        answer: 2,
+        explanation: "原文 store water in advance，因此选 C。"
+      }
+    ]
+  },
 
+  {
+    id: 8,
+    testDate: "20260121",
+    title: "University Email",
+    heading: "Career Fair Reminder",
+    passage: `Dear Students,
+
+Blundin University will host its annual career fair this Thursday from 10 A.M. to 3 P.M. in the main hall. Students are encouraged to bring copies of their resumes and dress professionally.`,
+    questions: [
+      {
+        q: "What is the purpose of the email?",
+        options: [
+          "To cancel an event",
+          "To remind students of a career fair",
+          "To announce a holiday",
+          "To promote a course"
+        ],
+        answer: 1,
+        explanation: "提醒career fair，因此选 B。"
+      },
+      {
+        q: "What should students bring?",
+        options: [
+          "Books",
+          "Resumes",
+          "Laptops",
+          "ID cards"
+        ],
+        answer: 1,
+        explanation: "bring copies of their resumes，因此选 B。"
+      }
+    ]
+  },
+
+  {
+    id: 9,
+    testDate: "20260121",
+    title: "Store Notice",
+    heading: "Holiday Hours",
+    passage: `Our store will operate on special hours during the holiday season. We will open from 11 A.M. to 6 P.M. on weekdays and remain closed on Sundays.`,
+    questions: [
+      {
+        q: "What is the notice about?",
+        options: [
+          "New products",
+          "Holiday hours",
+          "Store relocation",
+          "Staff hiring"
+        ],
+        answer: 1,
+        explanation: "holiday hours，因此选 B。"
+      },
+      {
+        q: "When is the store closed?",
+        options: [
+          "Weekdays",
+          "Saturdays",
+          "Sundays",
+          "Holidays"
+        ],
+        answer: 2,
+        explanation: "closed on Sundays，因此选 C。"
+      }
+    ]
+  },
+
+  {
+    id: 10,
+    testDate: "20260121",
+    title: "Flight Announcement",
+    heading: "Gate Change",
+    passage: `Attention passengers: Flight AC203 to Toronto will now depart from Gate 18 instead of Gate 12. Boarding will begin in 20 minutes.`,
+    questions: [
+      {
+        q: "What has changed?",
+        options: [
+          "Flight time",
+          "Destination",
+          "Gate number",
+          "Airline"
+        ],
+        answer: 2,
+        explanation: "gate change，因此选 C。"
+      },
+      {
+        q: "When will boarding begin?",
+        options: [
+          "Immediately",
+          "In 20 minutes",
+          "In one hour",
+          "Tomorrow"
+        ],
+        answer: 1,
+        explanation: "in 20 minutes，因此选 B。"
+      }
+    ]
+  },
+
+  {
+    id: 11,
+    testDate: "20260121",
+    title: "School Notice",
+    heading: "Exam Schedule",
+    passage: `Final exams will take place next week. Students should check the online system for their specific exam times and locations.`,
+    questions: [
+      {
+        q: "What is being announced?",
+        options: [
+          "Class cancellation",
+          "Exam schedule",
+          "New course",
+          "School trip"
+        ],
+        answer: 1,
+        explanation: "exam schedule，因此选 B。"
+      },
+      {
+        q: "Where can students find details?",
+        options: [
+          "Notice board",
+          "Teacher",
+          "Online system",
+          "Email"
+        ],
+        answer: 2,
+        explanation: "online system，因此选 C。"
+      }
+    ]
+  },
+
+  {
+    id: 12,
+    testDate: "20260121",
+    title: "Event Poster",
+    heading: "Music Festival",
+    passage: `Join us this Saturday for a live music festival in Central Park. Multiple bands will perform, and food trucks will be available.`,
+    questions: [
+      {
+        q: "What type of event is this?",
+        options: [
+          "Sports event",
+          "Music festival",
+          "Food fair",
+          "Conference"
+        ],
+        answer: 1,
+        explanation: "music festival，因此选 B。"
+      },
+      {
+        q: "What can attendees expect?",
+        options: [
+          "Workshops",
+          "Lectures",
+          "Live music and food",
+          "Games"
+        ],
+        answer: 2,
+        explanation: "bands + food trucks，因此选 C。"
+      }
+    ]
+  },
+
+  {
+    id: 13,
+    testDate: "20260121",
+    title: "Office Email",
+    heading: "Meeting Reminder",
+    passage: `Dear Team,
+
+This is a reminder that our weekly meeting will take place tomorrow at 10 A.M. Please prepare your updates in advance.`,
+    questions: [
+      {
+        q: "What is the purpose of the email?",
+        options: [
+          "To cancel a meeting",
+          "To remind about a meeting",
+          "To schedule a meeting",
+          "To announce a holiday"
+        ],
+        answer: 1,
+        explanation: "reminder，因此选 B。"
+      },
+      {
+        q: "What should team members do?",
+        options: [
+          "Bring food",
+          "Prepare updates",
+          "Arrive early",
+          "Cancel plans"
+        ],
+        answer: 1,
+        explanation: "prepare updates，因此选 B。"
+      }
+    ]
+  }
 ];
