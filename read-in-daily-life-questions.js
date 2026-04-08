@@ -255,36 +255,44 @@ Thank you for your cooperation.`,
   },
 // ===== 新增 =====
   {
-    id: 7,
-    testDate: "20260121",
-    title: "Apartment Notice",
-    heading: "Water Supply Interruption",
-    passage: `Please be advised that water service will be temporarily suspended on Tuesday from 9 A.M. to 2 P.M. due to maintenance work. Residents are encouraged to store water in advance.`,
-    questions: [
-      {
-        q: "Why will the water supply be interrupted?",
-        options: [
-          "Construction",
-          "Maintenance work",
-          "Water shortage",
-          "Cleaning"
-        ],
-        answer: 1,
-        explanation: "原文 due to maintenance work，因此选 B。"
-      },
-      {
-        q: "What are residents advised to do?",
-        options: [
-          "Leave the building",
-          "Buy bottled water",
-          "Store water beforehand",
-          "Call the office"
-        ],
-        answer: 2,
-        explanation: "原文 store water in advance，因此选 C。"
-      }
-    ]
-  },
+    ,
+{
+  id: 7,
+  testDate: "20260121",
+  title: "Read a Webpage",
+  heading: "FitLife Gym Membership",
+  passage: `Website: https://www.fitlifegym.com
+
+Monthly plan: $30, equipment access only  
+Quarterly plan: $80, includes group classes and swimming pool privileges  
+Annual plan: $300, includes personal training discounts plus guest passes  
+
+New member offer: One-week free trial, with a commitment to a minimum three-month membership afterward`,
+  questions: [
+    {
+      q: "What benefits does a quarterly member have that a monthly member lacks?",
+      options: [
+        "Equipment access and guest passes",
+        "Personal training discounts only",
+        "Group classes and swimming privileges",
+        "Free trial and minimum commitment"
+      ],
+      answer: 2,
+      explanation: "quarterly plan includes group classes and swimming pool privileges，而monthly只有equipment access，因此选C。"
+    },
+    {
+      q: "What is required of new members after the one-week free trial ends?",
+      options: [
+        "Nothing",
+        "A one-month membership",
+        "A three-month membership",
+        "An annual membership"
+      ],
+      answer: 2,
+      explanation: "原文 a commitment to a minimum three-month membership afterward，因此选C。"
+    }
+  ]
+},
 
   {
     id: 8,
