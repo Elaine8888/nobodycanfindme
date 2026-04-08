@@ -2550,5 +2550,43 @@ window.questions = [
     { p: "wild", a: "life", g: 4 },
     { p: "se", a: "rve", g: 3 }
   ]
+},
+{
+  id: 48,
+  title: "Art",
+  subtitle: "",
+  date: "20260309",
+  template: "Art has long reflected human culture, mirroring society's values and beliefs. Throughout history, artists have expressed emotions, told stories, and challenged norms. During the Renaissance, figures like Leonardo da Vinci and Michelangelo explored ana{0} and persp{1}, echoing t{2} era's inte{3} in sci{4} and nat{5}. Later, move{6} such a{7} Impressionism a{8} Abstract Expressionism rede{9} traditional boundaries. These styles invited viewers to see the world differently, highlighting art's lasting ability to provoke thought, inspire change, and deepen our understanding of human experience.",
+  items: [
+    { p: "ana", a: "tomy", g: 4 },
+    { p: "persp", a: "ective", g: 6 },
+    { p: "t", a: "he", g: 2 },
+    { p: "inte", a: "rest", g: 4 },
+    { p: "sci", a: "ence", g: 4 },
+    { p: "nat", a: "ure", g: 3 },
+    { p: "move", a: "ments", g: 5 },
+    { p: "a", a: "s", g: 1 },
+    { p: "a", a: "nd", g: 2 },
+    { p: "rede", a: "fined", g: 5 }
+  ]
+},
+{
+  id: 49,
+  title: "The Middle Ages",
+  subtitle: "",
+  date: "20260309",
+  template: "The Middle Ages was a period in Europe that spanned roughly between the fifth and fifteenth centuries. This e{0} saw signi{1} changes, mo{2} notably t{3} spread o{4} Christianity a{5} the establ{6} of powe{7} kingdoms. Des{8} being of{9} referred to as the \"Dark Ages,\" a name that suggests stagnation and decline, this period also witnessed remarkable achievements in art, architecture, and learning, laying the groundwork for Europe's transition into the Renaissance and the age of discovery.",
+  items: [
+    { p: "e", a: "ra", g: 2 },
+    { p: "signi", a: "ficant", g: 6 },
+    { p: "mo", a: "st", g: 2 },
+    { p: "t", a: "he", g: 2 },
+    { p: "o", a: "f", g: 1 },
+    { p: "a", a: "nd", g: 2 },
+    { p: "establ", a: "ishment", g: 7 },
+    { p: "powe", a: "rful", g: 4 },
+    { p: "Des", a: "pite", g: 4 },
+    { p: "of", a: "ten", g: 3 }
+  ]
 }
-  ];
+];
