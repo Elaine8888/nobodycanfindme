@@ -293,200 +293,40 @@ New member offer: One-week free trial, with a commitment to a minimum three-mont
     }
   ]
 },
+{
+  id: 8,
+  testDate: "20260121",
+  title: "Read an E-mail",
+  heading: "",
+  passage: `Hi Team,
 
-  {
-    id: 8,
-    testDate: "20260121",
-    title: "University Email",
-    heading: "Career Fair Reminder",
-    passage: `Dear Students,
+Blundin University hosted a career fair yesterday. I was able to speak to several promising candidates for summer internships with our company. See their attached resumes. I’d like everyone to give me their feedback no later than Friday.
 
-Blundin University will host its annual career fair this Thursday from 10 A.M. to 3 P.M. in the main hall. Students are encouraged to bring copies of their resumes and dress professionally.`,
-    questions: [
-      {
-        q: "What is the purpose of the email?",
-        options: [
-          "To cancel an event",
-          "To remind students of a career fair",
-          "To announce a holiday",
-          "To promote a course"
-        ],
-        answer: 1,
-        explanation: "提醒career fair，因此选 B。"
-      },
-      {
-        q: "What should students bring?",
-        options: [
-          "Books",
-          "Resumes",
-          "Laptops",
-          "ID cards"
-        ],
-        answer: 1,
-        explanation: "bring copies of their resumes，因此选 B。"
-      }
-    ]
-  },
-
-  {
-    id: 9,
-    testDate: "20260121",
-    title: "Store Notice",
-    heading: "Holiday Hours",
-    passage: `Our store will operate on special hours during the holiday season. We will open from 11 A.M. to 6 P.M. on weekdays and remain closed on Sundays.`,
-    questions: [
-      {
-        q: "What is the notice about?",
-        options: [
-          "New products",
-          "Holiday hours",
-          "Store relocation",
-          "Staff hiring"
-        ],
-        answer: 1,
-        explanation: "holiday hours，因此选 B。"
-      },
-      {
-        q: "When is the store closed?",
-        options: [
-          "Weekdays",
-          "Saturdays",
-          "Sundays",
-          "Holidays"
-        ],
-        answer: 2,
-        explanation: "closed on Sundays，因此选 C。"
-      }
-    ]
-  },
-
-  {
-    id: 10,
-    testDate: "20260121",
-    title: "Flight Announcement",
-    heading: "Gate Change",
-    passage: `Attention passengers: Flight AC203 to Toronto will now depart from Gate 18 instead of Gate 12. Boarding will begin in 20 minutes.`,
-    questions: [
-      {
-        q: "What has changed?",
-        options: [
-          "Flight time",
-          "Destination",
-          "Gate number",
-          "Airline"
-        ],
-        answer: 2,
-        explanation: "gate change，因此选 C。"
-      },
-      {
-        q: "When will boarding begin?",
-        options: [
-          "Immediately",
-          "In 20 minutes",
-          "In one hour",
-          "Tomorrow"
-        ],
-        answer: 1,
-        explanation: "in 20 minutes，因此选 B。"
-      }
-    ]
-  },
-
-  {
-    id: 11,
-    testDate: "20260121",
-    title: "School Notice",
-    heading: "Exam Schedule",
-    passage: `Final exams will take place next week. Students should check the online system for their specific exam times and locations.`,
-    questions: [
-      {
-        q: "What is being announced?",
-        options: [
-          "Class cancellation",
-          "Exam schedule",
-          "New course",
-          "School trip"
-        ],
-        answer: 1,
-        explanation: "exam schedule，因此选 B。"
-      },
-      {
-        q: "Where can students find details?",
-        options: [
-          "Notice board",
-          "Teacher",
-          "Online system",
-          "Email"
-        ],
-        answer: 2,
-        explanation: "online system，因此选 C。"
-      }
-    ]
-  },
-
-  {
-    id: 12,
-    testDate: "20260121",
-    title: "Event Poster",
-    heading: "Music Festival",
-    passage: `Join us this Saturday for a live music festival in Central Park. Multiple bands will perform, and food trucks will be available.`,
-    questions: [
-      {
-        q: "What type of event is this?",
-        options: [
-          "Sports event",
-          "Music festival",
-          "Food fair",
-          "Conference"
-        ],
-        answer: 1,
-        explanation: "music festival，因此选 B。"
-      },
-      {
-        q: "What can attendees expect?",
-        options: [
-          "Workshops",
-          "Lectures",
-          "Live music and food",
-          "Games"
-        ],
-        answer: 2,
-        explanation: "bands + food trucks，因此选 C。"
-      }
-    ]
-  },
-
-  {
-    id: 13,
-    testDate: "20260121",
-    title: "Office Email",
-    heading: "Meeting Reminder",
-    passage: `Dear Team,
-
-This is a reminder that our weekly meeting will take place tomorrow at 10 A.M. Please prepare your updates in advance.`,
-    questions: [
-      {
-        q: "What is the purpose of the email?",
-        options: [
-          "To cancel a meeting",
-          "To remind about a meeting",
-          "To schedule a meeting",
-          "To announce a holiday"
-        ],
-        answer: 1,
-        explanation: "reminder，因此选 B。"
-      },
-      {
-        q: "What should team members do?",
-        options: [
-          "Bring food",
-          "Prepare updates",
-          "Arrive early",
-          "Cancel plans"
-        ],
-        answer: 1,
-        explanation: "prepare updates，因此选 B。"
-      }
-    ]
-  }
+Thanks,
+Ryan`,
+  questions: [
+    {
+      q: "What did Ryan do yesterday?",
+      options: [
+        "He took a class at a university.",
+        "He attended a job fair.",
+        "He was interviewed by a manager.",
+        "He hired some summer interns."
+      ],
+      answer: 1,
+      explanation: "原文 hosted a career fair yesterday，Ryan参加了招聘会，因此选B。"
+    },
+    {
+      q: "What does Ryan ask his team to do?",
+      options: [
+        "Share their opinions of some job candidates",
+        "Review a summer internship program",
+        "Update their résumés by Friday",
+        "Introduce themselves to new interns"
+      ],
+      answer: 0,
+      explanation: "原文 give me their feedback，说明让团队提供对候选人的意见，因此选A。"
+    }
+  ]
+}
 ];
