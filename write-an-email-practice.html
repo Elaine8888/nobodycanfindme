@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Write an Email Practice</title>
-  <link rel="stylesheet" href="styles.css?v=20260405-email-exam-rubric-1" />
+  <link rel="stylesheet" href="styles.css?v=20260409-email-rescore-timeup-1" />
 </head>
 <body>
   <div id="navbar"></div>
@@ -40,6 +40,7 @@
             <div class="email-toolbar-buttons">
               <button id="saveDraftBtn" class="email-tool-btn primary">Save Draft</button>
               <button id="clearDraftBtn" class="email-tool-btn light">Clear Draft</button>
+              <button id="rescoreBtn" class="email-tool-btn light">Rescore</button>
             </div>
 
             <div class="email-word-count" id="emailWordCount">0 words</div>
@@ -101,12 +102,16 @@
 
     const saveDraftBtn = document.getElementById('saveDraftBtn');
     const clearDraftBtn = document.getElementById('clearDraftBtn');
+    const rescoreBtn = document.getElementById('rescoreBtn');
     const submitBtn = document.getElementById('submitBtn');
     const submitBtnBottom = document.getElementById('submitBtnBottom');
 
     let timerId = null;
     let timeLeft = 420;
     let durationUsedSeconds = 0;
+    let isScoring = false;
+    let timeExpired = false;
+    let autoScoredAfterTimeUp = false;
 
     function getCurrentQuestion() {
       return questions[currentIndex];
@@ -124,8 +129,8 @@
       return `writeEmailTimer_${id}`;
     }
 
-    function submittedKey(id) {
-      return `writeEmailSubmitted_${id}`;
+    function timeExpiredKey(id) {
+      return `writeEmailTimeExpired_${id}`;
     }
 
     function resultKey(id) {
@@ -143,8 +148,9 @@
     }
 
     function formatTime(seconds) {
-      const min = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const sec = String(seconds % 60).padStart(2, '0');
+      const safeSeconds = Math.max(0, Number(seconds) || 0);
+      const min = String(Math.floor(safeSeconds / 60)).padStart(2, '0');
+      const sec = String(safeSeconds % 60).padStart(2, '0');
       return `${min}:${sec}`;
     }
 
@@ -155,16 +161,23 @@
 
     function loadTimer() {
       const q = getCurrentQuestion();
+      const total = q.durationSeconds || 420;
       const saved = localStorage.getItem(timerKey(q.id));
+      const expired = localStorage.getItem(timeExpiredKey(q.id)) === 'true';
 
-      if (saved !== null && saved !== '') {
+      if (expired) {
+        timeLeft = 0;
+        timeExpired = true;
+      } else if (saved !== null && saved !== '') {
         const value = Number(saved);
-        timeLeft = Number.isFinite(value) ? value : q.durationSeconds;
+        timeLeft = Number.isFinite(value) ? Math.max(0, value) : total;
+        timeExpired = timeLeft <= 0;
       } else {
-        timeLeft = q.durationSeconds || 420;
+        timeLeft = total;
+        timeExpired = false;
       }
 
-      durationUsedSeconds = (q.durationSeconds || 420) - timeLeft;
+      durationUsedSeconds = total - timeLeft;
       timerEl.textContent = formatTime(timeLeft);
     }
 
@@ -197,15 +210,6 @@
       }
     }
 
-    function disableEditing(message) {
-      textareaEl.disabled = true;
-      saveDraftBtn.disabled = true;
-      clearDraftBtn.disabled = true;
-      submitBtn.disabled = true;
-      submitBtnBottom.disabled = true;
-      setSaveStatus(message);
-    }
-
     function getStoredResult() {
       const q = getCurrentQuestion();
       const raw = localStorage.getItem(resultKey(q.id));
@@ -222,45 +226,93 @@
       localStorage.setItem(resultKey(q.id), JSON.stringify(result));
     }
 
+    function clearStoredResult() {
+      const q = getCurrentQuestion();
+      localStorage.removeItem(resultKey(q.id));
+    }
+
     function showStoredResultIfAny() {
       const result = getStoredResult();
       if (!result) return;
       showScoreResult(result, true);
     }
 
-    function submitResponse(isAuto = false) {
-      const q = getCurrentQuestion();
+    function setEditingState(expired) {
+      if (expired) {
+        textareaEl.disabled = true;
+        saveDraftBtn.disabled = true;
+        submitBtn.disabled = false;
+        submitBtnBottom.disabled = false;
+        rescoreBtn.disabled = false;
+        clearDraftBtn.disabled = false;
+        timerEl.textContent = '00:00';
+      } else {
+        textareaEl.disabled = false;
+        saveDraftBtn.disabled = false;
+        submitBtn.disabled = false;
+        submitBtnBottom.disabled = false;
+        rescoreBtn.disabled = false;
+        clearDraftBtn.disabled = false;
+      }
+    }
 
+    function stopTimer() {
       if (timerId) {
         clearInterval(timerId);
         timerId = null;
       }
+    }
 
+    function markTimeExpired() {
+      const q = getCurrentQuestion();
+      timeExpired = true;
+      timeLeft = 0;
+      timerEl.textContent = '00:00';
+      localStorage.setItem(timerKey(q.id), '0');
+      localStorage.setItem(timeExpiredKey(q.id), 'true');
+      setEditingState(true);
+    }
+
+    async function handleTimeUp() {
+      markTimeExpired();
       saveDraft(false);
-      saveTimer();
-      durationUsedSeconds = (q.durationSeconds || 420) - timeLeft;
-      localStorage.setItem(submittedKey(q.id), 'true');
 
-      disableEditing(
-        isAuto
-          ? 'Time is up. Your response has been submitted locally on this device.'
-          : 'Your response has been submitted locally on this device.'
-      );
+      const studentText = textareaEl.value.trim();
+      if (!studentText) {
+        setSaveStatus('Time is up. No response was submitted because the answer box is empty.');
+        return;
+      }
+
+      if (!autoScoredAfterTimeUp) {
+        autoScoredAfterTimeUp = true;
+        setSaveStatus('Time is up. Your response is being scored automatically...');
+        await scoreWithAI(true);
+      }
     }
 
     function startTimer() {
-      if (timerId) clearInterval(timerId);
+      stopTimer();
 
-      timerId = setInterval(() => {
+      if (timeExpired) {
+        timerEl.textContent = '00:00';
+        setEditingState(true);
+        return;
+      }
+
+      setEditingState(false);
+      timerEl.textContent = formatTime(timeLeft);
+
+      timerId = setInterval(async () => {
         if (timeLeft > 0) {
           timeLeft--;
           durationUsedSeconds++;
           timerEl.textContent = formatTime(timeLeft);
           saveTimer();
-        } else {
-          timerEl.textContent = '00:00';
-          submitResponse(true);
-          scoreWithAI(true);
+
+          if (timeLeft === 0) {
+            stopTimer();
+            await handleTimeUp();
+          }
         }
       }, 1000);
     }
@@ -269,33 +321,29 @@
       const q = getCurrentQuestion();
 
       progressEl.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
-      scenarioEl.textContent = q.scenario;
-      promptTitleEl.textContent = q.promptTitle;
-      taskListEl.innerHTML = q.tasks.map(task => `<li>${task}</li>`).join('');
-      noteEl.textContent = q.note;
-      toEl.textContent = `To: ${q.to}`;
-      subjectEl.textContent = `Subject: ${q.subject}`;
+      scenarioEl.textContent = q.scenario || '';
+      promptTitleEl.textContent = q.promptTitle || '';
+      taskListEl.innerHTML = (q.tasks || []).map(task => `<li>${task}</li>`).join('');
+      noteEl.textContent = q.note || '';
+      toEl.textContent = `To: ${q.to || ''}`;
+      subjectEl.textContent = `Subject: ${q.subject || ''}`;
 
+      autoScoredAfterTimeUp = false;
       loadDraft();
       loadTimer();
+      scoreResultRoot.innerHTML = '';
       showStoredResultIfAny();
 
-      const alreadySubmitted = localStorage.getItem(submittedKey(q.id)) === 'true';
-
-      if (alreadySubmitted) {
-        disableEditing('This response has already been submitted locally on this device.');
-        timerEl.textContent = formatTime(timeLeft);
+      if (timeExpired) {
+        setEditingState(true);
+        setSaveStatus('Time is up. You can still click Submit or Rescore to get a score for the saved response.');
       } else {
-        textareaEl.disabled = false;
-        saveDraftBtn.disabled = false;
-        clearDraftBtn.disabled = false;
-        submitBtn.disabled = false;
-        submitBtnBottom.disabled = false;
         startTimer();
       }
     }
 
     textareaEl.addEventListener('input', () => {
+      if (timeExpired) return;
       updateWordCount();
       saveDraft(false);
       setSaveStatus('Draft auto-saved locally.');
@@ -307,38 +355,42 @@
 
     clearDraftBtn.addEventListener('click', () => {
       const q = getCurrentQuestion();
+
+      stopTimer();
+
       localStorage.removeItem(draftKey(q.id));
       localStorage.removeItem(savedAtKey(q.id));
       localStorage.removeItem(timerKey(q.id));
-      localStorage.removeItem(submittedKey(q.id));
-      localStorage.removeItem(resultKey(q.id));
+      localStorage.removeItem(timeExpiredKey(q.id));
+      clearStoredResult();
+
       textareaEl.value = '';
       updateWordCount();
       scoreResultRoot.innerHTML = '';
+
       timeLeft = q.durationSeconds || 420;
       durationUsedSeconds = 0;
+      timeExpired = false;
+      autoScoredAfterTimeUp = false;
+      isScoring = false;
+
+      setEditingState(false);
       timerEl.textContent = formatTime(timeLeft);
-      textareaEl.disabled = false;
-      saveDraftBtn.disabled = false;
-      clearDraftBtn.disabled = false;
-      submitBtn.disabled = false;
-      submitBtnBottom.disabled = false;
-      setSaveStatus('Draft and score cleared.');
+      setSaveStatus('Draft, timer, and score cleared.');
+
       startTimer();
     });
 
-    submitBtn.addEventListener('click', () => {
-      if (!submitBtn.disabled) {
-        submitResponse(false);
-        scoreWithAI(false);
-      }
+    submitBtn.addEventListener('click', async () => {
+      await scoreWithAI(false);
     });
 
-    submitBtnBottom.addEventListener('click', () => {
-      if (!submitBtnBottom.disabled) {
-        submitResponse(false);
-        scoreWithAI(false);
-      }
+    submitBtnBottom.addEventListener('click', async () => {
+      await scoreWithAI(false);
+    });
+
+    rescoreBtn.addEventListener('click', async () => {
+      await scoreWithAI(false);
     });
 
     async function scoreWithAI(isAutoSubmit = false) {
@@ -350,9 +402,30 @@
         return;
       }
 
-      setSaveStatus("AI正在评分中，请稍等...");
+      if (isScoring) return;
+      isScoring = true;
+
+      const topBtnText = submitBtn.textContent;
+      const bottomBtnText = submitBtnBottom.textContent;
+      const rescoreBtnText = rescoreBtn.textContent;
+
+      submitBtn.disabled = true;
+      submitBtnBottom.disabled = true;
+      rescoreBtn.disabled = true;
+
+      submitBtn.textContent = 'Scoring...';
+      submitBtnBottom.textContent = 'Scoring...';
+      rescoreBtn.textContent = 'Scoring...';
+
+      setSaveStatus(isAutoSubmit ? "Time is up. AI is scoring..." : "AI正在评分中，请稍等...");
 
       try {
+        saveDraft(false);
+
+        const total = q.durationSeconds || 420;
+        const used = timeExpired ? total : (total - timeLeft);
+        durationUsedSeconds = Math.max(0, used);
+
         const res = await fetch('https://hanginthere-api.vercel.app/api/score-write-email', {
           method: 'POST',
           headers: {
@@ -380,8 +453,6 @@
           : `${data.finalScore}/5`;
 
         const resultToStore = {
-          submitted: true,
-          autoSubmitted: isAutoSubmit,
           finalScore: data.finalScore,
           scoreText,
           summary: data.summary || "",
@@ -406,7 +477,8 @@
             comment: data?.languageAccuracy?.comment || ""
           },
           durationUsedSeconds,
-          submittedAt: new Date().toISOString()
+          autoSubmitted: isAutoSubmit,
+          scoredAt: new Date().toISOString()
         };
 
         saveResult(resultToStore);
@@ -416,7 +488,30 @@
         console.error(err);
         alert("评分出错：" + err.message);
         setSaveStatus("评分失败");
+      } finally {
+        isScoring = false;
+
+        submitBtn.disabled = false;
+        submitBtnBottom.disabled = false;
+        rescoreBtn.disabled = false;
+
+        submitBtn.textContent = topBtnText;
+        submitBtnBottom.textContent = bottomBtnText;
+        rescoreBtn.textContent = rescoreBtnText;
+
+        if (timeExpired) {
+          setEditingState(true);
+        }
       }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     function renderDimension(title, key, item) {
@@ -425,7 +520,7 @@
         : `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${title}</div>`;
 
       const commentPart = item && item.comment
-        ? `<div style="color:#334155; line-height:1.7;">${item.comment}</div>`
+        ? `<div style="color:#334155; line-height:1.7;">${escapeHtml(item.comment)}</div>`
         : `<div style="color:#94a3b8; line-height:1.7;">暂无该项评价。</div>`;
 
       return `
@@ -449,15 +544,21 @@
       container.style.border = '1px solid #e2e8f0';
 
       const problemsHtml = (result.problems || []).length
-        ? (result.problems || []).map(p => `<li>${p}</li>`).join('')
+        ? (result.problems || []).map(p => `<li>${escapeHtml(p)}</li>`).join('')
         : '<li>暂无明显问题。</li>';
 
       const suggestionsHtml = (result.suggestions || []).length
-        ? (result.suggestions || []).map(s => `<li>${s}</li>`).join('')
+        ? (result.suggestions || []).map(s => `<li>${escapeHtml(s)}</li>`).join('')
         : '<li>暂无建议。</li>';
 
+      const autoNote = result.autoSubmitted
+        ? '<p style="margin:0 0 12px 0; color:#b45309; font-weight:600;">Time is up. This response was scored automatically.</p>'
+        : '';
+
       container.innerHTML = `
-        <h3 style="margin:0 0 14px 0; color:#1e293b;">🎯 Score: ${result.scoreText}</h3>
+        <h3 style="margin:0 0 14px 0; color:#1e293b;">🎯 Score: ${escapeHtml(result.scoreText)}</h3>
+
+        ${autoNote}
 
         <div style="display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:16px;">
           ${renderDimension('任务完成度', 'taskCompletion', result.taskCompletion)}
@@ -466,7 +567,7 @@
         </div>
 
         <p style="margin:0 0 12px 0; color:#1e293b; line-height:1.8;">
-          <strong>📌 总评：</strong>${result.summary || ''}
+          <strong>📌 总评：</strong>${escapeHtml(result.summary || '')}
         </p>
 
         <p style="margin:0 0 6px 0;"><strong>📌 Problems：</strong></p>
@@ -487,7 +588,7 @@
       scoreResultRoot.appendChild(container);
 
       if (fromStorage) {
-        setSaveStatus("已加载该题的历史评分结果。");
+        setSaveStatus("已加载该题的历史评分结果。你仍然可以继续点击 Submit 或 Rescore 重新评分。");
       } else {
         setSaveStatus("评分完成 ✅");
       }
