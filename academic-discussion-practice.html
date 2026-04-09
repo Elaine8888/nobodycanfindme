@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Academic Discussion Practice</title>
-  <link rel="stylesheet" href="/styles.css?v=20260405-academic-discussion-practice-2"/>
+  <link rel="stylesheet" href="/styles.css?v=20260409-academic-discussion-timed-rescore-1"/>
   <style>
     .adp-shell {
       max-width: 1320px;
@@ -148,10 +148,36 @@
       margin-bottom: 14px;
     }
 
+    .adp-right-top-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .adp-right-title {
       font-size: 18px;
       font-weight: 800;
       color: #1f2f5c;
+    }
+
+    .adp-timer {
+      min-width: 92px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #23438b;
+      background: #eef3ff;
+      border: 1px solid #d9e5ff;
+      padding: 10px 14px;
+      border-radius: 14px;
+    }
+
+    .adp-timer.expired {
+      color: #b45309;
+      background: #fff7ed;
+      border-color: #fed7aa;
     }
 
     .adp-word-count {
@@ -239,6 +265,7 @@
       margin-top: 12px;
       font-size: 13px;
       color: #6c7a96;
+      line-height: 1.7;
     }
 
     .adp-empty-post {
@@ -294,6 +321,18 @@
       text-align: center;
       font-weight: 800;
       font-size: 18px;
+    }
+
+    .adp-timed-note {
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 700;
     }
 
     .adp-summary {
@@ -412,7 +451,10 @@
         <section class="adp-right">
           <div class="adp-right-top">
             <div class="adp-right-title">Write Your Response</div>
-            <div class="adp-word-count low" id="wordCount">0 words</div>
+            <div class="adp-right-top-meta">
+              <div class="adp-timer" id="timerBox">10:00</div>
+              <div class="adp-word-count low" id="wordCount">0 words</div>
+            </div>
           </div>
 
           <div class="adp-tip" id="adpTip">
@@ -432,6 +474,9 @@
           <div class="adp-actions">
             <button class="adp-btn adp-btn-secondary" id="saveBtn">Save Draft</button>
             <button class="adp-btn adp-btn-primary" id="submitBtn">Submit for Scoring</button>
+            <button class="adp-btn adp-btn-secondary" id="rescoreBtn">Rescore</button>
+            <button class="adp-btn adp-btn-secondary" id="restartTimerBtn">Restart Timer</button>
+            <button class="adp-btn adp-btn-secondary" id="clearBtn">Clear Draft</button>
           </div>
 
           <div class="adp-save-note" id="saveNote">
@@ -473,13 +518,28 @@
     const wordCountEl = document.getElementById('wordCount');
     const saveBtn = document.getElementById('saveBtn');
     const submitBtn = document.getElementById('submitBtn');
+    const rescoreBtn = document.getElementById('rescoreBtn');
+    const restartTimerBtn = document.getElementById('restartTimerBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const saveNote = document.getElementById('saveNote');
     const scoreResultBox = document.getElementById('scoreResultBox');
+    const timerBox = document.getElementById('timerBox');
 
     const draftKey = `academicDiscussionDraft_${current.id}`;
     const savedAtKey = `academicDiscussionDraftSavedAt_${current.id}`;
-    const submittedKey = `academicDiscussionSubmitted_${current.id}`;
     const scoreKey = `academicDiscussionScore_${current.id}`;
+    const timerKey = `academicDiscussionTimer_${current.id}`;
+    const timerExpiredKey = `academicDiscussionTimerExpired_${current.id}`;
+    const timedAutoScoredKey = `academicDiscussionTimedAutoScored_${current.id}`;
+
+    const totalSeconds = Number.isFinite(Number(current?.durationSeconds))
+      ? Number(current.durationSeconds)
+      : 600;
+
+    let timeLeft = totalSeconds;
+    let timerId = null;
+    let timerExpired = false;
+    let isScoring = false;
 
     function getInitials(name) {
       if (!name || !name.trim()) return "?";
@@ -505,6 +565,83 @@
       const trimmed = text.trim();
       if (!trimmed) return 0;
       return trimmed.split(/\s+/).length;
+    }
+
+    function formatTime(seconds) {
+      const safe = Math.max(0, Number(seconds) || 0);
+      const min = String(Math.floor(safe / 60)).padStart(2, '0');
+      const sec = String(safe % 60).padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function updateTimerUI() {
+      timerBox.textContent = formatTime(timeLeft);
+      if (timerExpired || timeLeft <= 0) {
+        timerBox.classList.add('expired');
+      } else {
+        timerBox.classList.remove('expired');
+      }
+    }
+
+    function saveTimer() {
+      localStorage.setItem(timerKey, String(timeLeft));
+      localStorage.setItem(timerExpiredKey, timerExpired ? 'true' : 'false');
+    }
+
+    function loadTimer() {
+      const saved = localStorage.getItem(timerKey);
+      const expired = localStorage.getItem(timerExpiredKey) === 'true';
+
+      if (saved !== null && saved !== '') {
+        const value = Number(saved);
+        timeLeft = Number.isFinite(value) ? Math.max(0, value) : totalSeconds;
+      } else {
+        timeLeft = totalSeconds;
+      }
+
+      timerExpired = expired || timeLeft <= 0;
+      if (timerExpired) timeLeft = 0;
+      updateTimerUI();
+    }
+
+    function clearTimerData() {
+      localStorage.removeItem(timerKey);
+      localStorage.removeItem(timerExpiredKey);
+      localStorage.removeItem(timedAutoScoredKey);
+    }
+
+    function stopTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    function startTimer() {
+      stopTimer();
+
+      if (timerExpired) {
+        updateTimerUI();
+        return;
+      }
+
+      updateTimerUI();
+
+      timerId = setInterval(async () => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          saveTimer();
+          updateTimerUI();
+
+          if (timeLeft === 0) {
+            stopTimer();
+            timerExpired = true;
+            saveTimer();
+            updateTimerUI();
+            await handleTimedAutoScore();
+          }
+        }
+      }, 1000);
     }
 
     function renderPrompt(item) {
@@ -590,6 +727,13 @@
       }
     }
 
+    function clearDraftOnly() {
+      localStorage.removeItem(draftKey);
+      localStorage.removeItem(savedAtKey);
+      editor.value = '';
+      updateWordCount();
+    }
+
     function renderError(message) {
       scoreResultBox.innerHTML = `
         <div class="adp-error-box">
@@ -605,6 +749,7 @@
 
       const problems = Array.isArray(data?.problems) ? data.problems : [];
       const suggestions = Array.isArray(data?.suggestions) ? data.suggestions : [];
+      const timedAutoScore = Boolean(data?.timedAutoScore);
 
       scoreResultBox.innerHTML = `
         <div class="adp-score-box">
@@ -612,6 +757,12 @@
             <div class="adp-score-title">Scoring Result</div>
             <div class="adp-score-badge">${escapeHtml(data?.finalScore ?? '-')} / 5</div>
           </div>
+
+          ${timedAutoScore ? `
+            <div class="adp-timed-note">
+              ⏱ This is your timed score. You can keep revising your response and click Rescore again.
+            </div>
+          ` : ''}
 
           <div class="adp-summary">
             <strong>Summary:</strong> ${escapeHtml(data?.summary || 'No summary returned.')}
@@ -672,21 +823,28 @@
       }
     }
 
-    titleEl.textContent = current.title || 'Academic Discussion';
-    renderPrompt(current);
-    restoreDraft();
-    restoreScore();
+    function clearScore() {
+      localStorage.removeItem(scoreKey);
+      scoreResultBox.innerHTML = '';
+    }
 
-    editor.addEventListener('input', () => {
-      updateWordCount();
-      saveDraft(false);
-    });
+    function getRequestBody(text) {
+      return {
+        promptTitle: current.title,
+        courseTitle: current.courseTitle,
+        instructions: current.instructions,
+        minWords: current.minWords,
+        professorName: current.professorName,
+        professorQuestion: current.professorQuestion,
+        student1Name: current.student1Name,
+        student1Text: current.student1Text,
+        student2Name: current.student2Name,
+        student2Text: current.student2Text,
+        studentResponse: text
+      };
+    }
 
-    saveBtn.addEventListener('click', () => {
-      saveDraft(true);
-    });
-
-    submitBtn.addEventListener('click', async () => {
+    async function scoreResponse({ timedAutoScore = false } = {}) {
       const text = editor.value.trim();
       const count = countWords(text);
 
@@ -695,12 +853,22 @@
         return;
       }
 
-      localStorage.setItem(submittedKey, editor.value);
+      if (isScoring) return;
+      isScoring = true;
+
       saveDraft(false);
 
       submitBtn.disabled = true;
+      rescoreBtn.disabled = true;
       saveBtn.disabled = true;
+      restartTimerBtn.disabled = true;
+      clearBtn.disabled = true;
+
+      const originalSubmitText = submitBtn.textContent;
+      const originalRescoreText = rescoreBtn.textContent;
+
       submitBtn.textContent = 'Scoring...';
+      rescoreBtn.textContent = 'Scoring...';
       scoreResultBox.innerHTML = '';
 
       try {
@@ -709,19 +877,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            promptTitle: current.title,
-            courseTitle: current.courseTitle,
-            instructions: current.instructions,
-            minWords: current.minWords,
-            professorName: current.professorName,
-            professorQuestion: current.professorQuestion,
-            student1Name: current.student1Name,
-            student1Text: current.student1Text,
-            student2Name: current.student2Name,
-            student2Text: current.student2Text,
-            studentResponse: text
-          })
+          body: JSON.stringify(getRequestBody(text))
         });
 
         const result = await response.json();
@@ -730,10 +886,19 @@
           throw new Error(result?.error || 'Scoring failed.');
         }
 
-        localStorage.setItem(scoreKey, JSON.stringify(result));
-        renderScore(result);
+        const resultToStore = {
+          ...result,
+          timedAutoScore,
+          scoredAt: new Date().toISOString(),
+          timeLeftAtScoring: timeLeft
+        };
 
-        if (count < (current.minWords || 100)) {
+        localStorage.setItem(scoreKey, JSON.stringify(resultToStore));
+        renderScore(resultToStore);
+
+        if (timedAutoScore) {
+          saveNote.textContent = 'Time is up. A timed score has been generated. You can keep revising and click Rescore again.';
+        } else if (count < (current.minWords || 100)) {
           saveNote.textContent = `Scored successfully. Current word count: ${count}. It is recommended to write at least ${current.minWords || 100} words.`;
         } else {
           saveNote.textContent = `Scored successfully. Current word count: ${count}.`;
@@ -744,10 +909,97 @@
         renderError(err.message || 'Scoring failed. Please try again.');
         saveNote.textContent = 'Scoring failed. Please check the API path and try again.';
       } finally {
+        isScoring = false;
         submitBtn.disabled = false;
+        rescoreBtn.disabled = false;
         saveBtn.disabled = false;
-        submitBtn.textContent = 'Submit for Scoring';
+        restartTimerBtn.disabled = false;
+        clearBtn.disabled = false;
+        submitBtn.textContent = originalSubmitText;
+        rescoreBtn.textContent = originalRescoreText;
       }
+    }
+
+    async function handleTimedAutoScore() {
+      const alreadyAutoScored = localStorage.getItem(timedAutoScoredKey) === 'true';
+      const text = editor.value.trim();
+
+      if (!text) {
+        saveNote.textContent = 'Time is up. No timed score was generated because the response box is empty.';
+        return;
+      }
+
+      if (alreadyAutoScored) {
+        saveNote.textContent = 'Time is up. Your timed score has already been generated. You can keep revising and click Rescore again.';
+        return;
+      }
+
+      localStorage.setItem(timedAutoScoredKey, 'true');
+      await scoreResponse({ timedAutoScore: true });
+    }
+
+    function restartTimer() {
+      stopTimer();
+      timeLeft = totalSeconds;
+      timerExpired = false;
+      clearScore();
+      clearTimerData();
+      saveTimer();
+      updateTimerUI();
+      saveNote.textContent = 'Timer restarted. You can begin a new timed attempt.';
+      startTimer();
+    }
+
+    titleEl.textContent = current.title || 'Academic Discussion';
+    renderPrompt(current);
+    restoreDraft();
+    loadTimer();
+    restoreScore();
+
+    if (timerExpired) {
+      saveNote.textContent = 'Time is up. Your timed attempt has ended, but you can still revise and click Rescore.';
+    } else {
+      startTimer();
+    }
+
+    editor.addEventListener('input', () => {
+      updateWordCount();
+      saveDraft(false);
+
+      if (timerExpired) {
+        saveNote.textContent = 'Time is up. You are now revising after the timed attempt. Click Rescore when ready.';
+      } else {
+        saveNote.textContent = 'Draft auto-saved locally on this device.';
+      }
+    });
+
+    saveBtn.addEventListener('click', () => {
+      saveDraft(true);
+    });
+
+    submitBtn.addEventListener('click', async () => {
+      await scoreResponse({ timedAutoScore: false });
+    });
+
+    rescoreBtn.addEventListener('click', async () => {
+      await scoreResponse({ timedAutoScore: false });
+    });
+
+    restartTimerBtn.addEventListener('click', () => {
+      restartTimer();
+    });
+
+    clearBtn.addEventListener('click', () => {
+      stopTimer();
+      clearDraftOnly();
+      clearScore();
+      clearTimerData();
+      timeLeft = totalSeconds;
+      timerExpired = false;
+      saveTimer();
+      updateTimerUI();
+      saveNote.textContent = 'Draft, timed score, and timer have been cleared.';
+      startTimer();
     });
   </script>
 </body>
