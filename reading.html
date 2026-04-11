@@ -47,6 +47,7 @@
 
   <script src="/data/questions.js"></script>
   <script src="/read-in-daily-life-questions.js"></script>
+  <script src="/read-an-academic-passage-questions.js"></script>
 
   <script>
     fetch('/navbar.html')
@@ -59,15 +60,6 @@
         if (readingLink) readingLink.classList.add('active');
       });
 
-    const academicPassages = [
-      { id: 1, title: "The Dynamics of Hollywood’s Golden Age", date: "20260308" },
-      { id: 2, title: "Augmented Reality for Training", date: "20260121" },
-      { id: 3, title: "Formation of Sedimentary Rocks", date: "20260121" },
-      { id: 4, title: "Thinking Outside the Box", date: "20260121" },
-      { id: 5, title: "Plant Communication", date: "20260121" },
-      { id: 6, title: "Green Roof Benefits", date: "20260121" }
-    ];
-
     const panelTitle = document.getElementById('panelTitle');
     const panelDesc = document.getElementById('panelDesc');
     const readingList = document.getElementById('readingList');
@@ -77,6 +69,22 @@
       const min = String(Math.floor(seconds / 60)).padStart(2, '0');
       const sec = String(seconds % 60).padStart(2, '0');
       return `${min}:${sec}`;
+    }
+
+    function formatSingleDate(raw) {
+      const str = String(raw || '').trim();
+      if (/^\d{8}$/.test(str)) {
+        return `${str.slice(0, 4)}${str.slice(4, 6)}${str.slice(6, 8)}`;
+      }
+      return str;
+    }
+
+    function formatDisplayDate(dateValue) {
+      if (!dateValue) return '';
+      if (Array.isArray(dateValue)) {
+        return dateValue.map(formatSingleDate).join(' / ');
+      }
+      return formatSingleDate(dateValue);
     }
 
     function createMetaRow(metaItems) {
@@ -157,10 +165,21 @@
       panelTitle.textContent = 'Read an Academic Passage';
       panelDesc.textContent = 'Choose a passage to begin your practice.';
 
+      const academicPassages = Object.values(window.academicPassages || {})
+        .filter(p => p && typeof p.id !== 'undefined')
+        .sort((a, b) => Number(a.id) - Number(b.id));
+
+      if (!academicPassages.length) {
+        readingList.innerHTML = `<div class="reading-empty">题库加载失败，请检查 read-an-academic-passage-questions.js</div>`;
+        return;
+      }
+
       readingList.innerHTML = academicPassages.map(p => {
+        const dateText = formatDisplayDate(p.date);
+
         return `
           <a class="reading-card" href="/read-an-academic-passage-practice.html?id=${p.id}">
-            ${createMetaRow([`Passage ${p.id}`, p.date || ''])}
+            ${createMetaRow([`Passage ${p.id}`, dateText || ''])}
             <div class="reading-card-title">${p.title}</div>
             <div class="reading-card-foot">Click to start</div>
           </a>
