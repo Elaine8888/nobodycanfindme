@@ -3,434 +3,394 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Academic Discussion Practice</title>
-  <link rel="stylesheet" href="/styles.css?v=20260409-academic-discussion-timed-rescore-1"/>
+  <title>Read an Academic Passage Practice</title>
+  <link rel="stylesheet" href="/styles.css?v=20260331navfinal1" />
   <style>
-    .adp-shell {
-      max-width: 1320px;
+    .page {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 28px 20px 48px;
+      padding: 0 20px 40px;
     }
 
-    .adp-top-link {
-      display: inline-flex;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
       margin-bottom: 18px;
-      color: #3167d5;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      display: inline-block;
       text-decoration: none;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .adp-title {
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1.05;
-      font-weight: 800;
-      color: #1f2f5c;
-      margin: 0 0 10px;
-    }
-
-    .adp-subtitle {
-      font-size: 16px;
-      color: #5b6b8c;
-      margin: 0 0 28px;
-    }
-
-    .adp-layout {
-      display: grid;
-      grid-template-columns: 1.02fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .adp-left,
-    .adp-right {
-      background: #fff;
-      border: 1px solid #dbe4f3;
-      border-radius: 26px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(38, 63, 120, 0.05);
-    }
-
-    .adp-left {
-      position: sticky;
-      top: 92px;
-    }
-
-    .adp-course {
-      font-size: 16px;
-      line-height: 1.6;
-      color: #2d3e69;
-      margin-bottom: 18px;
-    }
-
-    .adp-task-box {
-      background: #f6f8fe;
-      border: 1px solid #e2e8f7;
-      border-radius: 18px;
-      padding: 18px 18px 14px;
-      margin-bottom: 20px;
-    }
-
-    .adp-task-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: #1f2f5c;
-      margin-bottom: 10px;
-    }
-
-    .adp-task-box ul {
-      margin: 0 0 10px 18px;
-      padding: 0;
-      color: #2d3e69;
-      line-height: 1.7;
-    }
-
-    .adp-min-words {
-      color: #41557f;
-      font-size: 14px;
+      color: #2563eb;
       font-weight: 600;
     }
 
-    .adp-post {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 16px;
-      margin-top: 18px;
-      align-items: start;
+    .back-link:hover {
+      text-decoration: underline;
     }
 
-    .adp-avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #dfe8ff, #f3f6ff);
-      border: 1px solid #d8e1f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .title {
+      font-size: 2rem;
       font-weight: 800;
-      color: #4968c9;
-      font-size: 22px;
-      flex-shrink: 0;
+      text-align: center;
+      margin: 10px 0 26px;
     }
 
-    .adp-post-body {
+    .layout {
+      display: flex;
+      gap: 36px;
+      align-items: flex-start;
+    }
+
+    .passage-card,
+    .question-card,
+    .result-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      padding: 28px;
+      border: 1px solid var(--line);
+    }
+
+    .passage-card {
+      flex: 1.05;
       min-width: 0;
     }
 
-    .adp-post-name {
-      font-weight: 800;
-      color: #1f2f5c;
-      margin-bottom: 8px;
-      font-size: 16px;
+    .question-card,
+    .result-card {
+      flex: 0.95;
+      min-width: 320px;
+      position: sticky;
+      top: 96px;
     }
 
-    .adp-post-text {
-      color: #2d3e69;
-      line-height: 1.85;
-      font-size: 16px;
-      white-space: pre-wrap;
-    }
-
-    .adp-post + .adp-post {
-      padding-top: 18px;
-      border-top: 1px solid #edf2fb;
-    }
-
-    .adp-right-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .adp-right-top-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .adp-right-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #1f2f5c;
-    }
-
-    .adp-timer {
-      min-width: 92px;
-      text-align: center;
-      font-size: 15px;
-      font-weight: 800;
-      color: #23438b;
-      background: #eef3ff;
-      border: 1px solid #d9e5ff;
-      padding: 10px 14px;
-      border-radius: 14px;
-    }
-
-    .adp-timer.expired {
-      color: #b45309;
-      background: #fff7ed;
-      border-color: #fed7aa;
-    }
-
-    .adp-word-count {
-      font-size: 14px;
-      font-weight: 700;
-      color: #7082a9;
-    }
-
-    .adp-word-count.good {
-      color: #178a5b;
-    }
-
-    .adp-word-count.low {
-      color: #c96a17;
-    }
-
-    .adp-tip {
-      font-size: 14px;
-      color: #6a7a9d;
-      margin-bottom: 14px;
-      line-height: 1.7;
-    }
-
-    .adp-editor {
-      width: 100%;
-      min-height: 430px;
-      border-radius: 18px;
-      border: 1px solid #dbe4f3;
-      background: #fcfdff;
-      padding: 18px;
-      font-size: 16px;
+    .passage-text {
+      font-size: 1.06rem;
       line-height: 1.8;
-      color: #243456;
-      resize: vertical;
-      outline: none;
-      box-sizing: border-box;
+      white-space: pre-line;
     }
 
-    .adp-editor:focus {
-      border-color: #98b3f4;
-      box-shadow: 0 0 0 4px rgba(69, 111, 225, 0.08);
+    .passage-paragraph {
+      margin-bottom: 1.2em;
     }
 
-    .adp-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 16px;
+    .passage-paragraph:last-child {
+      margin-bottom: 0;
     }
 
-    .adp-btn {
-      border: none;
-      border-radius: 14px;
-      padding: 12px 18px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .adp-btn:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-    }
-
-    .adp-btn-primary {
-      background: #2f66d3;
-      color: #fff;
-    }
-
-    .adp-btn-primary:hover:not(:disabled) {
-      background: #2457bd;
-    }
-
-    .adp-btn-secondary {
-      background: #eef3ff;
-      color: #3254a5;
-    }
-
-    .adp-btn-secondary:hover:not(:disabled) {
-      background: #e3ebff;
-    }
-
-    .adp-save-note {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #6c7a96;
-      line-height: 1.7;
-    }
-
-    .adp-empty-post {
-      color: #94a0ba;
-      font-style: italic;
-      line-height: 1.7;
-    }
-
-    .adp-bottom-nav {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 22px;
-    }
-
-    .adp-bottom-link {
-      text-decoration: none;
-      color: #3167d5;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .adp-score-box {
-      margin-top: 22px;
-      padding: 20px;
-      background: #f7f9fe;
-      border: 1px solid #dbe4f3;
-      border-radius: 20px;
-    }
-
-    .adp-score-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .adp-score-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: #1f2f5c;
-    }
-
-    .adp-score-badge {
-      min-width: 96px;
-      padding: 12px 18px;
-      border-radius: 16px;
-      background: #2f66d3;
-      color: #fff;
-      text-align: center;
-      font-weight: 800;
-      font-size: 18px;
-    }
-
-    .adp-timed-note {
-      margin-bottom: 14px;
+    .target-paragraph {
+      background: #f8fbff;
+      border-left: 4px solid #2563eb;
       padding: 12px 14px;
-      border-radius: 14px;
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      color: #9a3412;
-      font-size: 14px;
-      line-height: 1.7;
+      border-radius: 8px;
+    }
+
+    .passage-meta {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
       font-weight: 700;
     }
 
-    .adp-summary {
-      color: #2d3e69;
-      line-height: 1.8;
-      font-size: 15px;
-      margin-bottom: 16px;
+    .highlight-word {
+      background: #0f766e;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
     }
 
-    .adp-score-grid {
+    .question-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .progress {
+      font-size: 0.96rem;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      line-height: 1.5;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .options {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
       margin-bottom: 18px;
     }
 
-    .adp-score-card {
+    .option {
+      display: block;
+      border: 1.5px solid #dbe2ea;
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.18s ease;
       background: #fff;
-      border: 1px solid #e2e8f7;
-      border-radius: 16px;
-      padding: 14px;
+      line-height: 1.5;
     }
 
-    .adp-score-card-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: #34529d;
-      margin-bottom: 8px;
+    .option:hover {
+      border-color: #93c5fd;
+      background: #f8fbff;
     }
 
-    .adp-score-card-num {
-      font-size: 24px;
-      font-weight: 800;
-      color: #1f2f5c;
-      margin-bottom: 8px;
+    .option input {
+      margin-right: 10px;
+      transform: translateY(1px);
     }
 
-    .adp-score-card-text {
-      font-size: 14px;
-      color: #49607f;
-      line-height: 1.75;
-    }
-
-    .adp-feedback-sections {
+    .sentence-select-list {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    .adp-feedback-panel {
+    .sentence-option {
+      padding: 14px 16px;
+      border: 1.5px solid #dbe2ea;
+      border-radius: 12px;
       background: #fff;
-      border: 1px solid #e2e8f7;
-      border-radius: 16px;
-      padding: 16px;
-    }
-
-    .adp-feedback-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: #1f2f5c;
-      margin-bottom: 10px;
-    }
-
-    .adp-feedback-panel ul {
-      margin: 0;
-      padding-left: 18px;
-      color: #2d3e69;
-      line-height: 1.8;
-      font-size: 14px;
-    }
-
-    .adp-error-box {
-      margin-top: 22px;
-      padding: 16px 18px;
-      border-radius: 16px;
-      background: #fff5f5;
-      border: 1px solid #f0c7c7;
-      color: #9a3d3d;
-      font-size: 14px;
+      cursor: pointer;
       line-height: 1.7;
+      transition: all 0.18s ease;
     }
 
-    @media (max-width: 980px) {
-      .adp-layout {
-        grid-template-columns: 1fr;
+    .sentence-option:hover {
+      border-color: #93c5fd;
+      background: #f8fbff;
+    }
+
+    .sentence-option.active {
+      border-color: #2563eb;
+      background: #eef4ff;
+      font-weight: 700;
+    }
+
+    .sentence-number {
+      display: inline-block;
+      min-width: 26px;
+      font-weight: 800;
+      color: #2563eb;
+      margin-right: 6px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .primary-btn {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .primary-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-btn {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .secondary-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .secondary-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .muted {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    .score {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .accuracy {
+      font-size: 1.1rem;
+      color: #334155;
+      margin-bottom: 22px;
+      font-weight: 600;
+    }
+
+    .review-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .review-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px;
+      background: #fcfdff;
+    }
+
+    .review-item.correct {
+      border-left: 6px solid #16a34a;
+    }
+
+    .review-item.wrong {
+      border-left: 6px solid #dc2626;
+    }
+
+    .review-q {
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .review-line {
+      margin: 4px 0;
+      line-height: 1.5;
+    }
+
+    .review-line strong {
+      color: #0f172a;
+    }
+
+    .explanation {
+      margin-top: 10px;
+      line-height: 1.7;
+      color: #334155;
+    }
+
+    .result-actions {
+      margin-bottom: 16px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .insert-slot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #00796b;
+      margin: 0 6px;
+      border-radius: 2px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+
+    .insert-slot:hover {
+      background-color: #00695c;
+    }
+
+    .insert-slot.selected {
+      background-color: #005f56;
+    }
+
+    .inserted-sentence {
+      display: inline;
+      background: #eefcfb;
+      border: 2px solid #8dd9dd;
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-weight: 700;
+      white-space: normal;
+    }
+
+    .insert-choice-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .insert-choice-item {
+      padding: 12px 14px;
+      border: 1.5px solid #dbe2ea;
+      border-radius: 12px;
+      background: #fff;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .insert-choice-item.active {
+      border-color: #0f9ea8;
+      background: #eefcfb;
+      color: #0a6f78;
+    }
+
+    .insert-sentence-box {
+      margin: 18px 0 20px;
+      padding: 16px 18px;
+      border: 1.5px solid #dbe2ea;
+      border-radius: 14px;
+      background: #fff;
+      color: #334155;
+      line-height: 1.7;
+      font-size: 1.04rem;
+    }
+
+    .insert-sentence-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #0f172a;
+      font-size: 0.98rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
       }
 
-      .adp-left {
+      .question-card,
+      .result-card {
         position: static;
+        width: 100%;
+        min-width: 0;
       }
 
-      .adp-editor {
-        min-height: 320px;
+      .title {
+        font-size: 1.7rem;
       }
 
-      .adp-score-grid,
-      .adp-feedback-sections {
-        grid-template-columns: 1fr;
+      .question-text {
+        font-size: 1.12rem;
+      }
+
+      .question-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .nav-buttons {
+        justify-content: flex-end;
       }
     }
   </style>
@@ -439,568 +399,410 @@
   <div id="navbar"></div>
 
   <div class="page-shell">
-    <div class="adp-shell">
-      <a class="adp-top-link" href="/academic-discussion.html">← Back to Set List</a>
+    <div class="page">
+      <div class="topbar">
+        <a class="back-link" href="/read-an-academic-passage.html">← Back to Passage List</a>
+      </div>
 
-      <h1 class="adp-title" id="adpTitle">Academic Discussion</h1>
-      <p class="adp-subtitle">Read the question and respond with your own ideas.</p>
+      <div class="title" id="passageTitle"></div>
 
-      <div class="adp-layout">
-        <section class="adp-left" id="adpPromptArea"></section>
+      <div class="layout">
+        <section class="passage-card">
+          <div class="passage-meta" id="passageMeta"></div>
+          <div class="passage-text" id="passage"></div>
+        </section>
 
-        <section class="adp-right">
-          <div class="adp-right-top">
-            <div class="adp-right-title">Write Your Response</div>
-            <div class="adp-right-top-meta">
-              <div class="adp-timer" id="timerBox">10:00</div>
-              <div class="adp-word-count low" id="wordCount">0 words</div>
+        <section class="question-card" id="questionCard">
+          <div class="question-top">
+            <div class="progress" id="progress"></div>
+            <div class="nav-buttons">
+              <button class="secondary-btn" id="backBtn">Back</button>
+              <button class="primary-btn" id="nextBtn">Next</button>
             </div>
           </div>
 
-          <div class="adp-tip" id="adpTip">
-            An effective response will contain at least 100 words. Use your own words and make a clear contribution to the discussion.
+          <div class="question-text" id="questionText"></div>
+          <div id="insertSentenceBox" class="insert-sentence-box" style="display:none;"></div>
+          <div class="options" id="options"></div>
+          <div class="muted" id="hintText">You can move on even if you leave a question unanswered.</div>
+        </section>
+
+        <section class="result-card hidden" id="resultCard">
+          <div class="score" id="scoreText"></div>
+          <div class="accuracy" id="accuracyText"></div>
+          <div class="result-actions">
+            <a class="back-link" href="/read-an-academic-passage.html">← Back to Passage List</a>
           </div>
-
-          <textarea
-            id="adpEditor"
-            class="adp-editor"
-            placeholder="Type your response here..."
-            spellcheck="false"
-            autocapitalize="off"
-            autocomplete="off"
-            autocorrect="off"
-          ></textarea>
-
-          <div class="adp-actions">
-            <button class="adp-btn adp-btn-secondary" id="saveBtn">Save Draft</button>
-            <button class="adp-btn adp-btn-primary" id="submitBtn">Submit for Scoring</button>
-            <button class="adp-btn adp-btn-secondary" id="rescoreBtn">Rescore</button>
-            <button class="adp-btn adp-btn-secondary" id="restartTimerBtn">Restart Timer</button>
-            <button class="adp-btn adp-btn-secondary" id="clearBtn">Clear Draft</button>
-          </div>
-
-          <div class="adp-save-note" id="saveNote">
-            Drafts are saved locally on this device.
-          </div>
-
-          <div id="scoreResultBox"></div>
-
-          <div class="adp-bottom-nav">
-            <a class="adp-bottom-link" href="/academic-discussion.html">← Back to Set List</a>
-            <a class="adp-bottom-link" href="/writing.html">Back to Writing</a>
-          </div>
+          <div class="review-list" id="reviewList"></div>
         </section>
       </div>
     </div>
   </div>
-
-  <script src="/academic-discussion-questions.js"></script>
 
   <script>
     fetch('/navbar.html')
       .then(res => res.text())
       .then(html => {
         document.getElementById('navbar').innerHTML = html;
-
         document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
-        const writingLink = document.querySelector('[data-page="writing"]');
-        if (writingLink) writingLink.classList.add('active');
+        const readingLink = document.querySelector('.nav-links a[href="/reading.html"]');
+        if (readingLink) readingLink.classList.add('active');
       });
+  </script>
+
+  <script src="/read-an-academic-passage-questions.js"></script>
+
+  <script>
+    const passages = window.academicPassages || {};
 
     const params = new URLSearchParams(window.location.search);
-    const id = Number(params.get('id')) || 1;
-    const questions = window.academicDiscussionQuestions || [];
-    const current = questions.find(q => q.id === id) || questions[0];
+    const passageId = params.get("id") || "2";
+    const currentPassage = passages[passageId] || passages["2"];
 
-    const titleEl = document.getElementById('adpTitle');
-    const promptArea = document.getElementById('adpPromptArea');
-    const editor = document.getElementById('adpEditor');
-    const wordCountEl = document.getElementById('wordCount');
-    const saveBtn = document.getElementById('saveBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const rescoreBtn = document.getElementById('rescoreBtn');
-    const restartTimerBtn = document.getElementById('restartTimerBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const saveNote = document.getElementById('saveNote');
-    const scoreResultBox = document.getElementById('scoreResultBox');
-    const timerBox = document.getElementById('timerBox');
+    const passageTitleEl = document.getElementById("passageTitle");
+    const passageMetaEl = document.getElementById("passageMeta");
+    const passageEl = document.getElementById("passage");
+    const progressEl = document.getElementById("progress");
+    const questionTextEl = document.getElementById("questionText");
+    const insertSentenceBoxEl = document.getElementById("insertSentenceBox");
+    const optionsEl = document.getElementById("options");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const questionCard = document.getElementById("questionCard");
+    const resultCard = document.getElementById("resultCard");
+    const scoreText = document.getElementById("scoreText");
+    const accuracyText = document.getElementById("accuracyText");
+    const reviewList = document.getElementById("reviewList");
+    const hintText = document.getElementById("hintText");
 
-    const draftKey = `academicDiscussionDraft_${current.id}`;
-    const savedAtKey = `academicDiscussionDraftSavedAt_${current.id}`;
-    const scoreKey = `academicDiscussionScore_${current.id}`;
-    const timerKey = `academicDiscussionTimer_${current.id}`;
-    const timerExpiredKey = `academicDiscussionTimerExpired_${current.id}`;
-    const timedAutoScoredKey = `academicDiscussionTimedAutoScored_${current.id}`;
+    let currentIndex = 0;
+    let userAnswers = currentPassage ? new Array(currentPassage.questions.length).fill(null) : [];
 
-    const totalSeconds = Number.isFinite(Number(current?.durationSeconds))
-      ? Number(current.durationSeconds)
-      : 600;
-
-    let timeLeft = totalSeconds;
-    let timerId = null;
-    let timerExpired = false;
-    let isScoring = false;
-
-    function getInitials(name) {
-      if (!name || !name.trim()) return "?";
-      return name
-        .trim()
-        .split(/\s+/)
-        .map(part => part[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase();
+    function formatDate(dateValue) {
+      if (!dateValue) return "";
+      if (Array.isArray(dateValue)) return dateValue.join(" / ");
+      return dateValue;
     }
 
-    function escapeHtml(str) {
-      return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    function getPlainPassageText() {
+      if (currentPassage.plainPassage) return currentPassage.plainPassage;
+      if (Array.isArray(currentPassage.passage)) return currentPassage.passage.join("\n\n");
+      return "";
     }
 
-    function countWords(text) {
-      const trimmed = text.trim();
-      if (!trimmed) return 0;
-      return trimmed.split(/\s+/).length;
+    function getParagraphsFromPassage() {
+      if (Array.isArray(currentPassage.passage)) {
+        return currentPassage.passage;
+      }
+      return getPlainPassageText()
+        .split(/\n\s*\n/)
+        .map(p => p.trim())
+        .filter(Boolean);
     }
 
-    function formatTime(seconds) {
-      const safe = Math.max(0, Number(seconds) || 0);
-      const min = String(Math.floor(safe / 60)).padStart(2, '0');
-      const sec = String(safe % 60).padStart(2, '0');
-      return `${min}:${sec}`;
+    function stripSlots(text) {
+      return (text || "")
+        .replace(/\[SLOT_A\]/g, "")
+        .replace(/\[SLOT_B\]/g, "")
+        .replace(/\[SLOT_C\]/g, "")
+        .replace(/\[SLOT_D\]/g, "")
+        .replace(/\[A\]/g, "")
+        .replace(/\[B\]/g, "")
+        .replace(/\[C\]/g, "")
+        .replace(/\[D\]/g, "")
+        .replace(/■/g, "");
     }
 
-    function updateTimerUI() {
-      timerBox.textContent = formatTime(timeLeft);
-      if (timerExpired || timeLeft <= 0) {
-        timerBox.classList.add('expired');
-      } else {
-        timerBox.classList.remove('expired');
+    function splitParagraphIntoSentences(paragraphText) {
+      if (!paragraphText) return [];
+      const cleaned = paragraphText.replace(/\s+/g, " ").trim();
+      const matches = cleaned.match(/[^.!?]+[.!?]+(?:["')\]]+)?|[^.!?]+$/g);
+      return (matches || []).map(s => s.trim()).filter(Boolean);
+    }
+
+    function isInsertionQuestion(q) {
+      return !!(q && (q.type === "insertion" || q.passageWithSlots || q.insertSentence));
+    }
+
+    function isSentenceSelectQuestion(q) {
+      return !!(q && q.type === "sentence_select");
+    }
+
+    function normalizeInsertionAnswer(answer) {
+      if (typeof answer === "string") return answer.toUpperCase();
+      const map = ["A", "B", "C", "D"];
+      return map[answer] || null;
+    }
+
+    function getSentenceSelectSentences(question) {
+      const paragraphs = getParagraphsFromPassage();
+      const targetParagraph = paragraphs[question.paragraphIndex] || "";
+      return splitParagraphIntoSentences(targetParagraph);
+    }
+
+    function renderParagraphs(paragraphs, highlightedIndex = null) {
+      passageEl.innerHTML = paragraphs.map((p, idx) => {
+        const className = idx === highlightedIndex
+          ? "passage-paragraph target-paragraph"
+          : "passage-paragraph";
+        return `<div class="${className}">${p}</div>`;
+      }).join("");
+    }
+
+    function getSelectedAnswer() {
+      const q = currentPassage.questions[currentIndex];
+      if (isInsertionQuestion(q) || isSentenceSelectQuestion(q)) {
+        return userAnswers[currentIndex];
+      }
+      const selected = document.querySelector('input[name="question"]:checked');
+      return selected ? Number(selected.value) : null;
+    }
+
+    function saveCurrentAnswer() {
+      const q = currentPassage.questions[currentIndex];
+      if (!isInsertionQuestion(q) && !isSentenceSelectQuestion(q)) {
+        userAnswers[currentIndex] = getSelectedAnswer();
       }
     }
 
-    function saveTimer() {
-      localStorage.setItem(timerKey, String(timeLeft));
-      localStorage.setItem(timerExpiredKey, timerExpired ? 'true' : 'false');
+    function renderSentenceSelectQuestion(q) {
+      const sentences = getSentenceSelectSentences(q);
+      const selectedIndex = userAnswers[currentIndex];
+
+      optionsEl.innerHTML = `
+        <div class="sentence-select-list">
+          ${sentences.map((sentence, idx) => `
+            <div class="sentence-option ${selectedIndex === idx ? 'active' : ''}" data-index="${idx}">
+              <span class="sentence-number">${idx + 1}.</span>${sentence}
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.querySelectorAll('.sentence-option').forEach(el => {
+        el.addEventListener('click', () => {
+          userAnswers[currentIndex] = Number(el.dataset.index);
+          renderSentenceSelectQuestion(q);
+        });
+      });
     }
 
-    function loadTimer() {
-      const saved = localStorage.getItem(timerKey);
-      const expired = localStorage.getItem(timerExpiredKey) === 'true';
+    function renderPassageForCurrentQuestion() {
+      const q = currentPassage.questions[currentIndex];
 
-      if (saved !== null && saved !== '') {
-        const value = Number(saved);
-        timeLeft = Number.isFinite(value) ? Math.max(0, value) : totalSeconds;
-      } else {
-        timeLeft = totalSeconds;
-      }
-
-      timerExpired = expired || timeLeft <= 0;
-      if (timerExpired) timeLeft = 0;
-      updateTimerUI();
-    }
-
-    function clearTimerData() {
-      localStorage.removeItem(timerKey);
-      localStorage.removeItem(timerExpiredKey);
-      localStorage.removeItem(timedAutoScoredKey);
-    }
-
-    function stopTimer() {
-      if (timerId) {
-        clearInterval(timerId);
-        timerId = null;
-      }
-    }
-
-    function startTimer() {
-      stopTimer();
-
-      if (timerExpired) {
-        updateTimerUI();
+      if (isInsertionQuestion(q)) {
+        renderInsertionPassage(q, userAnswers[currentIndex]);
         return;
       }
 
-      updateTimerUI();
-
-      timerId = setInterval(async () => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          saveTimer();
-          updateTimerUI();
-
-          if (timeLeft === 0) {
-            stopTimer();
-            timerExpired = true;
-            saveTimer();
-            updateTimerUI();
-            await handleTimedAutoScore();
-          }
-        }
-      }, 1000);
-    }
-
-    function renderPrompt(item) {
-      const hasStudent1 = item.student1Text && item.student1Text.trim();
-      const hasStudent2 = item.student2Text && item.student2Text.trim();
-
-      promptArea.innerHTML = `
-        <div class="adp-course">${escapeHtml(item.courseTitle || "Your professor is teaching a class.")}</div>
-
-        <div class="adp-task-box">
-          <div class="adp-task-title">In your response, you should do the following.</div>
-          <ul>
-            ${(item.instructions || []).map(line => `<li>${escapeHtml(line)}</li>`).join('')}
-          </ul>
-          <div class="adp-min-words">An effective response will contain at least ${item.minWords || 100} words.</div>
-        </div>
-
-        <div class="adp-post">
-          <div class="adp-avatar">${getInitials(item.professorName || "Professor")}</div>
-          <div class="adp-post-body">
-            <div class="adp-post-name">${escapeHtml(item.professorName || "Professor")}</div>
-            <div class="adp-post-text">${escapeHtml(item.professorQuestion || "")}</div>
-          </div>
-        </div>
-
-        ${hasStudent1 ? `
-          <div class="adp-post">
-            <div class="adp-avatar">${getInitials(item.student1Name || "Student")}</div>
-            <div class="adp-post-body">
-              <div class="adp-post-name">${escapeHtml(item.student1Name || "Student 1")}</div>
-              <div class="adp-post-text">${escapeHtml(item.student1Text || "")}</div>
-            </div>
-          </div>
-        ` : ''}
-
-        ${hasStudent2 ? `
-          <div class="adp-post">
-            <div class="adp-avatar">${getInitials(item.student2Name || "Student")}</div>
-            <div class="adp-post-body">
-              <div class="adp-post-name">${escapeHtml(item.student2Name || "Student 2")}</div>
-              <div class="adp-post-text">${escapeHtml(item.student2Text || "")}</div>
-            </div>
-          </div>
-        ` : ''}
-      `;
-    }
-
-    function updateWordCount() {
-      const count = countWords(editor.value);
-      wordCountEl.textContent = `${count} words`;
-
-      if (count >= (current.minWords || 100)) {
-        wordCountEl.classList.remove('low');
-        wordCountEl.classList.add('good');
-      } else {
-        wordCountEl.classList.remove('good');
-        wordCountEl.classList.add('low');
-      }
-    }
-
-    function saveDraft(showMessage = true) {
-      localStorage.setItem(draftKey, editor.value);
-      localStorage.setItem(savedAtKey, new Date().toISOString());
-
-      if (showMessage) {
-        saveNote.textContent = 'Draft saved locally on this device.';
-      } else {
-        saveNote.textContent = 'Draft auto-saved locally on this device.';
-      }
-    }
-
-    function restoreDraft() {
-      const draft = localStorage.getItem(draftKey) || '';
-      editor.value = draft;
-      updateWordCount();
-
-      const savedAt = localStorage.getItem(savedAtKey);
-      if (savedAt) {
-        const d = new Date(savedAt);
-        if (!Number.isNaN(d.getTime())) {
-          saveNote.textContent = `Draft restored. Last saved: ${d.toLocaleString()}`;
-        }
-      }
-    }
-
-    function clearDraftOnly() {
-      localStorage.removeItem(draftKey);
-      localStorage.removeItem(savedAtKey);
-      editor.value = '';
-      updateWordCount();
-    }
-
-    function renderError(message) {
-      scoreResultBox.innerHTML = `
-        <div class="adp-error-box">
-          ${escapeHtml(message || 'Scoring failed. Please try again.')}
-        </div>
-      `;
-    }
-
-    function renderScore(data) {
-      const contributionScore = data?.discussionContribution?.score ?? '-';
-      const contentScore = data?.contentDevelopment?.score ?? '-';
-      const languageScore = data?.languageUse?.score ?? '-';
-
-      const problems = Array.isArray(data?.problems) ? data.problems : [];
-      const suggestions = Array.isArray(data?.suggestions) ? data.suggestions : [];
-      const timedAutoScore = Boolean(data?.timedAutoScore);
-
-      scoreResultBox.innerHTML = `
-        <div class="adp-score-box">
-          <div class="adp-score-head">
-            <div class="adp-score-title">Scoring Result</div>
-            <div class="adp-score-badge">${escapeHtml(data?.finalScore ?? '-')} / 5</div>
-          </div>
-
-          ${timedAutoScore ? `
-            <div class="adp-timed-note">
-              ⏱ This is your timed score. You can keep revising your response and click Rescore again.
-            </div>
-          ` : ''}
-
-          <div class="adp-summary">
-            <strong>Summary:</strong> ${escapeHtml(data?.summary || 'No summary returned.')}
-          </div>
-
-          <div class="adp-score-grid">
-            <div class="adp-score-card">
-              <div class="adp-score-card-title">Contribution</div>
-              <div class="adp-score-card-num">${escapeHtml(contributionScore)}</div>
-              <div class="adp-score-card-text">${escapeHtml(data?.discussionContribution?.comment || 'No comment returned.')}</div>
-            </div>
-
-            <div class="adp-score-card">
-              <div class="adp-score-card-title">Content Development</div>
-              <div class="adp-score-card-num">${escapeHtml(contentScore)}</div>
-              <div class="adp-score-card-text">${escapeHtml(data?.contentDevelopment?.comment || 'No comment returned.')}</div>
-            </div>
-
-            <div class="adp-score-card">
-              <div class="adp-score-card-title">Language Use</div>
-              <div class="adp-score-card-num">${escapeHtml(languageScore)}</div>
-              <div class="adp-score-card-text">${escapeHtml(data?.languageUse?.comment || 'No comment returned.')}</div>
-            </div>
-          </div>
-
-          <div class="adp-feedback-sections">
-            <div class="adp-feedback-panel">
-              <div class="adp-feedback-title">Main Problems</div>
-              <ul>
-                ${problems.length
-                  ? problems.map(item => `<li>${escapeHtml(item)}</li>`).join('')
-                  : '<li>No problems returned.</li>'}
-              </ul>
-            </div>
-
-            <div class="adp-feedback-panel">
-              <div class="adp-feedback-title">Suggestions</div>
-              <ul>
-                ${suggestions.length
-                  ? suggestions.map(item => `<li>${escapeHtml(item)}</li>`).join('')
-                  : '<li>No suggestions returned.</li>'}
-              </ul>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function restoreScore() {
-      const raw = localStorage.getItem(scoreKey);
-      if (!raw) return;
-
-      try {
-        const parsed = JSON.parse(raw);
-        renderScore(parsed);
-      } catch (e) {
-        console.error('Failed to restore saved score:', e);
-      }
-    }
-
-    function clearScore() {
-      localStorage.removeItem(scoreKey);
-      scoreResultBox.innerHTML = '';
-    }
-
-    function getRequestBody(text) {
-      return {
-        promptTitle: current.title,
-        courseTitle: current.courseTitle,
-        instructions: current.instructions,
-        minWords: current.minWords,
-        professorName: current.professorName,
-        professorQuestion: current.professorQuestion,
-        student1Name: current.student1Name,
-        student1Text: current.student1Text,
-        student2Name: current.student2Name,
-        student2Text: current.student2Text,
-        studentResponse: text
-      };
-    }
-
-    async function scoreResponse({ timedAutoScore = false } = {}) {
-      const text = editor.value.trim();
-      const count = countWords(text);
-
-      if (!text) {
-        alert('Please write your response before submitting.');
+      if (isSentenceSelectQuestion(q)) {
+        const paragraphs = getParagraphsFromPassage().map(p => stripSlots(p));
+        renderParagraphs(paragraphs, q.paragraphIndex);
         return;
       }
 
-      if (isScoring) return;
-      isScoring = true;
+      if (currentPassage.highlightQuestionIndex === currentIndex && currentPassage.highlightedPassage) {
+        passageEl.innerHTML = stripSlots(currentPassage.highlightedPassage);
+      } else {
+        const plainText = stripSlots(getPlainPassageText());
+        passageEl.textContent = plainText;
+      }
+    }
 
-      saveDraft(false);
-
-      submitBtn.disabled = true;
-      rescoreBtn.disabled = true;
-      saveBtn.disabled = true;
-      restartTimerBtn.disabled = true;
-      clearBtn.disabled = true;
-
-      const originalSubmitText = submitBtn.textContent;
-      const originalRescoreText = rescoreBtn.textContent;
-
-      submitBtn.textContent = 'Scoring...';
-      rescoreBtn.textContent = 'Scoring...';
-      scoreResultBox.innerHTML = '';
-
-      try {
-        const response = await fetch('https://hanginthere-api.vercel.app/api/score-academic-discussion', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(getRequestBody(text))
+    function renderInsertionPassage(q, selectedLetter = null) {
+      let html = (q.passageWithSlots || "")
+        .replace(/\[SLOT_A\]|\[A\]|■/g, (match, offset, fullText) => {
+          const before = fullText.slice(0, offset);
+          const count = (before.match(/\[SLOT_[A-D]\]|\[[A-D]\]|■/g) || []).length;
+          return ['<span class="insert-slot" data-slot="A" aria-label="Position A"></span>',
+                  '<span class="insert-slot" data-slot="B" aria-label="Position B"></span>',
+                  '<span class="insert-slot" data-slot="C" aria-label="Position C"></span>',
+                  '<span class="insert-slot" data-slot="D" aria-label="Position D"></span>'][count] || match;
         });
 
-        const result = await response.json();
+      passageEl.innerHTML = html;
 
-        if (!response.ok) {
-          throw new Error(result?.error || 'Scoring failed.');
+      const slots = passageEl.querySelectorAll('.insert-slot');
+
+      slots.forEach(slot => {
+        const slotLetter = slot.dataset.slot;
+
+        if (selectedLetter && slotLetter === selectedLetter) {
+          slot.classList.add('selected');
+          const inserted = document.createElement('span');
+          inserted.className = 'inserted-sentence';
+          inserted.textContent = q.insertSentence;
+          slot.insertAdjacentElement('afterend', inserted);
         }
 
-        const resultToStore = {
-          ...result,
-          timedAutoScore,
-          scoredAt: new Date().toISOString(),
-          timeLeftAtScoring: timeLeft
-        };
-
-        localStorage.setItem(scoreKey, JSON.stringify(resultToStore));
-        renderScore(resultToStore);
-
-        if (timedAutoScore) {
-          saveNote.textContent = 'Time is up. A timed score has been generated. You can keep revising and click Rescore again.';
-        } else if (count < (current.minWords || 100)) {
-          saveNote.textContent = `Scored successfully. Current word count: ${count}. It is recommended to write at least ${current.minWords || 100} words.`;
-        } else {
-          saveNote.textContent = `Scored successfully. Current word count: ${count}.`;
-        }
-
-      } catch (err) {
-        console.error(err);
-        renderError(err.message || 'Scoring failed. Please try again.');
-        saveNote.textContent = 'Scoring failed. Please check the API path and try again.';
-      } finally {
-        isScoring = false;
-        submitBtn.disabled = false;
-        rescoreBtn.disabled = false;
-        saveBtn.disabled = false;
-        restartTimerBtn.disabled = false;
-        clearBtn.disabled = false;
-        submitBtn.textContent = originalSubmitText;
-        rescoreBtn.textContent = originalRescoreText;
-      }
+        slot.addEventListener('click', () => {
+          userAnswers[currentIndex] = slotLetter;
+          renderInsertionPassage(q, slotLetter);
+          renderInsertionChoices(slotLetter);
+        });
+      });
     }
 
-    async function handleTimedAutoScore() {
-      const alreadyAutoScored = localStorage.getItem(timedAutoScoredKey) === 'true';
-      const text = editor.value.trim();
-
-      if (!text) {
-        saveNote.textContent = 'Time is up. No timed score was generated because the response box is empty.';
-        return;
-      }
-
-      if (alreadyAutoScored) {
-        saveNote.textContent = 'Time is up. Your timed score has already been generated. You can keep revising and click Rescore again.';
-        return;
-      }
-
-      localStorage.setItem(timedAutoScoredKey, 'true');
-      await scoreResponse({ timedAutoScore: true });
+    function renderInsertionChoices(selectedLetter = null) {
+      const choices = ["A", "B", "C", "D"];
+      optionsEl.innerHTML = `
+        <div class="insert-choice-list">
+          ${choices.map(letter => `
+            <div class="insert-choice-item ${selectedLetter === letter ? 'active' : ''}">
+              Position ${letter}
+            </div>
+          `).join('')}
+        </div>
+      `;
     }
 
-    function restartTimer() {
-      stopTimer();
-      timeLeft = totalSeconds;
-      timerExpired = false;
-      clearScore();
-      clearTimerData();
-      saveTimer();
-      updateTimerUI();
-      saveNote.textContent = 'Timer restarted. You can begin a new timed attempt.';
-      startTimer();
-    }
+    function renderQuestion() {
+      const q = currentPassage.questions[currentIndex];
+      progressEl.textContent = `Question ${currentIndex + 1} of ${currentPassage.questions.length}`;
+      questionTextEl.textContent = q.question;
 
-    titleEl.textContent = current.title || 'Academic Discussion';
-    renderPrompt(current);
-    restoreDraft();
-    loadTimer();
-    restoreScore();
-
-    if (timerExpired) {
-      saveNote.textContent = 'Time is up. Your timed attempt has ended, but you can still revise and click Rescore.';
-    } else {
-      startTimer();
-    }
-
-    editor.addEventListener('input', () => {
-      updateWordCount();
-      saveDraft(false);
-
-      if (timerExpired) {
-        saveNote.textContent = 'Time is up. You are now revising after the timed attempt. Click Rescore when ready.';
+      if (isInsertionQuestion(q)) {
+        insertSentenceBoxEl.style.display = "block";
+        insertSentenceBoxEl.innerHTML = `
+          <strong>Sentence to insert</strong>
+          ${q.insertSentence}
+        `;
+        renderInsertionChoices(userAnswers[currentIndex]);
+        hintText.textContent = "Click one of the four squares in the passage to place the sentence.";
+      } else if (isSentenceSelectQuestion(q)) {
+        insertSentenceBoxEl.style.display = "none";
+        insertSentenceBoxEl.innerHTML = "";
+        renderSentenceSelectQuestion(q);
+        hintText.textContent = "Click the sentence in the specified paragraph that best answers the question.";
       } else {
-        saveNote.textContent = 'Draft auto-saved locally on this device.';
+        insertSentenceBoxEl.style.display = "none";
+        insertSentenceBoxEl.innerHTML = "";
+        optionsEl.innerHTML = "";
+        q.options.forEach((option, idx) => {
+          const optionId = `q${currentIndex}_opt${idx}`;
+          const checked = userAnswers[currentIndex] === idx ? "checked" : "";
+          optionsEl.innerHTML += `
+            <label class="option" for="${optionId}">
+              <input type="radio" id="${optionId}" name="question" value="${idx}" ${checked}>
+              ${option}
+            </label>
+          `;
+        });
+        hintText.textContent = "You can move on even if you leave a question unanswered.";
+      }
+
+      backBtn.disabled = currentIndex === 0;
+      nextBtn.textContent = currentIndex === currentPassage.questions.length - 1 ? "Finish" : "Next";
+
+      renderPassageForCurrentQuestion();
+    }
+
+    function isAnswerCorrect(question, userAnswer) {
+      if (isInsertionQuestion(question)) {
+        return userAnswer === normalizeInsertionAnswer(question.answer);
+      }
+      if (isSentenceSelectQuestion(question)) {
+        return userAnswer === question.answer;
+      }
+      return userAnswer === question.answer;
+    }
+
+    function formatUserAnswer(question, userAnswer) {
+      if (userAnswer === null || userAnswer === undefined) return "No answer";
+
+      if (isInsertionQuestion(question)) {
+        return userAnswer;
+      }
+
+      if (isSentenceSelectQuestion(question)) {
+        const sentences = getSentenceSelectSentences(question);
+        return sentences[userAnswer] || "No answer";
+      }
+
+      return question.options[userAnswer];
+    }
+
+    function formatCorrectAnswer(question) {
+      if (isInsertionQuestion(question)) {
+        return normalizeInsertionAnswer(question.answer);
+      }
+
+      if (isSentenceSelectQuestion(question)) {
+        const sentences = getSentenceSelectSentences(question);
+        return sentences[question.answer] || "";
+      }
+
+      return question.options[question.answer];
+    }
+
+    function showResults() {
+      let correctCount = 0;
+      reviewList.innerHTML = "";
+
+      currentPassage.questions.forEach((q, idx) => {
+        const isCorrect = isAnswerCorrect(q, userAnswers[idx]);
+        if (isCorrect) correctCount++;
+
+        const reviewItem = document.createElement("div");
+        reviewItem.className = `review-item ${isCorrect ? "correct" : "wrong"}`;
+
+        reviewItem.innerHTML = `
+          <div class="review-q">${q.question}</div>
+          <div class="review-line"><strong>Your answer:</strong> ${formatUserAnswer(q, userAnswers[idx])}</div>
+          <div class="review-line"><strong>Correct answer:</strong> ${formatCorrectAnswer(q)}</div>
+          <div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>
+        `;
+
+        reviewList.appendChild(reviewItem);
+      });
+
+      const total = currentPassage.questions.length;
+      const accuracy = Math.round((correctCount / total) * 100);
+
+      scoreText.textContent = `Score: ${correctCount} / ${total}`;
+      accuracyText.textContent = `Accuracy: ${accuracy}%`;
+
+      questionCard.classList.add("hidden");
+      resultCard.classList.remove("hidden");
+      insertSentenceBoxEl.style.display = "none";
+      insertSentenceBoxEl.innerHTML = "";
+      passageEl.textContent = stripSlots(getPlainPassageText());
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      saveCurrentAnswer();
+
+      if (currentIndex < currentPassage.questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResults();
       }
     });
 
-    saveBtn.addEventListener('click', () => {
-      saveDraft(true);
+    backBtn.addEventListener("click", () => {
+      saveCurrentAnswer();
+
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
     });
 
-    submitBtn.addEventListener('click', async () => {
-      await scoreResponse({ timedAutoScore: false });
-    });
-
-    rescoreBtn.addEventListener('click', async () => {
-      await scoreResponse({ timedAutoScore: false });
-    });
-
-    restartTimerBtn.addEventListener('click', () => {
-      restartTimer();
-    });
-
-    clearBtn.addEventListener('click', () => {
-      stopTimer();
-      clearDraftOnly();
-      clearScore();
-      clearTimerData();
-      timeLeft = totalSeconds;
-      timerExpired = false;
-      saveTimer();
-      updateTimerUI();
-      saveNote.textContent = 'Draft, timed score, and timer have been cleared.';
-      startTimer();
-    });
+    if (!currentPassage) {
+      passageTitleEl.textContent = "Passage not found";
+      passageMetaEl.textContent = "";
+      passageEl.textContent = "The requested passage could not be loaded.";
+      questionCard.classList.add("hidden");
+    } else {
+      passageTitleEl.textContent = currentPassage.title;
+      const formattedDate = formatDate(currentPassage.date);
+      passageMetaEl.textContent = formattedDate
+        ? `Test Date: ${formattedDate} · Passage #${currentPassage.id}`
+        : `Passage #${currentPassage.id}`;
+      renderQuestion();
+    }
   </script>
 </body>
 </html>
