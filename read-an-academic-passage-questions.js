@@ -465,69 +465,91 @@ Finally, green roofs support urban biodiversity. Their vegetative layers create 
     ]
   },
 
- "7": {
-    id: 7,
-    title: "Parallel Algorithms: From Challenges to Opportunities",
-    date: ["20260225", "20260411"],
+"7": {
+  id: 7,
+  title: "Parallel Algorithms: From Challenges to Opportunities",
+  date: ["20260225", "20260411"],
 
-    passage: [
-      `Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.`,
+  passage: [
+    `Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.`,
 
-      `In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.`,
+    `In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.`,
 
-      `One of the strengths of parallel algorithms is their versatility. ■ Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. ■ This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. ■ Training a deep learning model would be nearly impossible without parallel computing. ■`
-    ],
+    `One of the strengths of parallel algorithms is their versatility. ■ Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. ■ This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. ■ Training a deep learning model would be nearly impossible without parallel computing. ■`
+  ],
 
-    questions: [
+  plainPassage: `Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.
 
-      {
-        type: "detail",
-        question: "1. According to paragraph 1, how do parallel algorithms improve efficiency?",
-        options: [
-          "A. By increasing the size of databases",
-          "B. By dividing tasks into smaller parts processed simultaneously",
-          "C. By reducing the number of processor cores",
-          "D. By simplifying data structures"
-        ],
-        answer: "B",
-        explanation: "原文说：dividing a task into smaller parts that run at the same time → 同时处理多个子任务，提高效率。"
-      },
+In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.
 
-      {
-        type: "detail",
-        question: "2. Why are parallel algorithms useful in healthcare simulations?",
-        options: [
-          "A. They reduce the need for data collection",
-          "B. They allow faster processing of large datasets",
-          "C. They eliminate the need for human decision-making",
-          "D. They simplify demographic data"
-        ],
-        answer: "B",
-        explanation: "第二段明确说：process millions of data points + run in minutes → 加快处理速度。"
-      },
+One of the strengths of parallel algorithms is their versatility. Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. Training a deep learning model would be nearly impossible without parallel computing.`,
 
-      {
-        type: "detail",
-        question: "3. What problem can occur when using parallel algorithms?",
-        options: [
-          "A. Data cannot be processed at all",
-          "B. Systems become too expensive",
-          "C. Too much data can slow down the system",
-          "D. Results become inaccurate"
-        ],
-        answer: "C",
-        explanation: "原文：if too much data is sent... the system slows down。"
-      },
+  highlightQuestionIndex: 3,
+  highlightedPassage: `Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.
 
-      {
-        type: "insertion",
-        question: "4. Look at the four squares [■] that indicate where the following sentence could be added to the passage.\nWhere would the sentence best fit?\n\nSentence: In light of their many advantages, parallel algorithms will surely continue to drive innovation in diverse areas like climate modeling and financial analysis.",
-        options: ["A", "B", "C", "D"],
-        answer: "D",
-        explanation: "该句为总结+展望句（In light of...），必须放在段落最后，对前文优势进行总结。"
-      }
+In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.
 
-    ]
-  }
+One of the strengths of parallel algorithms is their versatility. Developers can <span class="highlight-word">tailor</span> them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. Training a deep learning model would be nearly impossible without parallel computing.`,
+
+  questions: [
+    {
+      question: "1. What does the passage indicate about sequential algorithms?",
+      options: [
+        "They are less efficient than parallel algorithms are.",
+        "They handle computational tasks in the same way that parallel algorithms do.",
+        "They can solve problems that parallel algorithms cannot.",
+        "They use more advanced hardware than parallel algorithms do."
+      ],
+      answer: 0,
+      explanation: "第一段用 sequential algorithm 和 parallel algorithm 做对比：前者 one by one，后者同时分任务处理，因此文中表明 sequential algorithms 效率更低，答案选 A。"
+    },
+
+    {
+      question: "2. Why does the author discuss the simulation of the spread of a virus?",
+      options: [
+        "To illustrate the challenges that public health officials face during disease breakouts",
+        "To demonstrate the significance of parallel algorithms in healthcare",
+        "To highlight the data points that researchers focus on when a virus spreads through a population",
+        "To emphasize the risk of using small datasets for analysis during disease outbreaks"
+      ],
+      answer: 1,
+      explanation: "作者举病毒传播模拟这个例子，是为了具体说明 parallel algorithms 在 healthcare 中的重要作用，因此答案选 B。"
+    },
+
+    {
+      type: "sentence_select",
+      question: "3. Identify the sentence in paragraph 2 that indicates that parallel algorithms have challenges. Select the sentence to make your choice.",
+      paragraphIndex: 1,
+      answer: 3,
+      explanation: "第二段最后一句指出，如果一次性把过多数据发送给处理器而没有适当管理，系统就会变慢。这正是在说明 parallel algorithms 也有挑战。"
+    },
+
+    {
+      question: "4. The word \"tailor\" in the passage is closest in meaning to",
+      options: [
+        "direct",
+        "explore",
+        "adapt",
+        "prepare"
+      ],
+      answer: 2,
+      explanation: "tailor them to work efficiently on different types of hardware 表示“使其适应不同类型的硬件”，最接近 adapt，所以答案选 C。"
+    },
+
+    {
+      type: "insertion",
+      question: "5. There are four locations [■] in the passage that indicate where the following sentence could be added.\n\nIn light of their many advantages, parallel algorithms will surely continue to drive innovation in diverse areas like climate modeling and financial analysis.\n\nWhere would the sentence best fit? Select a location [■] to add the sentence to the passage.",
+      passageWithSlots: `Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.
+
+In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.
+
+One of the strengths of parallel algorithms is their versatility. [SLOT_A] Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. [SLOT_B] This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. [SLOT_C] Training a deep learning model would be nearly impossible without parallel computing. [SLOT_D]`,
+      insertSentence: "In light of their many advantages, parallel algorithms will surely continue to drive innovation in diverse areas like climate modeling and financial analysis.",
+      options: [],
+      answer: "D",
+      explanation: "这句话是总结和展望句。前面先讲了 parallel algorithms 的优势、硬件适配能力以及对 deep learning 的推动作用，放在段尾 D 位置最自然，起总结全文并展望未来应用的作用。"
+    }
+  ]
+}
 
 };
