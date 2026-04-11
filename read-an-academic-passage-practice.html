@@ -609,16 +609,41 @@
       }
     }
 
-    function renderInsertionPassage(q, selectedLetter = null) {
-      let html = (q.passageWithSlots || "")
-        .replace(/\[SLOT_A\]|\[A\]|■/g, (match, offset, fullText) => {
-          const before = fullText.slice(0, offset);
-          const count = (before.match(/\[SLOT_[A-D]\]|\[[A-D]\]|■/g) || []).length;
-          return ['<span class="insert-slot" data-slot="A" aria-label="Position A"></span>',
-                  '<span class="insert-slot" data-slot="B" aria-label="Position B"></span>',
-                  '<span class="insert-slot" data-slot="C" aria-label="Position C"></span>',
-                  '<span class="insert-slot" data-slot="D" aria-label="Position D"></span>'][count] || match;
-        });
+      function renderInsertionPassage(q, selectedLetter = null) {
+  const slotOrder = ["A", "B", "C", "D"];
+  let slotIndex = 0;
+
+  let html = (q.passageWithSlots || "").replace(
+    /\[SLOT_[A-D]\]|\[[A-D]\]|■/g,
+    () => {
+      const letter = slotOrder[slotIndex] || "A";
+      slotIndex++;
+      return `<span class="insert-slot" data-slot="${letter}" aria-label="Position ${letter}"></span>`;
+    }
+  );
+
+  passageEl.innerHTML = html;
+
+  const slots = passageEl.querySelectorAll(".insert-slot");
+
+  slots.forEach(slot => {
+    const slotLetter = slot.dataset.slot;
+
+    if (selectedLetter && slotLetter === selectedLetter) {
+      slot.classList.add("selected");
+      const inserted = document.createElement("span");
+      inserted.className = "inserted-sentence";
+      inserted.textContent = q.insertSentence;
+      slot.insertAdjacentElement("afterend", inserted);
+    }
+
+    slot.addEventListener("click", () => {
+      userAnswers[currentIndex] = slotLetter;
+      renderInsertionPassage(q, slotLetter);
+      renderInsertionChoices(slotLetter);
+    });
+  });
+}
 
       passageEl.innerHTML = html;
 
