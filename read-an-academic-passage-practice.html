@@ -587,6 +587,55 @@
       });
     }
 
+    function renderInsertionPassage(q, selectedLetter = null) {
+      const slotOrder = ["A", "B", "C", "D"];
+      let slotIndex = 0;
+
+      const html = (q.passageWithSlots || "").replace(
+        /\[SLOT_[A-D]\]|\[[A-D]\]|■/g,
+        () => {
+          const letter = slotOrder[slotIndex] || "A";
+          slotIndex++;
+          return `<span class="insert-slot" data-slot="${letter}" aria-label="Position ${letter}"></span>`;
+        }
+      );
+
+      passageEl.innerHTML = html;
+
+      const slots = passageEl.querySelectorAll(".insert-slot");
+
+      slots.forEach(slot => {
+        const slotLetter = slot.dataset.slot;
+
+        if (selectedLetter && slotLetter === selectedLetter) {
+          slot.classList.add("selected");
+          const inserted = document.createElement("span");
+          inserted.className = "inserted-sentence";
+          inserted.textContent = q.insertSentence;
+          slot.insertAdjacentElement("afterend", inserted);
+        }
+
+        slot.addEventListener("click", () => {
+          userAnswers[currentIndex] = slotLetter;
+          renderInsertionPassage(q, slotLetter);
+          renderInsertionChoices(slotLetter);
+        });
+      });
+    }
+
+    function renderInsertionChoices(selectedLetter = null) {
+      const choices = ["A", "B", "C", "D"];
+      optionsEl.innerHTML = `
+        <div class="insert-choice-list">
+          ${choices.map(letter => `
+            <div class="insert-choice-item ${selectedLetter === letter ? 'active' : ''}">
+              Position ${letter}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
     function renderPassageForCurrentQuestion() {
       const q = currentPassage.questions[currentIndex];
 
@@ -607,78 +656,6 @@
         const plainText = stripSlots(getPlainPassageText());
         passageEl.textContent = plainText;
       }
-    }
-
-      function renderInsertionPassage(q, selectedLetter = null) {
-  const slotOrder = ["A", "B", "C", "D"];
-  let slotIndex = 0;
-
-  let html = (q.passageWithSlots || "").replace(
-    /\[SLOT_[A-D]\]|\[[A-D]\]|■/g,
-    () => {
-      const letter = slotOrder[slotIndex] || "A";
-      slotIndex++;
-      return `<span class="insert-slot" data-slot="${letter}" aria-label="Position ${letter}"></span>`;
-    }
-  );
-
-  passageEl.innerHTML = html;
-
-  const slots = passageEl.querySelectorAll(".insert-slot");
-
-  slots.forEach(slot => {
-    const slotLetter = slot.dataset.slot;
-
-    if (selectedLetter && slotLetter === selectedLetter) {
-      slot.classList.add("selected");
-      const inserted = document.createElement("span");
-      inserted.className = "inserted-sentence";
-      inserted.textContent = q.insertSentence;
-      slot.insertAdjacentElement("afterend", inserted);
-    }
-
-    slot.addEventListener("click", () => {
-      userAnswers[currentIndex] = slotLetter;
-      renderInsertionPassage(q, slotLetter);
-      renderInsertionChoices(slotLetter);
-    });
-  });
-}
-
-      passageEl.innerHTML = html;
-
-      const slots = passageEl.querySelectorAll('.insert-slot');
-
-      slots.forEach(slot => {
-        const slotLetter = slot.dataset.slot;
-
-        if (selectedLetter && slotLetter === selectedLetter) {
-          slot.classList.add('selected');
-          const inserted = document.createElement('span');
-          inserted.className = 'inserted-sentence';
-          inserted.textContent = q.insertSentence;
-          slot.insertAdjacentElement('afterend', inserted);
-        }
-
-        slot.addEventListener('click', () => {
-          userAnswers[currentIndex] = slotLetter;
-          renderInsertionPassage(q, slotLetter);
-          renderInsertionChoices(slotLetter);
-        });
-      });
-    }
-
-    function renderInsertionChoices(selectedLetter = null) {
-      const choices = ["A", "B", "C", "D"];
-      optionsEl.innerHTML = `
-        <div class="insert-choice-list">
-          ${choices.map(letter => `
-            <div class="insert-choice-item ${selectedLetter === letter ? 'active' : ''}">
-              Position ${letter}
-            </div>
-          `).join('')}
-        </div>
-      `;
     }
 
     function renderQuestion() {
