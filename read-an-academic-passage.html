@@ -59,6 +59,14 @@
       color: #64748b;
       font-size: 14px;
     }
+
+    .empty-state {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      color: #64748b;
+    }
   </style>
 </head>
 <body>
@@ -73,43 +81,63 @@
         <p>Select a passage to begin your practice.</p>
       </header>
 
-      <section class="passage-list">
-        <div class="passage-card" onclick="start(1)">
-          <div class="passage-title">#1 The Dynamics of Hollywood’s Golden Age</div>
-          <div class="passage-meta">Exam Date: 2026-03-08</div>
-        </div>
-
-        <div class="passage-card" onclick="start(2)">
-          <div class="passage-title">#2 Augmented Reality for Training</div>
-          <div class="passage-meta">Exam Date: 2026-01-21</div>
-        </div>
-
-        <div class="passage-card" onclick="start(3)">
-          <div class="passage-title">#3 Formation of Sedimentary Rocks</div>
-          <div class="passage-meta">Exam Date: 2026-01-21</div>
-        </div>
-
-        <div class="passage-card" onclick="start(4)">
-          <div class="passage-title">#4 Thinking Outside the Box</div>
-          <div class="passage-meta">Exam Date: 2026-01-21</div>
-        </div>
-
-        <div class="passage-card" onclick="start(5)">
-          <div class="passage-title">#5 Plant Communication</div>
-          <div class="passage-meta">Exam Date: 2026-01-21</div>
-        </div>
-
-        <div class="passage-card" onclick="start(6)">
-          <div class="passage-title">#6 Green Roof Benefits</div>
-          <div class="passage-meta">Exam Date: 2026-01-21</div>
-        </div>
-      </section>
+      <section class="passage-list" id="passageList"></section>
     </div>
   </div>
+
+  <script src="/read-an-academic-passage-questions.js"></script>
 
   <script>
     function start(id) {
       window.location.href = "/read-an-academic-passage-practice.html?id=" + id;
+    }
+
+    function formatDisplayDate(dateValue) {
+      if (!dateValue) return "";
+      if (Array.isArray(dateValue)) {
+        return dateValue.map(formatSingleDate).join(" / ");
+      }
+      return formatSingleDate(dateValue);
+    }
+
+    function formatSingleDate(raw) {
+      const str = String(raw).trim();
+      if (/^\d{8}$/.test(str)) {
+        return `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`;
+      }
+      return str;
+    }
+
+    function renderPassageList() {
+      const passageListEl = document.getElementById("passageList");
+      const passages = window.academicPassages || {};
+
+      const items = Object.values(passages)
+        .filter(item => item && typeof item.id !== "undefined")
+        .sort((a, b) => Number(a.id) - Number(b.id));
+
+      if (!items.length) {
+        passageListEl.innerHTML = `
+          <div class="empty-state">
+            No passages found. Please check read-an-academic-passage-questions.js.
+          </div>
+        `;
+        return;
+      }
+
+      passageListEl.innerHTML = items.map(item => {
+        const displayDate = formatDisplayDate(item.date);
+        const dateLabel = Array.isArray(item.date) ? "Exam Dates" : "Exam Date";
+
+        return `
+          <div class="passage-card" onclick="start(${item.id})">
+            <div class="passage-title">#${item.id} ${item.title}</div>
+            <div class="passage-meta">
+              ${displayDate ? `${dateLabel}: ${displayDate}` : "Click to start"}
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     fetch('/navbar.html')
@@ -121,6 +149,8 @@
         const readingLink = document.querySelector('.nav-links a[href="/reading.html"]');
         if (readingLink) readingLink.classList.add('active');
       });
+
+    renderPassageList();
   </script>
 </body>
 </html>
