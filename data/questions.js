@@ -1159,7 +1159,7 @@ window.questions = [
       },
       {
         "p": "estab",
-        "a": "lished",
+        "a": "lishes",
         "g": 6
       },
       {
