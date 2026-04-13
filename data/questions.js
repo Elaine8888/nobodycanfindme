@@ -2599,5 +2599,62 @@ window.questions = [
     { p: "Des", a: "pite", g: 4 },
     { p: "of", a: "ten", g: 3 }
   ]
+},
+{
+  id: 50,
+  title: "Microfinance",
+  subtitle: "",
+  date: "20260323",
+  template: "The concept of microfinance has transformed the way people access financial services. Microfinance institutions provide small loans to individuals or groups who lack access to traditional banking. These loans empower recip{0} to st{1} or exp{2} small busin{3}, improving th{4} living condi{5} and commu{6}. By encou{7} financial lite{8} and adva{9} financial inclusion, microfinance helps reduce poverty, foster economic development, and build long-term stability at the grassroots level. Understanding this system helps design effective financial inclusion strategies.",
+  items: [
+    { p: "recip", a: "ients", g: 5 },
+    { p: "st", a: "art", g: 3 },
+    { p: "exp", a: "and", g: 3 },
+    { p: "busin", a: "esses", g: 5 },
+    { p: "th", a: "eir", g: 3 },
+    { p: "condi", a: "tions", g: 5 },
+    { p: "commu", a: "nities", g: 6 },
+    { p: "encou", a: "raging", g: 6 },
+    { p: "lite", a: "racy", g: 4 },
+    { p: "adva", a: "ncing", g: 5 }
+  ]
+},
+{
+  id: 51,
+  title: "Archaeology",
+  subtitle: "",
+  date: "20260322",
+  template: "Archaeology is the study of past human cultures through the excavation and analysis of artifacts, structures, and other physical remains. This disci{0} helps unc{1} the da{2} lives, bel{3}, and techno{4} of anc{5} civilizations. Archaeo{6} often wo{7} at dig si{8}, carefully unear{9} and documenting finds. Techniques such as carbon dating and soil analysis provide information about the age and context of discoveries. Collaborative efforts with historians and anthropologists enrich our understanding of past civilizations, revealing information about their religious practices, the tools they used, and many other aspects of how they lived.",
+  items: [
+    { p: "disci", a: "pline", g: 5 },
+    { p: "unc", a: "over", g: 4 },
+    { p: "da", a: "ily", g: 3 },
+    { p: "bel", a: "iefs", g: 4 },
+    { p: "techno", a: "logy", g: 4 },
+    { p: "anc", a: "ient", g: 4 },
+    { p: "Archaeo", a: "logists", g: 7 },
+    { p: "wo", a: "rk", g: 2 },
+    { p: "si", a: "tes", g: 3 },
+    { p: "unear", a: "thing", g: 5 }
+  ]
+},
+{
+  id: 52,
+  title: "Sedimentary Layers",
+  subtitle: "",
+  date: "20260225",
+  template: "Rock formations offer valuable insights into Earth's history. Sedimentary layers, for example, reveal past environments. By analyzing their composition and arrangement, geologists can determine if an area was once underwater or exposed. Over time, pressure trans{0} sediments in{1} solid ro{2}, preserving evid{3} of anc{4} climates a{5} geological eve{6}. Fossils wit{7} layers sh{8} what orga{9} once lived there. Through such studies, scientists reconstruct Earth's past and gain a deeper understanding of the dynamic processes that continue to shape the planet's surface.",
+  items: [
+    { p: "trans", a: "forms", g: 5 },
+    { p: "in", a: "to", g: 2 },
+    { p: "ro", a: "ck", g: 2 },
+    { p: "evid", a: "ence", g: 4 },
+    { p: "anc", a: "ient", g: 4 },
+    { p: "a", a: "nd", g: 2 },
+    { p: "eve", a: "nts", g: 3 },
+    { p: "wit", a: "hin", g: 3 },
+    { p: "sh", a: "ow", g: 2 },
+    { p: "orga", a: "nisms", g: 5 }
+  ]
 }
 ];
